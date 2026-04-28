@@ -74,7 +74,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
 
         <div className="space-y-1.5">
           <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium">
-            Family
+            Font
           </label>
           <Select value={state.fontFamily} onValueChange={(v) => onChange({ fontFamily: v })}>
             <SelectTrigger
