@@ -109,6 +109,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
           >
             <SelectTrigger
               className="field-bordered h-8 text-[12px] bg-transparent border-0 shadow-none"
+              style={{ color: "#716e6e" }}
               data-testid="select-font-size"
             >
               <SelectValue />
