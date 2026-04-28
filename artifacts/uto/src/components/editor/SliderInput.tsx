@@ -48,10 +48,10 @@ export function SliderInput({ label, value, min, max, step, unit, onChange }: Pr
             onKeyDown={(e) => {
               if (e.key === "Enter") (e.target as HTMLInputElement).blur();
             }}
-            className="w-12 text-right num-tab text-[11.5px] font-medium text-foreground bg-transparent px-1 py-0.5 rounded border border-transparent hover:border-border focus:border-foreground/40 focus:outline-none focus:bg-background transition-colors"
+            className="w-12 text-right num-tab text-[11.5px] font-medium text-[#716e6e] bg-transparent px-1 py-0.5 rounded border border-transparent hover:border-border focus:border-foreground/40 focus:outline-none focus:bg-background transition-colors"
           />
           {unit ? (
-            <span className="text-[9.5px] text-muted-foreground/70 font-medium num-tab w-4">
+            <span className="text-[9.5px] text-[#716e6e] font-medium num-tab w-4">
               {unit}
             </span>
           ) : <span className="w-4" />}
