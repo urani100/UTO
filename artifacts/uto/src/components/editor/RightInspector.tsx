@@ -202,17 +202,19 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
                 >
                   <ToggleGroupItem
                     value="1"
-                    className="h-6 px-3 text-[11px] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                    className="h-6 px-3 text-[12px] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                     data-testid="dir-fwd"
+                    aria-label="Clockwise"
                   >
-                    →
+                    ↻
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="-1"
-                    className="h-6 px-3 text-[11px] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                    className="h-6 px-3 text-[12px] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                     data-testid="dir-rev"
+                    aria-label="Counter-clockwise"
                   >
-                    ←
+                    ↺
                   </ToggleGroupItem>
                 </ToggleGroup>
               </div>

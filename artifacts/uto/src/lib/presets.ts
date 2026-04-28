@@ -45,7 +45,7 @@ export const PRESETS: Preset[] = [
     letterSpacing: 0.3,
     textColor: "#1c1824",
     backgroundColor: "#eeece7",
-    shapeOverrides: { turns: 7, gap: 26, inner: 8 },
+    shapeOverrides: { turns: 7, pitch: 26, inner: 8, startAngle: 0, taper: 1 },
   },
   {
     id: "atrium",
