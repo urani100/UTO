@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Undo2,
   Redo2,
-  Layers,
   Download,
   ChevronDown,
   Sun as SunIcon,
@@ -47,7 +46,6 @@ interface Props {
 
 export function Toolbar(props: Props) {
   const [editingName, setEditingName] = useState(false);
-  const triggerLabel = SHAPE_META[props.activeShape].name;
 
   return (
     <header className="h-[48px] flex-none border-b border-border/60 bg-background/85 backdrop-blur-xl z-40 relative">
@@ -105,12 +103,11 @@ export function Toolbar(props: Props) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="h-8 px-2.5 rounded-md flex items-center gap-1.5 text-[12px] font-medium text-foreground hover:bg-foreground/[.05] transition-colors min-w-[120px]"
+              className="h-8 px-2.5 rounded-md flex items-center gap-1.5 text-[12px] font-medium text-foreground hover:bg-foreground/[.05] transition-colors"
               data-testid="button-form"
             >
-              <Layers size={13} strokeWidth={1.6} />
-              <span className="truncate">{triggerLabel}</span>
-              <ChevronDown size={11} className="text-muted-foreground ml-auto" />
+              <span>Form</span>
+              <ChevronDown size={11} className="text-muted-foreground" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[260px] p-1.5">
