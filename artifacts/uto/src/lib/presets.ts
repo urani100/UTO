@@ -19,29 +19,17 @@ export interface Preset {
   jitter?: number;
 }
 
-const DICKINSON =
-  "I heard a Fly buzz — when I died — The Stillness in the Room was like the Stillness in the Air — between the Heaves of Storm — The Eyes around — had wrung them dry — and Breaths were gathering firm for that last Onset — when the King be witnessed — in the Room.";
+const BAUDELAIRE =
+  "Remords posthume\nLorsque tu dormiras, ma belle ténébreuse,\nAu fond d'un monument construit en marbre noir,\nEt lorsque tu n'auras pour alcôve et manoir\nQu'un caveau pluvieux et qu'une fosse creuse;";
 
-const RILKE =
-  "And now we welcome the new year. Full of things that have never been. Be patient toward all that is unsolved in your heart and try to love the questions themselves like locked rooms and like books written in a very foreign tongue.";
-
-const BLAKE =
-  "To see a world in a grain of sand and a heaven in a wild flower hold infinity in the palm of your hand and eternity in an hour.";
-
-const NERUDA =
-  "I love you as certain dark things are to be loved in secret between the shadow and the soul I love you as the plant that never blooms but carries in itself the light of hidden flowers.";
-
-const WHITMAN =
-  "I celebrate myself and sing myself and what I assume you shall assume for every atom belonging to me as good belongs to you. I loaf and invite my soul. I lean and loaf at my ease observing a spear of summer grass.";
-
-const DUNBAR =
-  "I know why the caged bird sings ah me when his wing is bruised and his bosom sore when he beats his bars and he would be free it is not a carol of joy or glee but a prayer that he sends from his heart's deep core.";
-
-const TAGORE =
-  "Where the mind is without fear and the head is held high where knowledge is free where the world has not been broken up into fragments by narrow domestic walls into that heaven of freedom my Father let my country awake.";
-
-const SAPPHO =
-  "Some say cavalry and others claim infantry or a fleet of long oars is the supreme sight on the black earth I say it is the one you love.";
+const DICKINSON = BAUDELAIRE;
+const RILKE = BAUDELAIRE;
+const BLAKE = BAUDELAIRE;
+const NERUDA = BAUDELAIRE;
+const WHITMAN = BAUDELAIRE;
+const DUNBAR = BAUDELAIRE;
+const TAGORE = BAUDELAIRE;
+const SAPPHO = BAUDELAIRE;
 
 export const PRESETS: Preset[] = [
   {
