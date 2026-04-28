@@ -188,7 +188,11 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
       <InspectorSection title="Shape">
         {meta.params.map((p) => {
           const value = state.shapeParams[state.shape][p.key] ?? p.min;
-          if (p.key === "direction") {
+          if (p.key === "direction" || p.key === "fadeDirection") {
+            const isFade = p.key === "fadeDirection";
+            const labels = isFade
+              ? { pos: "Out", neg: "In", posAria: "Fade outward", negAria: "Fade inward" }
+              : { pos: "↻", neg: "↺", posAria: "Clockwise", negAria: "Counter-clockwise" };
             return (
               <div key={p.key} className="space-y-1.5">
                 <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium">
@@ -203,18 +207,18 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
                   <ToggleGroupItem
                     value="1"
                     className="h-6 px-3 text-[12px] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                    data-testid="dir-fwd"
-                    aria-label="Clockwise"
+                    data-testid={`${p.key}-pos`}
+                    aria-label={labels.posAria}
                   >
-                    ↻
+                    {labels.pos}
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="-1"
                     className="h-6 px-3 text-[12px] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                    data-testid="dir-rev"
-                    aria-label="Counter-clockwise"
+                    data-testid={`${p.key}-neg`}
+                    aria-label={labels.negAria}
                   >
-                    ↺
+                    {labels.neg}
                   </ToggleGroupItem>
                 </ToggleGroup>
               </div>

@@ -151,7 +151,7 @@ export const PRESETS: Preset[] = [
     letterSpacing: 0.3,
     textColor: "#1c1824",
     backgroundColor: "#eeece7",
-    shapeOverrides: { rings: 9, arc: 250, baseRadius: 240, offset: 14, gap: 4 },
+    shapeOverrides: { rings: 9, arc: 250, outer: 240, spacing: 24, rotation: 180, stagger: 14, falloff: 0.55, fadeDirection: 1 },
   },
 ];
 
