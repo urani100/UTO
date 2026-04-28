@@ -1,5 +1,5 @@
 import type { CanvasState, ShapeMeta, ShapeRender, RenderedLine } from "../types";
-import { CANVAS_H, CANVAS_W } from "../types";
+import { CANVAS_W } from "../types";
 import { approxCharWidth, tokenize, wrapWords } from "../engine/text";
 import { smoothPathPx } from "../engine/path";
 
@@ -7,14 +7,12 @@ export const mongolfiereMeta: ShapeMeta = {
   id: "mongolfiere",
   name: "Mongolfière",
   category: "Organic",
-  blurb: "Text fills the bulb of a hot-air balloon. Hand-drawn ropes drop to a small basket below.",
-  math: "The bulb is a teardrop: a circle merged with a tapered cone. Ropes are line segments dropped from points along the bulb's lower hemisphere to the basket's corners.",
+  blurb: "Text fills the bulb of a hot-air balloon.",
+  math: "The bulb is a teardrop: a circle merged with a tapered cone. Lines wrap to the silhouette's width at each row.",
   formula: "bulb = circle ∪ taper",
-  defaults: { bulbWidth: 220, ropeCount: 6, basketWidth: 80 },
+  defaults: { bulbWidth: 220 },
   params: [
     { key: "bulbWidth", label: "Bulb width", min: 140, max: 280, step: 2, unit: "px" },
-    { key: "ropeCount", label: "Ropes", min: 4, max: 12, step: 1 },
-    { key: "basketWidth", label: "Basket", min: 50, max: 140, step: 2, unit: "px" },
   ],
 };
 
@@ -43,27 +41,6 @@ export function renderMongolfiere(state: CanvasState): ShapeRender {
     const a = Math.PI + (i / 40) * Math.PI;
     bulbPts.push([cx + bulbR * Math.cos(a), bulbCY - bulbR * Math.sin(a)]);
   }
-
-  // Basket geometry.
-  const basketW = p.basketWidth!;
-  const basketH = basketW * 0.55;
-  const basketTopY = bulbBottomY + 70;
-  const basketLeft = cx - basketW / 2;
-  const basketRight = cx + basketW / 2;
-  const basketBottom = basketTopY + basketH;
-
-  const ropes = Math.max(2, Math.round(p.ropeCount!));
-  let decoration = "";
-  for (let i = 0; i < ropes; i++) {
-    const t = ropes === 1 ? 0.5 : i / (ropes - 1);
-    const fromX = cx + (t - 0.5) * bulbR * 1.05;
-    const fromY = bulbBottomY - 4;
-    const toX = basketLeft + t * basketW;
-    const toY = basketTopY + 2;
-    decoration += `M ${fromX.toFixed(1)} ${fromY.toFixed(1)} L ${toX.toFixed(1)} ${toY.toFixed(1)} `;
-  }
-  // Basket itself
-  decoration += `M ${basketLeft} ${basketTopY} L ${basketRight} ${basketTopY} L ${basketRight - basketW * 0.07} ${basketBottom} L ${basketLeft + basketW * 0.07} ${basketBottom} Z`;
 
   // Fill bulb with text by row.
   const words = tokenize(state.text);
@@ -98,18 +75,5 @@ export function renderMongolfiere(state: CanvasState): ShapeRender {
     wordIdx += first.split(/\s+/).length;
   }
 
-  // Basket text — last few words echo at smaller scale.
-  if (wordIdx < words.length) {
-    const tailWords = words.slice(wordIdx).slice(0, 6);
-    const tail = tailWords.join(" ");
-    lines.push({
-      text: tail,
-      x: cx,
-      y: basketTopY + basketH * 0.65,
-      width: basketW - 8,
-      fontScale: 0.55,
-    });
-  }
-
-  return { guide: smoothPathPx(bulbPts, true, 0.45), decoration, lines };
+  return { guide: smoothPathPx(bulbPts, true, 0.45), decoration: "", lines };
 }
