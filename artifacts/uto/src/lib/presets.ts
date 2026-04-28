@@ -54,10 +54,10 @@ export const PRESETS: Preset[] = [
     fontSize: 14,
     weight: 500,
     italic: false,
-    letterSpacing: 0.2,
+    letterSpacing: 0.3,
     textColor: "#1c1824",
     backgroundColor: "#f6f1e7",
-    shapeOverrides: { turns: 6, gap: 20, inner: 12 },
+    shapeOverrides: { turns: 7, gap: 26, inner: 8 },
   },
   {
     id: "atrium",

@@ -35,6 +35,7 @@ export default function Studio() {
   const [meta, setMeta] = useState({ chars: 0, pathLen: 0, ms: 0 });
   const [showMath, setShowMath] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [activePresetId, setActivePresetId] = useState<string | null>("cathedral");
   const svgRef = useRef<SVGSVGElement | null>(null);
   const { toast } = useToast();
 
@@ -78,6 +79,7 @@ export default function Studio() {
     (p: Preset) => {
       undoable.set((s) => applyPreset(s, p));
       setProjectName(`Untitled — ${p.name}`);
+      setActivePresetId(p.id);
       toast({
         title: p.name,
         description: p.description,
@@ -88,6 +90,7 @@ export default function Studio() {
 
   const onRandomize = useCallback(() => {
     undoable.set((s) => randomizeState(s));
+    setActivePresetId(null);
   }, [undoable]);
 
   const onExportSvg = useCallback(() => {
@@ -172,6 +175,7 @@ export default function Studio() {
         onRedo={undoable.redo}
         onRandomize={onRandomize}
         onPreset={onPreset}
+        activePresetId={activePresetId}
         onExportSvg={onExportSvg}
         onCopySvg={onCopySvg}
         onExportPng={onExportPng}
@@ -182,7 +186,7 @@ export default function Studio() {
       />
       <div className="flex-1 flex min-h-0">
         <LeftRail active={state.shape} onPick={setShape} />
-        <main className="flex-1 min-w-0 flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_hsl(var(--muted)/.5),_transparent_60%)] relative">
+        <main className="flex-1 min-w-0 flex items-center justify-center relative bg-stage">
           <Canvas state={state} ref={svgRef} onMetaUpdate={setMeta} />
         </main>
         <RightInspector

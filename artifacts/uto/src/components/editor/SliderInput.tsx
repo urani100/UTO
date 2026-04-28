@@ -34,8 +34,8 @@ export function SliderInput({ label, value, min, max, step, unit, onChange }: Pr
 
   return (
     <div className="space-y-1.5">
-      <div className="flex items-center justify-between gap-3">
-        <label className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground font-medium">
+      <div className="flex items-baseline justify-between gap-3">
+        <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium">
           {label}
         </label>
         <div className="flex items-baseline gap-1">
@@ -48,11 +48,13 @@ export function SliderInput({ label, value, min, max, step, unit, onChange }: Pr
             onKeyDown={(e) => {
               if (e.key === "Enter") (e.target as HTMLInputElement).blur();
             }}
-            className="w-14 text-right num-tab text-[12px] font-medium bg-muted/40 px-1.5 py-0.5 rounded border border-transparent hover:border-border focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
+            className="w-12 text-right num-tab text-[11.5px] font-medium text-foreground bg-transparent px-1 py-0.5 rounded border border-transparent hover:border-border focus:border-foreground/40 focus:outline-none focus:bg-background transition-colors"
           />
           {unit ? (
-            <span className="text-[10px] text-muted-foreground font-medium num-tab">{unit}</span>
-          ) : null}
+            <span className="text-[9.5px] text-muted-foreground/70 font-medium num-tab w-4">
+              {unit}
+            </span>
+          ) : <span className="w-4" />}
         </div>
       </div>
       <Slider

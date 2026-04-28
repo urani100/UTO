@@ -14,7 +14,7 @@ interface Props {
 export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, onMetaUpdate }, ref) {
   const [debounced, setDebounced] = useState(state);
 
-  // 50ms debounce per the spec — "heavy path recalculations debounced 50ms".
+  // 50ms debounce — keeps the canvas at 60fps while sliders drag.
   useEffect(() => {
     const t = setTimeout(() => setDebounced(state), 50);
     return () => clearTimeout(t);
@@ -40,27 +40,32 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
   const rays = render.rays ?? [];
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center px-8 py-6">
+    <div className="relative w-full h-full flex items-center justify-center px-12 py-10">
       {debounced.showGrid ? (
         <div
-          className="absolute inset-0 grid-paper opacity-60 pointer-events-none"
+          className="absolute inset-0 grid-paper opacity-50 pointer-events-none"
           aria-hidden
         />
       ) : null}
       <AnimatePresence mode="popLayout">
         <motion.div
           key={debounced.shape}
-          initial={{ opacity: 0, scale: 0.985, filter: "blur(6px)" }}
+          initial={{ opacity: 0, scale: 0.99, filter: "blur(8px)" }}
           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-          exit={{ opacity: 0, scale: 1.015, filter: "blur(6px)" }}
-          transition={{ duration: 0.42, ease: [0.32, 0.72, 0, 1] }}
-          className="relative shadow-xl rounded-md overflow-hidden border border-border/80"
+          exit={{ opacity: 0, scale: 1.01, filter: "blur(8px)" }}
+          transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+          className="relative rounded-[3px] overflow-hidden ring-1 ring-foreground/[.08] shadow-[0_30px_70px_-30px_rgba(28,24,36,0.25),0_8px_24px_-12px_rgba(28,24,36,0.12)]"
           style={{
-            width: "min(100%, 900px)",
+            width: "min(100%, 940px)",
             aspectRatio: `${CANVAS_W} / ${CANVAS_H}`,
             background: debounced.backgroundMode === "transparent" ? "transparent" : debounced.backgroundColor,
           }}
         >
+          {/* Subtle inner crop marks at the corners — Figma feel */}
+          <div className="pointer-events-none absolute inset-0 z-10">
+            <CornerMarks />
+          </div>
+
           <svg
             ref={ref}
             viewBox={`0 0 ${CANVAS_W} ${CANVAS_H}`}
@@ -77,7 +82,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
               fill={debounced.backgroundMode === "transparent" ? "none" : debounced.backgroundColor}
             />
 
-            {/* Guide silhouette */}
             {debounced.showGuide && render.guide ? (
               <path
                 d={render.guide}
@@ -88,7 +92,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
               />
             ) : null}
 
-            {/* Decoration (e.g. ropes / basket) */}
             {render.decoration ? (
               <path
                 d={render.decoration}
@@ -102,7 +105,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
             <g
               transform={`translate(${CANVAS_W / 2 + debounced.offsetX} ${CANVAS_H / 2 + debounced.offsetY}) rotate(${debounced.rotation}) scale(${debounced.scale}) translate(${-CANVAS_W / 2} ${-CANVAS_H / 2})`}
             >
-              {/* path-based textPath glyphs */}
               {paths.length ? (
                 <>
                   <defs>
@@ -111,7 +113,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                     ))}
                   </defs>
                   {paths.map((p) => {
-                    // Estimate how much text we need to fill the path.
                     const estimateChars = Math.max(40, Math.floor((approxLen(p.d) / (debounced.fontSize * p.fontScale * 0.5)) * 1.05));
                     const filled = fillToLength(cooked, estimateChars);
                     return (
@@ -141,7 +142,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                 </>
               ) : null}
 
-              {/* shape-fill lines */}
               {lines.map((line, idx) => (
                 <text
                   key={`line-${idx}`}
@@ -160,7 +160,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                 </text>
               ))}
 
-              {/* rays */}
               {rays.map((r) => {
                 const x2 = r.cx + Math.cos(r.angle) * r.length;
                 const y2 = r.cy + Math.sin(r.angle) * r.length;
@@ -188,7 +187,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                 );
               })}
 
-              {/* If no content at all (no paths, no lines, no rays) show a quiet placeholder */}
               {!paths.length && !lines.length && !rays.length ? (
                 <text
                   x={CANVAS_W / 2}
@@ -211,9 +209,30 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
   );
 });
 
+function CornerMarks() {
+  const stroke = "rgba(28,24,36,0.18)";
+  const sw = 1;
+  const len = 14;
+  const gap = -1;
+  return (
+    <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+      {/* Top-left */}
+      <line x1={gap} y1={gap} x2={gap + len} y2={gap} stroke={stroke} strokeWidth={sw} />
+      <line x1={gap} y1={gap} x2={gap} y2={gap + len} stroke={stroke} strokeWidth={sw} />
+      {/* Top-right */}
+      <line x1={`calc(100% - ${len + gap}px)`} y1={gap} x2={`calc(100% - ${gap}px)`} y2={gap} stroke={stroke} strokeWidth={sw} />
+      <line x1={`calc(100% - ${gap}px)`} y1={gap} x2={`calc(100% - ${gap}px)`} y2={gap + len} stroke={stroke} strokeWidth={sw} />
+      {/* Bottom-left */}
+      <line x1={gap} y1={`calc(100% - ${gap}px)`} x2={gap + len} y2={`calc(100% - ${gap}px)`} stroke={stroke} strokeWidth={sw} />
+      <line x1={gap} y1={`calc(100% - ${len + gap}px)`} x2={gap} y2={`calc(100% - ${gap}px)`} stroke={stroke} strokeWidth={sw} />
+      {/* Bottom-right */}
+      <line x1={`calc(100% - ${len + gap}px)`} y1={`calc(100% - ${gap}px)`} x2={`calc(100% - ${gap}px)`} y2={`calc(100% - ${gap}px)`} stroke={stroke} strokeWidth={sw} />
+      <line x1={`calc(100% - ${gap}px)`} y1={`calc(100% - ${len + gap}px)`} x2={`calc(100% - ${gap}px)`} y2={`calc(100% - ${gap}px)`} stroke={stroke} strokeWidth={sw} />
+    </svg>
+  );
+}
+
 function approxLen(d: string): number {
-  // Quick heuristic: count L/C/M segments and multiply by avg seg length.
-  // Falls back to 1200 if we can't tell.
   const cmds = d.split(/[MLCAQHVZ]/i).length;
   return Math.max(400, cmds * 18);
 }
@@ -225,9 +244,7 @@ function renderJitterTspans(text: string, intensity: number, scale: number, seed
     const n = sampleNoise(i + seedNum, seedNum * 0.3, scale);
     dy.push((n * intensity).toFixed(2));
   }
-  return (
-    <tspan dy={dy.join(" ")}>{text}</tspan>
-  );
+  return <tspan dy={dy.join(" ")}>{text}</tspan>;
 }
 
 function estimatePathLen(r: ShapeRender): number {

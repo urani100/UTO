@@ -3,7 +3,7 @@ import {
   Undo2,
   Redo2,
   Dices,
-  Sparkles,
+  Layers,
   Download,
   Info,
   ChevronDown,
@@ -15,8 +15,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -41,6 +39,7 @@ interface Props {
   onRedo: () => void;
   onRandomize: () => void;
   onPreset: (p: Preset) => void;
+  activePresetId: string | null;
   onExportSvg: () => void;
   onCopySvg: () => void;
   onExportPng: (scale: 1 | 2 | 4) => void;
@@ -53,209 +52,206 @@ interface Props {
 export function Toolbar(props: Props) {
   const [editingName, setEditingName] = useState(false);
   return (
-    <header className="h-[52px] flex-none border-b border-border/70 glass-strong z-40 relative">
+    <header className="h-[48px] flex-none border-b border-border/60 bg-background/85 backdrop-blur-xl z-40 relative">
       <div className="h-full px-4 flex items-center gap-3">
         <UtoWordmark />
-        <div className="h-5 w-px bg-border/80 mx-1" />
-        <div className="flex items-center gap-2">
-          {editingName ? (
-            <input
-              autoFocus
-              value={props.projectName}
-              onChange={(e) => props.onProjectNameChange(e.target.value)}
-              onBlur={() => setEditingName(false)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-              }}
-              className="text-[13px] font-medium bg-muted/40 px-2 py-1 rounded border border-ring/40 focus:outline-none focus:border-ring w-[200px]"
-              data-testid="input-project-name"
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={() => setEditingName(true)}
-              className="text-[13px] font-medium text-foreground hover-elevate px-2 py-1 rounded transition-colors"
-              data-testid="button-project-name"
-            >
-              {props.projectName}
-            </button>
-          )}
-          <span className="text-[11px] text-muted-foreground font-normal num-tab">
-            900 × 560 · 100%
-          </span>
-        </div>
+
+        <div className="h-4 w-px bg-border/80 mx-1" />
+
+        {editingName ? (
+          <input
+            autoFocus
+            value={props.projectName}
+            onChange={(e) => props.onProjectNameChange(e.target.value)}
+            onBlur={() => setEditingName(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+            }}
+            className="text-[12.5px] font-medium bg-transparent border-b border-foreground/40 focus:border-foreground focus:outline-none py-0.5 w-[180px]"
+            data-testid="input-project-name"
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => setEditingName(true)}
+            className="text-[12.5px] font-medium text-foreground hover:bg-foreground/[.04] -mx-1.5 px-1.5 py-1 rounded transition-colors"
+            data-testid="button-project-name"
+          >
+            {props.projectName}
+          </button>
+        )}
 
         <div className="flex-1" />
 
-        <div className="flex items-center gap-0.5">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={props.onUndo}
-                disabled={!props.canUndo}
-                data-testid="button-undo"
-                className="h-9 w-9"
-              >
-                <Undo2 size={16} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Undo · ⌘Z</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={props.onRedo}
-                disabled={!props.canRedo}
-                data-testid="button-redo"
-                className="h-9 w-9"
-              >
-                <Redo2 size={16} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Redo · ⌘⇧Z</TooltipContent>
-          </Tooltip>
-          <span className="text-[10px] text-muted-foreground font-normal num-tab w-8 text-center">
-            {props.undoDepth > 0 ? `${props.undoDepth}↶` : ""}
-          </span>
+        <div className="flex items-center gap-1">
+          <IconBtn
+            label="Undo · ⌘Z"
+            onClick={props.onUndo}
+            disabled={!props.canUndo}
+            testId="button-undo"
+          >
+            <Undo2 size={15} strokeWidth={1.6} />
+          </IconBtn>
+          <IconBtn
+            label="Redo · ⌘⇧Z"
+            onClick={props.onRedo}
+            disabled={!props.canRedo}
+            testId="button-redo"
+          >
+            <Redo2 size={15} strokeWidth={1.6} />
+          </IconBtn>
         </div>
 
-        <div className="h-5 w-px bg-border/80" />
+        <div className="h-4 w-px bg-border/80 mx-0.5" />
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={props.onRandomize}
-              className="h-9 w-9"
-              data-testid="button-randomize"
-            >
-              <Dices size={16} />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Randomize · R</TooltipContent>
-        </Tooltip>
+        <IconBtn label="Randomize · R" onClick={props.onRandomize} testId="button-randomize">
+          <Dices size={15} strokeWidth={1.6} />
+        </IconBtn>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-9 px-3 gap-1.5 text-[12px] font-medium"
+            <button
+              className="h-8 px-2.5 rounded-md flex items-center gap-1.5 text-[12px] font-medium text-foreground hover:bg-foreground/[.05] transition-colors"
               data-testid="button-presets"
             >
-              <Sparkles size={14} />
-              Presets
-              <ChevronDown size={12} className="text-muted-foreground" />
-            </Button>
+              <Layers size={13} strokeWidth={1.6} />
+              {props.activePresetId
+                ? (PRESETS.find((p) => p.id === props.activePresetId)?.name ?? "Presets")
+                : "Presets"}
+              <ChevronDown size={11} className="text-muted-foreground" />
+            </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-72">
-            <DropdownMenuLabel className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
+          <DropdownMenuContent align="end" className="w-[260px] p-1.5">
+            <div className="px-2.5 py-1.5 text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground font-semibold">
               Presets
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {PRESETS.map((p) => (
-              <DropdownMenuItem
-                key={p.id}
-                onSelect={() => props.onPreset(p)}
-                className="flex flex-col items-start gap-0.5 cursor-pointer py-2"
-                data-testid={`preset-${p.id}`}
-              >
-                <span className="text-[13px] font-medium text-foreground">{p.name}</span>
-                <span className="text-[11px] text-muted-foreground font-normal">
-                  {p.description}
-                </span>
-              </DropdownMenuItem>
-            ))}
+            </div>
+            {PRESETS.map((p) => {
+              const active = props.activePresetId === p.id;
+              return (
+                <DropdownMenuItem
+                  key={p.id}
+                  onSelect={() => props.onPreset(p)}
+                  className={
+                    "flex flex-col items-start gap-0.5 cursor-pointer py-2 px-2.5 rounded " +
+                    (active ? "bg-foreground/[.06]" : "")
+                  }
+                  data-testid={`preset-${p.id}`}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="text-[12.5px] font-medium text-foreground">{p.name}</span>
+                    {active ? (
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    ) : null}
+                  </div>
+                  <span className="text-[10.5px] text-muted-foreground font-normal leading-snug">
+                    {p.description}
+                  </span>
+                </DropdownMenuItem>
+              );
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={props.onShowMath}
-              className="h-9 w-9"
-              data-testid="button-math"
-            >
-              <Info size={16} />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Show the math behind this shape</TooltipContent>
-        </Tooltip>
+        <IconBtn label="Show the math" onClick={props.onShowMath} testId="button-math">
+          <Info size={14} strokeWidth={1.6} />
+        </IconBtn>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={props.onToggleDark}
-              className="h-9 w-9"
-              data-testid="button-theme"
-            >
-              {props.isDark ? <SunIcon size={16} /> : <MoonIcon size={16} />}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Toggle theme</TooltipContent>
-        </Tooltip>
+        <IconBtn label="Toggle theme" onClick={props.onToggleDark} testId="button-theme">
+          {props.isDark ? (
+            <SunIcon size={14} strokeWidth={1.6} />
+          ) : (
+            <MoonIcon size={14} strokeWidth={1.6} />
+          )}
+        </IconBtn>
 
-        <div className="h-5 w-px bg-border/80" />
+        <div className="h-4 w-px bg-border/80 mx-0.5" />
 
         <Popover>
           <PopoverTrigger asChild>
             <Button
               size="sm"
-              className="h-9 px-3.5 gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-[12px]"
+              className="h-8 px-3 gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-[12px] rounded-md shadow-sm"
               data-testid="button-export"
             >
-              <Download size={14} />
+              <Download size={13} strokeWidth={2} />
               Export
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="end" className="w-64 p-2">
-            <div className="px-2 py-1.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
+          <PopoverContent align="end" className="w-[240px] p-1.5">
+            <div className="px-2.5 py-1.5 text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground font-semibold">
               Export
             </div>
             <div className="space-y-0.5">
-              <button
-                onClick={props.onExportSvg}
-                className="w-full flex items-center justify-between gap-3 rounded-md px-2 py-2 text-[13px] hover-elevate active-elevate-2 transition-colors"
-                data-testid="export-svg"
-              >
-                <span className="font-medium text-foreground">SVG</span>
-                <span className="text-[10px] text-muted-foreground">vector · 900×560</span>
-              </button>
-              <button
-                onClick={props.onCopySvg}
-                className="w-full flex items-center justify-between gap-3 rounded-md px-2 py-2 text-[13px] hover-elevate active-elevate-2 transition-colors"
-                data-testid="copy-svg"
-              >
-                <span className="font-medium text-foreground">Copy SVG</span>
-                <span className="text-[10px] text-muted-foreground">to clipboard</span>
-              </button>
-              <div className="my-1 h-px bg-border" />
+              <ExportRow label="SVG" sub="vector · 900×560" onClick={props.onExportSvg} testId="export-svg" />
+              <ExportRow label="Copy SVG" sub="to clipboard" onClick={props.onCopySvg} testId="copy-svg" />
+              <div className="my-1 mx-2 h-px bg-border" />
               {([1, 2, 4] as const).map((s) => (
-                <button
+                <ExportRow
                   key={s}
+                  label={`PNG · ${s}×`}
+                  sub={`${900 * s} × ${560 * s}`}
                   onClick={() => props.onExportPng(s)}
-                  className="w-full flex items-center justify-between gap-3 rounded-md px-2 py-2 text-[13px] hover-elevate active-elevate-2 transition-colors"
-                  data-testid={`export-png-${s}x`}
-                >
-                  <span className="font-medium text-foreground">PNG · {s}×</span>
-                  <span className="text-[10px] text-muted-foreground num-tab">
-                    {900 * s} × {560 * s}
-                  </span>
-                </button>
+                  testId={`export-png-${s}x`}
+                />
               ))}
             </div>
           </PopoverContent>
         </Popover>
       </div>
     </header>
+  );
+}
+
+function IconBtn({
+  label,
+  onClick,
+  disabled,
+  testId,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  testId: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          onClick={onClick}
+          disabled={disabled}
+          data-testid={testId}
+          className="h-8 w-8 rounded-md flex items-center justify-center text-foreground/85 hover:bg-foreground/[.05] hover:text-foreground active:bg-foreground/[.08] transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+        >
+          {children}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+function ExportRow({
+  label,
+  sub,
+  onClick,
+  testId,
+}: {
+  label: string;
+  sub: string;
+  onClick: () => void;
+  testId: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center justify-between gap-3 rounded-md px-2.5 py-1.5 text-[12.5px] hover:bg-foreground/[.05] transition-colors"
+      data-testid={testId}
+    >
+      <span className="font-medium text-foreground">{label}</span>
+      <span className="text-[10px] text-muted-foreground num-tab">{sub}</span>
+    </button>
   );
 }

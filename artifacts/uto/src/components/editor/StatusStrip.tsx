@@ -7,18 +7,22 @@ interface Props {
 
 export function StatusStrip({ shape, chars, pathLen, ms }: Props) {
   return (
-    <footer className="h-8 flex-none border-t border-border/70 bg-card/40 px-4 flex items-center gap-5 text-[11px] num-tab text-muted-foreground">
-      <span className="font-medium text-foreground/80 capitalize">{shape}</span>
-      <span className="h-3 w-px bg-border" />
+    <footer className="h-7 flex-none border-t border-border/60 bg-background/85 backdrop-blur-xl px-4 flex items-center gap-4 text-[10.5px] num-tab text-muted-foreground/85">
+      <span className="font-medium text-foreground/85 capitalize">{shape}</span>
+      <Dot />
       <span>{chars.toLocaleString()} chars</span>
-      <span className="h-3 w-px bg-border" />
+      <Dot />
       <span>{pathLen.toLocaleString()} px path</span>
-      <span className="h-3 w-px bg-border" />
-      <span>render {ms.toFixed(1)} ms</span>
+      <Dot />
+      <span>{ms.toFixed(1)} ms</span>
       <span className="flex-1" />
-      <span className="text-[10px] uppercase tracking-[0.18em] font-medium">
-        Normalized · Resolution-independent · 8-pt grid
+      <span className="text-[9.5px] uppercase tracking-[0.22em] font-medium text-muted-foreground/65">
+        900 × 560 · 8-pt grid · resolution-independent
       </span>
     </footer>
   );
+}
+
+function Dot() {
+  return <span className="h-[3px] w-[3px] rounded-full bg-muted-foreground/40" />;
 }

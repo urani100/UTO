@@ -2,7 +2,7 @@ interface Props {
   size?: number;
 }
 
-export function UtoMark({ size = 28 }: Props) {
+export function UtoMark({ size = 26 }: Props) {
   return (
     <svg
       width={size}
@@ -24,15 +24,10 @@ export function UtoMark({ size = 28 }: Props) {
 export function UtoWordmark() {
   return (
     <div className="flex items-center gap-2.5 select-none">
-      <UtoMark size={26} />
-      <div className="flex items-baseline gap-1">
-        <span className="font-display text-[19px] font-semibold tracking-tight text-foreground leading-none">
-          UTO
-        </span>
-        <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
-          Studio
-        </span>
-      </div>
+      <UtoMark size={22} />
+      <span className="font-display text-[15px] font-semibold tracking-[-0.01em] text-foreground leading-none">
+        UTO
+      </span>
     </div>
   );
 }
