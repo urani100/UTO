@@ -106,10 +106,7 @@ export function Toolbar(props: Props) {
               className="h-8 px-2.5 rounded-md flex items-center gap-1.5 hover:bg-foreground/[.05] transition-colors"
               data-testid="button-form"
             >
-              <span
-                className="font-serif text-[20px] font-bold text-[#716e6e]"
-                style={{ letterSpacing: "1.1px" }}
-              >
+              <span className="text-[15px] font-semibold tracking-[-0.005em] text-[#716e6e]">
                 Form
               </span>
               <ChevronDown size={11} className="text-muted-foreground" />
