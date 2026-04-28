@@ -1,10 +1,10 @@
-import logoSrc from "@assets/UTO_-Logo_1777405679749.png";
+import logoSrc from "@assets/UTO_-Logo_1777406003925.png";
 
-const CONTENT_W = 638;
-const CONTENT_H = 212;
+const CONTENT_W = 631;
+const CONTENT_H = 207;
 const IMG_SIZE = 1080;
-const CONTENT_X = 238;
-const CONTENT_Y = 436;
+const CONTENT_X = 240;
+const CONTENT_Y = 437;
 
 interface MarkProps {
   height?: number;
