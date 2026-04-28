@@ -160,7 +160,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
               <ToggleGroupItem
                 key={v}
                 value={v}
-                className="h-6 px-2 text-[11px] font-serif rounded data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:shadow-sm"
+                className="h-7 px-2.5 text-[13px] font-serif rounded text-[#716e6e] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:shadow-sm"
                 data-testid={`case-${v}`}
               >
                 {l}
