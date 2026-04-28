@@ -141,7 +141,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
               <ToggleGroupItem
                 key={v}
                 value={v}
-                className="h-6 px-2 text-[11px] font-serif rounded data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:shadow-sm"
+                className="h-6 px-2 text-[11px] font-serif rounded data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:shadow-sm"
                 data-testid={`case-${v}`}
               >
                 {l}
@@ -155,7 +155,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
             className={
               "h-7 w-7 rounded text-[12.5px] italic font-serif transition-colors " +
               (state.italic
-                ? "bg-foreground text-background"
+                ? "bg-primary text-primary-foreground"
                 : "bg-foreground/[.04] text-foreground hover:bg-foreground/[.08]")
             }
           >
@@ -181,14 +181,14 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
                 >
                   <ToggleGroupItem
                     value="1"
-                    className="h-6 px-3 text-[11px] data-[state=on]:bg-foreground data-[state=on]:text-background"
+                    className="h-6 px-3 text-[11px] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                     data-testid="dir-fwd"
                   >
                     →
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="-1"
-                    className="h-6 px-3 text-[11px] data-[state=on]:bg-foreground data-[state=on]:text-background"
+                    className="h-6 px-3 text-[11px] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                     data-testid="dir-rev"
                   >
                     ←

@@ -105,9 +105,9 @@
   --popover-foreground: 260 18% 14%;
   --popover-border: 260 14% 88%;
 
-  /* Hot pink — the dot inside the O */
-  --primary: 326 82% 60%;
-  --primary-foreground: 0 0% 100%;
+  /* Sage green — primary accent */
+  --primary: 106 53% 71%;
+  --primary-foreground: 260 18% 14%;
 
   /* Aubergine purple — the T */
   --secondary: 280 38% 32%;
@@ -211,8 +211,8 @@
   --popover-foreground: 38 28% 92%;
   --popover-border: 260 14% 20%;
 
-  --primary: 326 82% 64%;
-  --primary-foreground: 0 0% 100%;
+  --primary: 106 50% 66%;
+  --primary-foreground: 260 18% 8%;
 
   --secondary: 280 30% 26%;
   --secondary-foreground: 38 28% 92%;

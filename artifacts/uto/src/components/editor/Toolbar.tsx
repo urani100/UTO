@@ -130,7 +130,7 @@ export function Toolbar(props: Props) {
                     className={
                       "h-7 px-2.5 rounded text-left text-[12px] font-medium transition-colors " +
                       (active
-                        ? "bg-foreground text-background"
+                        ? "bg-primary text-primary-foreground"
                         : "text-foreground hover:bg-foreground/[.05]")
                     }
                   >
