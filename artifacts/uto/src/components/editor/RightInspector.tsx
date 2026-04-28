@@ -77,13 +77,20 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
             Family
           </label>
           <Select value={state.fontFamily} onValueChange={(v) => onChange({ fontFamily: v })}>
-            <SelectTrigger className="h-8 text-[12px] bg-transparent border-border/70" data-testid="select-font">
+            <SelectTrigger
+              className="h-8 text-[12px] bg-transparent border-border/70"
+              style={{ letterSpacing: "1.1px" }}
+              data-testid="select-font"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {FONT_FAMILIES.map((f) => (
                 <SelectItem key={f.value} value={f.value}>
-                  <span style={{ fontFamily: f.value }} className="text-[13px]">
+                  <span
+                    style={{ fontFamily: f.value, letterSpacing: "1.1px" }}
+                    className="text-[13px]"
+                  >
                     {f.label}
                   </span>
                 </SelectItem>
