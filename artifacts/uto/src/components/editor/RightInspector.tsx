@@ -58,7 +58,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
 
       <div className="border-t border-border/55" />
 
-      <InspectorSection title="Text" hint="prose · font · weight">
+      <InspectorSection title="Text">
         <div className="space-y-1.5">
           <div className="flex items-baseline justify-between gap-2">
             <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium">
