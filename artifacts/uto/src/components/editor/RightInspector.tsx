@@ -248,20 +248,6 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
           step={0.1}
           onChange={(v) => onChange({ jitter: v })}
         />
-        <Row label="Silhouette">
-          <Switch
-            checked={state.showGuide}
-            onCheckedChange={(v) => onChange({ showGuide: v })}
-            data-testid="switch-guide"
-          />
-        </Row>
-        <Row label="Grid">
-          <Switch
-            checked={state.showGrid}
-            onCheckedChange={(v) => onChange({ showGrid: v })}
-            data-testid="switch-grid"
-          />
-        </Row>
       </InspectorSection>
 
       <InspectorSection title="Color" hint="ink · paper" defaultOpen>

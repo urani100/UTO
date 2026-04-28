@@ -41,12 +41,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
 
   return (
     <div className="relative w-full h-full flex items-center justify-center px-12 py-10">
-      {debounced.showGrid ? (
-        <div
-          className="absolute inset-0 grid-paper opacity-50 pointer-events-none"
-          aria-hidden
-        />
-      ) : null}
       <AnimatePresence mode="popLayout">
         <motion.div
           key={debounced.shape}
@@ -81,16 +75,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
               height={CANVAS_H}
               fill={debounced.backgroundMode === "transparent" ? "none" : debounced.backgroundColor}
             />
-
-            {debounced.showGuide && render.guide ? (
-              <path
-                d={render.guide}
-                fill="none"
-                stroke={debounced.textColor}
-                strokeOpacity={0.12}
-                strokeWidth={1}
-              />
-            ) : null}
 
             {render.decoration ? (
               <path

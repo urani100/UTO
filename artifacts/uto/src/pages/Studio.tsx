@@ -129,14 +129,11 @@ export default function Studio() {
       } else if (e.key === "]") {
         e.preventDefault();
         setShape(nextShape(state.shape, 1));
-      } else if (e.code === "Space") {
-        e.preventDefault();
-        updateState({ showGrid: !state.showGrid });
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [undoable, onExportSvg, setShape, state.shape, state.showGrid, updateState]);
+  }, [undoable, onExportSvg, setShape, state.shape, updateState]);
 
   return (
     <div className="h-full w-full flex flex-col bg-background overflow-hidden">
