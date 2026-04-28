@@ -20,7 +20,7 @@ export interface Preset {
 }
 
 const BAUDELAIRE =
-  "Remords posthume\nLorsque tu dormiras, ma belle ténébreuse,\nAu fond d'un monument construit en marbre noir,\nEt lorsque tu n'auras pour alcôve et manoir\nQu'un caveau pluvieux et qu'une fosse creuse;";
+  "Remords posthume\nLorsque tu dormiras, ma belle ténébreuse,\nAu fond d'un monument construit en marbre noir,\nEt lorsque tu n'auras pour alcôve et manoir\nQu'un caveau pluvieux et qu'une fosse creuse;\nQuand la pierre, opprimant ta poitrine peureuse\nEt tes flancs qu'assouplit un charmant nonchaloir,\nEmpêchera ton coeur de battre et de vouloir,\nEt tes pieds de courir leur course aventureuse,\nLe tombeau, confident de mon rêve infini\n(Car le tombeau toujours comprendra le poète),\nDurant ces grandes nuits d'où le somme est banni,\nTe dira: «Que vous sert, courtisane imparfaite,\nDe n'avoir pas connu ce que pleurent les morts?»\n— Et le ver rongera ta peau comme un remords.\n— Charles Baudelaire";
 
 const DICKINSON = BAUDELAIRE;
 const RILKE = BAUDELAIRE;
