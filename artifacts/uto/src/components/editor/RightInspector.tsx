@@ -188,6 +188,33 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
       <InspectorSection title="Shape">
         {meta.params.map((p) => {
           const value = state.shapeParams[state.shape][p.key] ?? p.min;
+          if (p.options && p.options.length > 0) {
+            return (
+              <div key={p.key} className="space-y-1.5">
+                <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium">
+                  {p.label}
+                </label>
+                <ToggleGroup
+                  type="single"
+                  value={String(value)}
+                  onValueChange={(v) => v && onShapeParam(p.key, parseFloat(v))}
+                  className="bg-foreground/[.04] rounded-md p-0.5 inline-flex"
+                >
+                  {p.options.map((opt) => (
+                    <ToggleGroupItem
+                      key={opt.value}
+                      value={String(opt.value)}
+                      className="h-6 px-3 text-[12px] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                      data-testid={`${p.key}-${opt.value}`}
+                      aria-label={opt.aria ?? opt.label}
+                    >
+                      {opt.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </div>
+            );
+          }
           if (p.key === "direction" || p.key === "fadeDirection") {
             const isFade = p.key === "fadeDirection";
             const labels = isFade

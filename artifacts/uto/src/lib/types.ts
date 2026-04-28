@@ -30,6 +30,8 @@ export interface ShapeParam {
   max: number;
   step: number;
   unit?: string;
+  /** When present, the inspector renders a segmented toggle group instead of a slider. */
+  options?: Array<{ value: number; label: string; aria?: string }>;
 }
 
 export interface CanvasState {
@@ -82,6 +84,10 @@ export interface RenderedLine {
   y: number;
   width: number;
   fontScale: number;
+  /** SVG textAnchor for the line. Defaults to "middle". */
+  anchor?: "start" | "middle" | "end";
+  /** Rotation in degrees applied around (x, y). */
+  rotation?: number;
 }
 
 export interface ShapeRender {

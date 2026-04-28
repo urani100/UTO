@@ -136,7 +136,17 @@ export const PRESETS: Preset[] = [
     letterSpacing: 0.4,
     textColor: "#1c1824",
     backgroundColor: "#eeece7",
-    shapeOverrides: { phase: 0.6, radius: 230, lineHeight: 1.18 },
+    shapeOverrides: {
+      radius: 220,
+      phase: 0.55,
+      curvature: 1,
+      crescentDir: 1,
+      tilt: 0,
+      wrap: 1,
+      alignment: 1,
+      lineHeight: 1.05,
+      padding: 6,
+    },
   },
   {
     id: "murmuration",

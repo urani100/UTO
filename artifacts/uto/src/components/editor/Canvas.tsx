@@ -131,7 +131,7 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                   key={`line-${idx}`}
                   x={line.x}
                   y={line.y}
-                  textAnchor="middle"
+                  textAnchor={line.anchor ?? "middle"}
                   dominantBaseline="middle"
                   fill={debounced.textColor}
                   fontFamily={debounced.fontFamily}
@@ -139,6 +139,11 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                   fontWeight={debounced.weight}
                   fontStyle={debounced.italic ? "italic" : "normal"}
                   letterSpacing={debounced.letterSpacing}
+                  transform={
+                    line.rotation
+                      ? `rotate(${line.rotation} ${line.x} ${line.y})`
+                      : undefined
+                  }
                 >
                   {applyCase(line.text, debounced.textCase)}
                 </text>
