@@ -1,27 +1,28 @@
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
+const SAGE = "#a5dd8f";
+const SAGE_HOVER = "#94cf7d";
+const TEXT = "#716e6e";
+const TEXT_STRONG = "#3f3d3d";
+
 export const clerkAppearance = {
   cssLayerName: "clerk",
   options: {
-    logoPlacement: "inside",
-    logoLinkUrl: basePath || "/",
-    logoImageUrl:
-      typeof window !== "undefined"
-        ? `${window.location.origin}${basePath}/logo.svg`
-        : "/logo.svg",
+    logoPlacement: "none" as const,
     socialButtonsPlacement: "top",
     socialButtonsVariant: "blockButton",
   },
   variables: {
-    colorPrimary: "#7e45ab",
-    colorForeground: "#1c1824",
-    colorMutedForeground: "#6b6877",
+    colorPrimary: SAGE,
+    colorForeground: TEXT_STRONG,
+    colorMutedForeground: TEXT,
     colorDanger: "#c0392b",
     colorBackground: "#fbf8f1",
     colorInput: "#ffffff",
-    colorInputForeground: "#1c1824",
+    colorInputForeground: TEXT_STRONG,
     colorNeutral: "#d8d4cc",
-    fontFamily: '"Inter", system-ui, sans-serif',
+    fontFamily:
+      '"EB Garamond", "Cormorant Garamond", "Georgia", serif',
     borderRadius: "10px",
   },
   elements: {
@@ -33,40 +34,40 @@ export const clerkAppearance = {
       "!shadow-none !border-0 !bg-transparent !rounded-none border-t border-[#ece8de]",
     main: "gap-4",
 
-    logoBox: "flex justify-center mb-2",
-    logoImage: "h-8 w-auto",
-
     headerTitle:
-      "text-[20px] font-semibold tracking-tight text-[#1c1824] text-center",
-    headerSubtitle: "text-[13px] text-[#6b6877] text-center",
+      "text-[24px] font-medium text-[#3f3d3d] text-center [letter-spacing:1.10px]",
+    headerSubtitle:
+      "text-[14px] text-[#716e6e] text-center [letter-spacing:1.10px]",
 
     socialButtonsBlockButton:
-      "border border-[#d8d4cc] bg-white text-[#1c1824] hover:bg-[#f3efe6] rounded-lg h-10",
-    socialButtonsBlockButtonText: "text-[13px] font-medium text-[#1c1824]",
+      "border border-[#94cf7d] bg-[#a5dd8f] hover:bg-[#94cf7d] !text-[#716e6e] rounded-lg h-11 [letter-spacing:1.10px]",
+    socialButtonsBlockButtonText:
+      "text-[14px] font-medium !text-[#716e6e] [letter-spacing:1.10px]",
 
     dividerLine: "bg-[#e3dfd5]",
     dividerText:
-      "text-[10.5px] uppercase tracking-[0.18em] text-[#8a8694] font-semibold px-2",
+      "text-[11px] uppercase tracking-[0.18em] text-[#716e6e] font-medium px-2",
 
     formFieldLabel:
-      "text-[11.5px] font-medium uppercase tracking-[0.12em] text-[#6b6877]",
+      "text-[12px] font-medium uppercase text-[#716e6e] [letter-spacing:1.10px]",
     formFieldInput:
-      "bg-white border border-[#d8d4cc] rounded-lg h-10 px-3 text-[13.5px] text-[#1c1824] focus:border-[#7e45ab] focus:ring-2 focus:ring-[#7e45ab]/20 outline-none",
+      "bg-white border border-[#d8d4cc] rounded-lg h-11 px-3 text-[15px] text-[#3f3d3d] focus:border-[#a5dd8f] focus:ring-2 focus:ring-[#a5dd8f]/30 outline-none [letter-spacing:1.10px]",
     formFieldRow: "gap-1.5",
-    formFieldSuccessText: "text-[12px] text-[#3a7a3a]",
+    formFieldSuccessText: "text-[13px] text-[#3a7a3a]",
     otpCodeFieldInput:
-      "bg-white border border-[#d8d4cc] rounded-lg text-[#1c1824] focus:border-[#7e45ab]",
+      "bg-white border border-[#d8d4cc] rounded-lg text-[#3f3d3d] focus:border-[#a5dd8f]",
 
     formButtonPrimary:
-      "bg-[#7e45ab] hover:bg-[#6a3a90] text-white rounded-lg h-10 text-[13px] font-semibold tracking-wide",
+      "bg-[#a5dd8f] hover:bg-[#94cf7d] !text-[#716e6e] rounded-lg h-11 text-[15px] font-medium [letter-spacing:1.10px]",
 
     footerAction: "text-center py-3",
-    footerActionText: "text-[12.5px] text-[#6b6877]",
+    footerActionText: "text-[13px] text-[#716e6e] [letter-spacing:1.10px]",
     footerActionLink:
-      "text-[12.5px] font-medium text-[#7e45ab] hover:text-[#6a3a90] underline-offset-2",
+      "text-[13px] font-medium text-[#7e45ab] hover:text-[#6a3a90] underline-offset-2 [letter-spacing:1.10px]",
 
-    identityPreviewEditButton: "text-[#7e45ab] hover:text-[#6a3a90]",
+    identityPreviewEditButton:
+      "text-[#7e45ab] hover:text-[#6a3a90] [letter-spacing:1.10px]",
     alert: "rounded-lg border border-[#e6cccc] bg-[#fbf2f2] px-3 py-2",
-    alertText: "text-[12.5px] text-[#7a2a2a]",
+    alertText: "text-[13px] text-[#7a2a2a] [letter-spacing:1.10px]",
   },
 };
