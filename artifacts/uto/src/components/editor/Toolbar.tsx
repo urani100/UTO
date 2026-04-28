@@ -9,16 +9,6 @@ import {
   ChevronDown,
   Sun as SunIcon,
   Moon as MoonIcon,
-  Spline,
-  Infinity as InfinityIcon,
-  Radio,
-  Heart,
-  Star,
-  Sun as SunOutline,
-  Moon as MoonOutline,
-  Bird,
-  Music2,
-  Wind,
   Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -63,19 +53,6 @@ interface Props {
   onToggleDark: () => void;
   undoDepth: number;
 }
-
-const SHAPE_ICONS: Record<ShapeId, typeof Spline> = {
-  spiral: Spline,
-  fibonacci: InfinityIcon,
-  echo: Radio,
-  heart: Heart,
-  star: Star,
-  sun: SunOutline,
-  moon: MoonOutline,
-  bird: Bird,
-  cello: Music2,
-  mongolfiere: Wind,
-};
 
 export function Toolbar(props: Props) {
   const [editingName, setEditingName] = useState(false);
@@ -163,36 +140,31 @@ export function Toolbar(props: Props) {
                   {SHAPE_LIST.length} shapes · [ ]
                 </span>
               </div>
-              <div className="grid grid-cols-5 gap-0.5 px-1 pb-1">
+              <div className="grid grid-cols-2 gap-0.5 px-1 pb-1">
                 {SHAPE_LIST.map((meta) => {
-                  const Icon = SHAPE_ICONS[meta.id];
                   const active = meta.id === props.activeShape;
                   return (
-                    <Tooltip key={meta.id}>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={() => props.onPickShape(meta.id)}
-                          data-testid={`shape-${meta.id}`}
-                          className={
-                            "h-12 rounded-md flex flex-col items-center justify-center gap-0.5 transition-colors " +
-                            (active
-                              ? "bg-foreground text-background"
-                              : "text-muted-foreground hover:text-foreground hover:bg-foreground/[.05]")
-                          }
-                        >
-                          <Icon size={15} strokeWidth={active ? 2 : 1.6} />
-                          <span className="text-[8.5px] uppercase tracking-[0.12em] font-medium leading-none">
-                            {meta.name.slice(0, 3)}
-                          </span>
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" sideOffset={6} className="max-w-[240px]">
-                        <div className="font-medium text-[12px]">{meta.name}</div>
-                        <div className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
-                          {meta.blurb}
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
+                    <button
+                      key={meta.id}
+                      onClick={() => props.onPickShape(meta.id)}
+                      data-testid={`shape-${meta.id}`}
+                      className={
+                        "h-7 px-2.5 rounded text-left text-[12px] font-medium transition-colors flex items-center justify-between gap-2 " +
+                        (active
+                          ? "bg-foreground text-background"
+                          : "text-foreground hover:bg-foreground/[.05]")
+                      }
+                    >
+                      <span>{meta.name}</span>
+                      <span
+                        className={
+                          "text-[9px] uppercase tracking-[0.16em] num-tab " +
+                          (active ? "text-background/60" : "text-muted-foreground/60")
+                        }
+                      >
+                        {meta.formula}
+                      </span>
+                    </button>
                   );
                 })}
               </div>
