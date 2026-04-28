@@ -8,7 +8,6 @@ import { useUndoable } from "@/hooks/useUndoable";
 import { useToast } from "@/hooks/use-toast";
 import { INITIAL_STATE } from "@/lib/initialState";
 import type { CanvasState, ShapeId } from "@/lib/types";
-import { applyPreset, type Preset } from "@/lib/presets";
 import { nextShape, randomizeState } from "@/lib/randomize";
 import {
   copySvgToClipboard,
@@ -34,7 +33,6 @@ export default function Studio() {
   const [meta, setMeta] = useState({ chars: 0, pathLen: 0, ms: 0 });
   const [showMath, setShowMath] = useState(false);
   const [isDark, setIsDark] = useState(false);
-  const [activePresetId, setActivePresetId] = useState<string | null>("cathedral");
   const svgRef = useRef<SVGSVGElement | null>(null);
   const { toast } = useToast();
 
@@ -74,22 +72,8 @@ export default function Studio() {
     [undoable]
   );
 
-  const onPreset = useCallback(
-    (p: Preset) => {
-      undoable.set((s) => applyPreset(s, p));
-      setProjectName(`Untitled — ${p.name}`);
-      setActivePresetId(p.id);
-      toast({
-        title: p.name,
-        description: p.description,
-      });
-    },
-    [undoable, toast]
-  );
-
   const onRandomize = useCallback(() => {
     undoable.set((s) => randomizeState(s));
-    setActivePresetId(null);
   }, [undoable]);
 
   const onExportSvg = useCallback(() => {
@@ -173,8 +157,6 @@ export default function Studio() {
         onUndo={undoable.undo}
         onRedo={undoable.redo}
         onRandomize={onRandomize}
-        onPreset={onPreset}
-        activePresetId={activePresetId}
         activeShape={state.shape}
         onPickShape={setShape}
         onExportSvg={onExportSvg}

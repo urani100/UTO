@@ -9,13 +9,11 @@ import {
   ChevronDown,
   Sun as SunIcon,
   Moon as MoonIcon,
-  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -29,7 +27,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { UtoWordmark } from "./Logo";
-import { PRESETS, type Preset } from "@/lib/presets";
 import { SHAPE_LIST, SHAPE_META } from "@/lib/shapes";
 import type { ShapeId } from "@/lib/types";
 
@@ -41,8 +38,6 @@ interface Props {
   onUndo: () => void;
   onRedo: () => void;
   onRandomize: () => void;
-  onPreset: (p: Preset) => void;
-  activePresetId: string | null;
   activeShape: ShapeId;
   onPickShape: (id: ShapeId) => void;
   onExportSvg: () => void;
@@ -56,11 +51,7 @@ interface Props {
 
 export function Toolbar(props: Props) {
   const [editingName, setEditingName] = useState(false);
-  const activePreset = props.activePresetId
-    ? PRESETS.find((p) => p.id === props.activePresetId)
-    : null;
-  const activeShapeMeta = SHAPE_META[props.activeShape];
-  const triggerLabel = activePreset?.name ?? activeShapeMeta.name;
+  const triggerLabel = SHAPE_META[props.activeShape].name;
 
   return (
     <header className="h-[48px] flex-none border-b border-border/60 bg-background/85 backdrop-blur-xl z-40 relative">
@@ -123,89 +114,41 @@ export function Toolbar(props: Props) {
           <DropdownMenuTrigger asChild>
             <button
               className="h-8 px-2.5 rounded-md flex items-center gap-1.5 text-[12px] font-medium text-foreground hover:bg-foreground/[.05] transition-colors min-w-[120px]"
-              data-testid="button-presets"
+              data-testid="button-form"
             >
               <Layers size={13} strokeWidth={1.6} />
               <span className="truncate">{triggerLabel}</span>
               <ChevronDown size={11} className="text-muted-foreground ml-auto" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[300px] p-0">
-            <div className="p-1.5">
-              <div className="px-2.5 py-1.5 flex items-baseline justify-between">
-                <span className="text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground font-semibold">
-                  Form
-                </span>
-                <span className="text-[10px] text-muted-foreground/60 num-tab">
-                  {SHAPE_LIST.length} shapes · [ ]
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-0.5 px-1 pb-1">
-                {SHAPE_LIST.map((meta) => {
-                  const active = meta.id === props.activeShape;
-                  return (
-                    <button
-                      key={meta.id}
-                      onClick={() => props.onPickShape(meta.id)}
-                      data-testid={`shape-${meta.id}`}
-                      className={
-                        "h-7 px-2.5 rounded text-left text-[12px] font-medium transition-colors " +
-                        (active
-                          ? "bg-foreground text-background"
-                          : "text-foreground hover:bg-foreground/[.05]")
-                      }
-                    >
-                      {meta.name}
-                    </button>
-                  );
-                })}
-              </div>
+          <DropdownMenuContent align="end" className="w-[260px] p-1.5">
+            <div className="px-2.5 py-1.5 flex items-baseline justify-between">
+              <span className="text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground font-semibold">
+                Form
+              </span>
+              <span className="text-[10px] text-muted-foreground/60 num-tab">
+                {SHAPE_LIST.length} · [ ]
+              </span>
             </div>
-
-            <div className="h-px bg-border/70 mx-1.5" />
-
-            <div className="p-1.5">
-              <div className="px-2.5 py-1.5 flex items-baseline justify-between">
-                <span className="text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground font-semibold">
-                  Preset
-                </span>
-                <span className="text-[10px] text-muted-foreground/60 num-tab">
-                  {PRESETS.length} compositions
-                </span>
-              </div>
-              <div className="max-h-[260px] overflow-y-auto nice-scroll">
-                {PRESETS.map((p) => {
-                  const active = props.activePresetId === p.id;
-                  return (
-                    <DropdownMenuItem
-                      key={p.id}
-                      onSelect={() => props.onPreset(p)}
-                      className={
-                        "flex items-start gap-2.5 cursor-pointer py-1.5 px-2.5 rounded " +
-                        (active ? "bg-foreground/[.06]" : "")
-                      }
-                      data-testid={`preset-${p.id}`}
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[12.5px] font-medium text-foreground truncate">
-                            {p.name}
-                          </span>
-                          <span className="text-[9.5px] text-muted-foreground/65 uppercase tracking-[0.16em] font-medium">
-                            {p.shape}
-                          </span>
-                        </div>
-                        <div className="text-[10.5px] text-muted-foreground font-normal leading-snug mt-0.5 truncate">
-                          {p.description}
-                        </div>
-                      </div>
-                      {active ? (
-                        <Check size={12} className="text-foreground/70 mt-1 flex-none" />
-                      ) : null}
-                    </DropdownMenuItem>
-                  );
-                })}
-              </div>
+            <div className="grid grid-cols-2 gap-0.5 px-1 pb-1">
+              {SHAPE_LIST.map((meta) => {
+                const active = meta.id === props.activeShape;
+                return (
+                  <button
+                    key={meta.id}
+                    onClick={() => props.onPickShape(meta.id)}
+                    data-testid={`shape-${meta.id}`}
+                    className={
+                      "h-7 px-2.5 rounded text-left text-[12px] font-medium transition-colors " +
+                      (active
+                        ? "bg-foreground text-background"
+                        : "text-foreground hover:bg-foreground/[.05]")
+                    }
+                  >
+                    {meta.name}
+                  </button>
+                );
+              })}
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
