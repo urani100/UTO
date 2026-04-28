@@ -29,28 +29,6 @@ const FONT_FAMILIES = [
   { label: "JetBrains Mono", value: '"JetBrains Mono", monospace' },
 ];
 
-const SWATCHES = [
-  "#1c1824",
-  "#2d1f3d",
-  "#3a1640",
-  "#42234e",
-  "#0f1a1a",
-  "#5b3a1a",
-  "#0c3b27",
-  "#1a3852",
-];
-
-const BG_SWATCHES = [
-  "#f6f1e7",
-  "#fbf6ec",
-  "#f0eadb",
-  "#eee7d4",
-  "#e5dec9",
-  "#1c1824",
-  "#0f0d14",
-  "#2a1f30",
-];
-
 export function RightInspector({ state, onChange, onShapeParam }: Props) {
   const meta = SHAPE_META[state.shape];
 
@@ -299,44 +277,32 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
           <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium block">
             Ink
           </label>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {SWATCHES.map((c) => (
-              <Swatch
-                key={c}
-                color={c}
-                selected={state.textColor === c}
-                onClick={() => onChange({ textColor: c })}
-                testId={`ink-${c}`}
-              />
-            ))}
+          <div className="flex items-center gap-2">
             <ColorEyedrop value={state.textColor} onChange={(c) => onChange({ textColor: c })} testId="ink-picker" />
+            <input
+              type="text"
+              value={state.textColor}
+              onChange={(e) => onChange({ textColor: e.target.value })}
+              className="flex-1 text-[11px] num-tab font-mono bg-foreground/[.03] px-2 py-1 rounded border border-transparent hover:border-border focus:border-foreground/40 focus:outline-none"
+            />
           </div>
-          <input
-            type="text"
-            value={state.textColor}
-            onChange={(e) => onChange({ textColor: e.target.value })}
-            className="w-full text-[11px] num-tab font-mono bg-foreground/[.03] px-2 py-1 rounded border border-transparent hover:border-border focus:border-foreground/40 focus:outline-none"
-          />
         </div>
 
         <div className="space-y-2">
           <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium block">
             Paper
           </label>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {BG_SWATCHES.map((c) => (
-              <Swatch
-                key={c}
-                color={c}
-                selected={state.backgroundColor === c && state.backgroundMode === "solid"}
-                onClick={() => onChange({ backgroundColor: c, backgroundMode: "solid" })}
-                testId={`paper-${c}`}
-              />
-            ))}
+          <div className="flex items-center gap-2">
             <ColorEyedrop
               value={state.backgroundColor}
               onChange={(c) => onChange({ backgroundColor: c, backgroundMode: "solid" })}
               testId="paper-picker"
+            />
+            <input
+              type="text"
+              value={state.backgroundColor}
+              onChange={(e) => onChange({ backgroundColor: e.target.value, backgroundMode: "solid" })}
+              className="flex-1 text-[11px] num-tab font-mono bg-foreground/[.03] px-2 py-1 rounded border border-transparent hover:border-border focus:border-foreground/40 focus:outline-none"
             />
           </div>
           <Row label="Transparent paper">
@@ -360,32 +326,6 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
       </label>
       {children}
     </div>
-  );
-}
-
-function Swatch({
-  color,
-  selected,
-  onClick,
-  testId,
-}: {
-  color: string;
-  selected: boolean;
-  onClick: () => void;
-  testId: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      data-testid={testId}
-      className={
-        "h-5 w-5 rounded-full transition-transform hover:scale-115 relative " +
-        (selected ? "ring-[1.5px] ring-offset-2 ring-offset-background ring-foreground/80" : "ring-1 ring-foreground/10")
-      }
-      style={{ background: color }}
-      aria-label={color}
-    />
   );
 }
 
