@@ -4,6 +4,7 @@ import {
   Redo2,
   Download,
   ChevronDown,
+  Moon as MoonIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -197,12 +198,11 @@ export function Toolbar(props: Props) {
           type="button"
           onClick={props.onToggleDark}
           aria-pressed={props.isDark}
-          className="h-8 px-2.5 rounded-md flex items-center hover:bg-foreground/[.05] transition-colors"
+          aria-label="Toggle theme"
+          className="h-8 w-8 rounded-md flex items-center justify-center text-[#716e6e] hover:bg-foreground/[.05] transition-colors"
           data-testid="button-theme"
         >
-          <span className={LABEL_CLASS} style={LABEL_STYLE}>
-            Toggle Theme
-          </span>
+          <MoonIcon size={16} strokeWidth={1.6} />
         </button>
 
         <div className="h-4 w-px bg-border/80 mx-0.5" />
