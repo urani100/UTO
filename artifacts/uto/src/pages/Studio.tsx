@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Toolbar } from "@/components/editor/Toolbar";
-import { LeftRail } from "@/components/editor/LeftRail";
 import { Canvas } from "@/components/editor/Canvas";
 import { RightInspector } from "@/components/editor/RightInspector";
 import { StatusStrip } from "@/components/editor/StatusStrip";
@@ -176,6 +175,8 @@ export default function Studio() {
         onRandomize={onRandomize}
         onPreset={onPreset}
         activePresetId={activePresetId}
+        activeShape={state.shape}
+        onPickShape={setShape}
         onExportSvg={onExportSvg}
         onCopySvg={onCopySvg}
         onExportPng={onExportPng}
@@ -185,7 +186,6 @@ export default function Studio() {
         undoDepth={undoable.depth}
       />
       <div className="flex-1 flex min-h-0">
-        <LeftRail active={state.shape} onPick={setShape} />
         <main className="flex-1 min-w-0 flex items-center justify-center relative bg-stage">
           <Canvas state={state} ref={svgRef} onMetaUpdate={setMeta} />
         </main>
