@@ -3,6 +3,8 @@ import { useCallback, useRef, useState } from "react";
 interface UndoableApi<T> {
   state: T;
   set: (next: T | ((prev: T) => T), opts?: { coalesce?: boolean }) => void;
+  /** Replace state entirely and clear undo/redo history (e.g. when loading a file). */
+  replace: (next: T) => void;
   undo: () => void;
   redo: () => void;
   canUndo: boolean;
@@ -37,6 +39,13 @@ export function useUndoable<T>(initial: T): UndoableApi<T> {
     });
   }, []);
 
+  const replace = useCallback((next: T) => {
+    past.current = [];
+    future.current = [];
+    lastPushTs.current = 0;
+    setState(next);
+  }, []);
+
   const undo = useCallback(() => {
     setState((cur) => {
       const prev = past.current.pop();
@@ -58,6 +67,7 @@ export function useUndoable<T>(initial: T): UndoableApi<T> {
   return {
     state,
     set,
+    replace,
     undo,
     redo,
     canUndo: past.current.length > 0,

@@ -6,6 +6,7 @@ import {
   ChevronDown,
   Sun as SunIcon,
   Moon as MoonIcon,
+  Library,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +25,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { UtoWordmark } from "./Logo";
-import { SHAPE_LIST, SHAPE_META } from "@/lib/shapes";
+import { AccountChip } from "./AccountChip";
+import { SaveControls, type SaveStatus } from "./SaveControls";
+import { SHAPE_LIST } from "@/lib/shapes";
 import type { ShapeId } from "@/lib/types";
 
 interface Props {
@@ -42,6 +45,9 @@ interface Props {
   isDark: boolean;
   onToggleDark: () => void;
   undoDepth: number;
+  saveStatus: SaveStatus;
+  onSave: () => void;
+  onOpenLibrary: () => void;
 }
 
 export function Toolbar(props: Props) {
@@ -157,6 +163,23 @@ export function Toolbar(props: Props) {
 
         <div className="h-4 w-px bg-border/80 mx-0.5" />
 
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={props.onOpenLibrary}
+              className="h-8 px-2.5 rounded-md flex items-center gap-1.5 text-[12px] font-medium text-foreground/85 hover:bg-foreground/[.05] hover:text-foreground transition-colors"
+              data-testid="button-library"
+            >
+              <Library size={13} strokeWidth={1.7} />
+              Library
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Library</TooltipContent>
+        </Tooltip>
+
+        <SaveControls status={props.saveStatus} onSave={props.onSave} />
+
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -188,6 +211,10 @@ export function Toolbar(props: Props) {
             </div>
           </PopoverContent>
         </Popover>
+
+        <div className="h-4 w-px bg-border/80 mx-0.5" />
+
+        <AccountChip />
       </div>
     </header>
   );
@@ -214,7 +241,7 @@ function IconBtn({
           onClick={onClick}
           disabled={disabled}
           data-testid={testId}
-          className="h-8 w-8 rounded-md flex items-center justify-center text-foreground/85 hover:bg-foreground/[.05] hover:text-foreground active:bg-foreground/[.08] transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+          className="h-8 w-8 rounded-md flex items-center justify-center text-foreground/85 hover:bg-foreground/[.05] hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
         >
           {children}
         </button>

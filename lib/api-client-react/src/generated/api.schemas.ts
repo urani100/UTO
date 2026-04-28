@@ -8,3 +8,67 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface ErrorResponse {
+  error: string;
+}
+
+export interface DeleteResult {
+  ok: boolean;
+}
+
+export interface User {
+  id: string;
+  email?: string | null;
+  displayName?: string | null;
+}
+
+export interface MeResponse {
+  user: User | null;
+}
+
+export interface WorkSummary {
+  id: string;
+  name: string;
+  shape: string;
+  updatedAt: string;
+  createdAt: string;
+}
+
+export type WorkState = { [key: string]: unknown };
+
+export interface Work {
+  id: string;
+  name: string;
+  shape: string;
+  state: WorkState;
+  schemaVer: number;
+  updatedAt: string;
+  createdAt: string;
+}
+
+export type CreateWorkInputState = { [key: string]: unknown };
+
+export interface CreateWorkInput {
+  name: string;
+  shape: string;
+  state: CreateWorkInputState;
+}
+
+export type UpdateWorkInputState = { [key: string]: unknown };
+
+export interface UpdateWorkInput {
+  name: string;
+  shape: string;
+  state: UpdateWorkInputState;
+}
+
+/**
+ * Not signed in
+ */
+export type UnauthorizedResponse = ErrorResponse;
+
+/**
+ * Not found
+ */
+export type NotFoundResponse = ErrorResponse;

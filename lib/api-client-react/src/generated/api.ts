@@ -5,18 +5,31 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus } from "./api.schemas";
+import type {
+  CreateWorkInput,
+  DeleteResult,
+  HealthStatus,
+  MeResponse,
+  NotFoundResponse,
+  UnauthorizedResponse,
+  UpdateWorkInput,
+  Work,
+  WorkSummary,
+} from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
-import type { ErrorType } from "../custom-fetch";
+import type { ErrorType, BodyType } from "../custom-fetch";
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -99,3 +112,475 @@ export function useHealthCheck<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * Returns the currently authenticated user, or null when signed out.
+ * @summary Current user
+ */
+export const getGetMeUrl = () => {
+  return `/api/me`;
+};
+
+export const getMe = async (options?: RequestInit): Promise<MeResponse> => {
+  return customFetch<MeResponse>(getGetMeUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetMeQueryKey = () => {
+  return [`/api/me`] as const;
+};
+
+export const getGetMeQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMe>>> = ({
+    signal,
+  }) => getMe({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMe>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMeQueryResult = NonNullable<Awaited<ReturnType<typeof getMe>>>;
+export type GetMeQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Current user
+ */
+
+export function useGetMe<
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMeQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns the current user's works, ordered by most recently modified.
+ * @summary List my works
+ */
+export const getListWorksUrl = () => {
+  return `/api/works`;
+};
+
+export const listWorks = async (
+  options?: RequestInit,
+): Promise<WorkSummary[]> => {
+  return customFetch<WorkSummary[]>(getListWorksUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListWorksQueryKey = () => {
+  return [`/api/works`] as const;
+};
+
+export const getListWorksQueryOptions = <
+  TData = Awaited<ReturnType<typeof listWorks>>,
+  TError = ErrorType<UnauthorizedResponse>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof listWorks>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListWorksQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listWorks>>> = ({
+    signal,
+  }) => listWorks({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listWorks>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListWorksQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listWorks>>
+>;
+export type ListWorksQueryError = ErrorType<UnauthorizedResponse>;
+
+/**
+ * @summary List my works
+ */
+
+export function useListWorks<
+  TData = Awaited<ReturnType<typeof listWorks>>,
+  TError = ErrorType<UnauthorizedResponse>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof listWorks>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListWorksQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Create a new work
+ */
+export const getCreateWorkUrl = () => {
+  return `/api/works`;
+};
+
+export const createWork = async (
+  createWorkInput: CreateWorkInput,
+  options?: RequestInit,
+): Promise<Work> => {
+  return customFetch<Work>(getCreateWorkUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createWorkInput),
+  });
+};
+
+export const getCreateWorkMutationOptions = <
+  TError = ErrorType<UnauthorizedResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createWork>>,
+    TError,
+    { data: BodyType<CreateWorkInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createWork>>,
+  TError,
+  { data: BodyType<CreateWorkInput> },
+  TContext
+> => {
+  const mutationKey = ["createWork"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createWork>>,
+    { data: BodyType<CreateWorkInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createWork(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateWorkMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createWork>>
+>;
+export type CreateWorkMutationBody = BodyType<CreateWorkInput>;
+export type CreateWorkMutationError = ErrorType<UnauthorizedResponse>;
+
+/**
+ * @summary Create a new work
+ */
+export const useCreateWork = <
+  TError = ErrorType<UnauthorizedResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createWork>>,
+    TError,
+    { data: BodyType<CreateWorkInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createWork>>,
+  TError,
+  { data: BodyType<CreateWorkInput> },
+  TContext
+> => {
+  return useMutation(getCreateWorkMutationOptions(options));
+};
+
+/**
+ * @summary Get one work
+ */
+export const getGetWorkUrl = (id: string) => {
+  return `/api/works/${id}`;
+};
+
+export const getWork = async (
+  id: string,
+  options?: RequestInit,
+): Promise<Work> => {
+  return customFetch<Work>(getGetWorkUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetWorkQueryKey = (id: string) => {
+  return [`/api/works/${id}`] as const;
+};
+
+export const getGetWorkQueryOptions = <
+  TData = Awaited<ReturnType<typeof getWork>>,
+  TError = ErrorType<UnauthorizedResponse | NotFoundResponse>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getWork>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetWorkQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getWork>>> = ({
+    signal,
+  }) => getWork(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getWork>>, TError, TData> & {
+    queryKey: QueryKey;
+  };
+};
+
+export type GetWorkQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getWork>>
+>;
+export type GetWorkQueryError = ErrorType<
+  UnauthorizedResponse | NotFoundResponse
+>;
+
+/**
+ * @summary Get one work
+ */
+
+export function useGetWork<
+  TData = Awaited<ReturnType<typeof getWork>>,
+  TError = ErrorType<UnauthorizedResponse | NotFoundResponse>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getWork>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetWorkQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Update a work
+ */
+export const getUpdateWorkUrl = (id: string) => {
+  return `/api/works/${id}`;
+};
+
+export const updateWork = async (
+  id: string,
+  updateWorkInput: UpdateWorkInput,
+  options?: RequestInit,
+): Promise<Work> => {
+  return customFetch<Work>(getUpdateWorkUrl(id), {
+    ...options,
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateWorkInput),
+  });
+};
+
+export const getUpdateWorkMutationOptions = <
+  TError = ErrorType<UnauthorizedResponse | NotFoundResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateWork>>,
+    TError,
+    { id: string; data: BodyType<UpdateWorkInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateWork>>,
+  TError,
+  { id: string; data: BodyType<UpdateWorkInput> },
+  TContext
+> => {
+  const mutationKey = ["updateWork"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateWork>>,
+    { id: string; data: BodyType<UpdateWorkInput> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateWork(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateWorkMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateWork>>
+>;
+export type UpdateWorkMutationBody = BodyType<UpdateWorkInput>;
+export type UpdateWorkMutationError = ErrorType<
+  UnauthorizedResponse | NotFoundResponse
+>;
+
+/**
+ * @summary Update a work
+ */
+export const useUpdateWork = <
+  TError = ErrorType<UnauthorizedResponse | NotFoundResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateWork>>,
+    TError,
+    { id: string; data: BodyType<UpdateWorkInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateWork>>,
+  TError,
+  { id: string; data: BodyType<UpdateWorkInput> },
+  TContext
+> => {
+  return useMutation(getUpdateWorkMutationOptions(options));
+};
+
+/**
+ * @summary Delete a work
+ */
+export const getDeleteWorkUrl = (id: string) => {
+  return `/api/works/${id}`;
+};
+
+export const deleteWork = async (
+  id: string,
+  options?: RequestInit,
+): Promise<DeleteResult> => {
+  return customFetch<DeleteResult>(getDeleteWorkUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteWorkMutationOptions = <
+  TError = ErrorType<UnauthorizedResponse | NotFoundResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteWork>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteWork>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deleteWork"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteWork>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteWork(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteWorkMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteWork>>
+>;
+
+export type DeleteWorkMutationError = ErrorType<
+  UnauthorizedResponse | NotFoundResponse
+>;
+
+/**
+ * @summary Delete a work
+ */
+export const useDeleteWork = <
+  TError = ErrorType<UnauthorizedResponse | NotFoundResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteWork>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteWork>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(getDeleteWorkMutationOptions(options));
+};

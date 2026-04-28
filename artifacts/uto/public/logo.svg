@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" width="240" height="80" fill="none">
+  <text x="0" y="60"
+    font-family="EB Garamond, Georgia, serif"
+    font-size="68"
+    font-weight="700"
+    letter-spacing="2">
+    <tspan fill="#1c1824">u</tspan><tspan fill="#7e45ab">t</tspan><tspan fill="#a5dd8f">o</tspan>
+  </text>
+  <circle cx="187" cy="33" r="5.5" fill="#e84c88" />
+</svg>

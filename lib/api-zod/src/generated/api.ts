@@ -14,3 +14,101 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Returns the currently authenticated user, or null when signed out.
+ * @summary Current user
+ */
+export const GetMeResponse = zod.object({
+  user: zod.union([
+    zod.object({
+      id: zod.string(),
+      email: zod.string().nullish(),
+      displayName: zod.string().nullish(),
+    }),
+    zod.null(),
+  ]),
+});
+
+/**
+ * Returns the current user's works, ordered by most recently modified.
+ * @summary List my works
+ */
+export const ListWorksResponseItem = zod.object({
+  id: zod.string().uuid(),
+  name: zod.string(),
+  shape: zod.string(),
+  updatedAt: zod.coerce.date(),
+  createdAt: zod.coerce.date(),
+});
+export const ListWorksResponse = zod.array(ListWorksResponseItem);
+
+/**
+ * @summary Create a new work
+ */
+export const CreateWorkBody = zod.object({
+  name: zod.string(),
+  shape: zod.string(),
+  state: zod.record(zod.string(), zod.unknown()),
+});
+
+export const CreateWorkResponse = zod.object({
+  id: zod.string().uuid(),
+  name: zod.string(),
+  shape: zod.string(),
+  state: zod.record(zod.string(), zod.unknown()),
+  schemaVer: zod.number(),
+  updatedAt: zod.coerce.date(),
+  createdAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Get one work
+ */
+export const GetWorkParams = zod.object({
+  id: zod.coerce.string().uuid(),
+});
+
+export const GetWorkResponse = zod.object({
+  id: zod.string().uuid(),
+  name: zod.string(),
+  shape: zod.string(),
+  state: zod.record(zod.string(), zod.unknown()),
+  schemaVer: zod.number(),
+  updatedAt: zod.coerce.date(),
+  createdAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Update a work
+ */
+export const UpdateWorkParams = zod.object({
+  id: zod.coerce.string().uuid(),
+});
+
+export const UpdateWorkBody = zod.object({
+  name: zod.string(),
+  shape: zod.string(),
+  state: zod.record(zod.string(), zod.unknown()),
+});
+
+export const UpdateWorkResponse = zod.object({
+  id: zod.string().uuid(),
+  name: zod.string(),
+  shape: zod.string(),
+  state: zod.record(zod.string(), zod.unknown()),
+  schemaVer: zod.number(),
+  updatedAt: zod.coerce.date(),
+  createdAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Delete a work
+ */
+export const DeleteWorkParams = zod.object({
+  id: zod.coerce.string().uuid(),
+});
+
+export const DeleteWorkResponse = zod.object({
+  ok: zod.boolean(),
+});

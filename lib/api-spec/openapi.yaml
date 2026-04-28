@@ -10,6 +10,10 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Auth & current user
+  - name: works
+    description: User-saved canvas works
 paths:
   /healthz:
     get:
@@ -24,7 +28,135 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Current user
+      description: Returns the currently authenticated user, or null when signed out.
+      responses:
+        "200":
+          description: Current user (or null)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+  /works:
+    get:
+      operationId: listWorks
+      tags: [works]
+      summary: List my works
+      description: Returns the current user's works, ordered by most recently modified.
+      responses:
+        "200":
+          description: List of works
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorkSummary"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      operationId: createWork
+      tags: [works]
+      summary: Create a new work
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWorkInput"
+      responses:
+        "200":
+          description: Created work
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Work"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /works/{id}:
+    get:
+      operationId: getWork
+      tags: [works]
+      summary: Get one work
+      parameters:
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "200":
+          description: Work
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Work"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      operationId: updateWork
+      tags: [works]
+      summary: Update a work
+      parameters:
+        - $ref: "#/components/parameters/WorkId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateWorkInput"
+      responses:
+        "200":
+          description: Updated work
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Work"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      operationId: deleteWork
+      tags: [works]
+      summary: Delete a work
+      parameters:
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "200":
+          description: Deletion result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
 components:
+  parameters:
+    WorkId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    Unauthorized:
+      description: Not signed in
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
   schemas:
     HealthStatus:
       type: object
@@ -33,4 +165,118 @@ components:
           type: string
       required:
         - status
-
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+    DeleteResult:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+        - ok
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+      required:
+        - id
+    MeResponse:
+      type: object
+      properties:
+        user:
+          oneOf:
+            - $ref: "#/components/schemas/User"
+            - type: "null"
+      required:
+        - user
+    WorkSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        shape:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - shape
+        - updatedAt
+        - createdAt
+    Work:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        shape:
+          type: string
+        state:
+          type: object
+          additionalProperties: true
+        schemaVer:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - shape
+        - state
+        - schemaVer
+        - updatedAt
+        - createdAt
+    CreateWorkInput:
+      type: object
+      properties:
+        name:
+          type: string
+        shape:
+          type: string
+        state:
+          type: object
+          additionalProperties: true
+      required:
+        - name
+        - shape
+        - state
+    UpdateWorkInput:
+      type: object
+      properties:
+        name:
+          type: string
+        shape:
+          type: string
+        state:
+          type: object
+          additionalProperties: true
+      required:
+        - name
+        - shape
+        - state

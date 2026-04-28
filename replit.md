@@ -6,11 +6,13 @@ A precision typographic design studio. Type prose, pick from ten parametric shap
 
 - React + Vite + TypeScript (strict)
 - Tailwind v4 + shadcn/ui (already in `src/components/ui/`)
-- wouter (single route at `/`)
+- wouter (routes: `/`, `/sign-in/*?`, `/sign-up/*?`)
 - framer-motion (panel transitions, shape morph)
 - lucide-react (iconography)
 - simplex-noise (Perlin-style jitter)
-- No backend — entirely client-side, exports happen in the browser
+- @clerk/react for auth (Google + Apple + GitHub once enabled in the Auth pane)
+- @tanstack/react-query + generated `@workspace/api-client-react` hooks
+- Backend: `artifacts/api-server` (Express + @clerk/express) talking to Postgres via `lib/db` (drizzle). Two tables: `users` (Clerk id ↔ profile) and `works` (jsonb canvas state).
 
 ## Project layout
 
@@ -23,10 +25,15 @@ artifacts/uto/
     ├── App.tsx                        # Wouter route → /pages/Studio
     ├── index.css                      # UTO palette: sage / aubergine / hot-pink / parchment
     ├── pages/
-    │   └── Studio.tsx                 # The whole editor
+    │   ├── Studio.tsx                 # The whole editor — owns save/dirty state
+    │   ├── SignInPage.tsx             # Branded Clerk SignIn at /sign-in
+    │   └── SignUpPage.tsx             # Branded Clerk SignUp at /sign-up
     ├── components/editor/
     │   ├── Logo.tsx                   # UtoMark + UtoWordmark
-    │   ├── Toolbar.tsx                # Top bar (52px) — undo/redo, randomize, presets, export
+    │   ├── Toolbar.tsx                # Top bar — Library · Save · Export · AccountChip
+    │   ├── SaveControls.tsx           # Save button + status pill (dirty/saving/saved + ⌘S hint)
+    │   ├── AccountChip.tsx            # Sign-in CTA → UserButton when signed in
+    │   ├── LibrarySheet.tsx           # Right-side sheet — list/load/delete saved works
     │   ├── LeftRail.tsx               # FORM rail — 10 shape icons
     │   ├── Canvas.tsx                 # 900×560 SVG artboard, debounced 50ms
     │   ├── RightInspector.tsx         # TONE inspector — text/shape/composition/color
@@ -35,8 +42,10 @@ artifacts/uto/
     │   ├── MathPanel.tsx              # "Behind the curve" slide-over
     │   └── StatusStrip.tsx            # Bottom status bar
     ├── hooks/
-    │   └── useUndoable.ts             # Undo/redo stack (~60 steps, with coalescing)
+    │   └── useUndoable.ts             # Undo/redo stack (~60 steps, with coalescing + replace())
     └── lib/
+        ├── clerkAppearance.ts         # Aubergine-on-parchment Clerk theme
+        ├── queryClient.ts             # Shared TanStack QueryClient
         ├── types.ts                   # ShapeId, CanvasState, ShapeRender, CANVAS_W/H
         ├── initialState.ts            # Default state = Cathedral preset
         ├── presets.ts                 # Cathedral, Atrium, Lullaby, Field Notes, Manifesto, Aubade, Solstice, Murmuration
@@ -79,10 +88,19 @@ artifacts/uto/
 ## Keyboard shortcuts
 
 - `⌘Z` / `⌘⇧Z` — undo / redo
+- `⌘S` / `Ctrl-S` — save (gates anonymous users to /sign-in)
 - `R` — randomize
 - `E` — export SVG
 - `[` / `]` — cycle shapes
 - `Space` — toggle grid
+
+## Auth + persistence
+
+- Soft auth gate: anonymous users can edit freely. Saving (button or `⌘S`) redirects them to `/sign-in`. Library is hidden until they sign in.
+- Cookie-based Clerk session (same-origin via the workspace proxy). Never call `setAuthTokenGetter` — web is cookie-auth only.
+- Save flow uses a `useRef` mutex to prevent duplicate creates from rapid double-fires, and falls back from `PUT /api/works/:id` 404 to `POST /api/works` when the loaded work was deleted from another surface.
+- Dirty-state signature normalizes the work name (trim + fallback to "Untitled") so trailing whitespace doesn't get the user stuck in a permanent dirty state.
+- API server CORS: explicit allowlist of `REPLIT_DEV_DOMAIN` + `REPLIT_DOMAINS` (no wildcard reflection while sending credentials).
 
 ## User preferences
 

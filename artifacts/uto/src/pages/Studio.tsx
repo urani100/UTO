@@ -1,8 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useUser } from "@clerk/react";
+import { useLocation } from "wouter";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  createWork as createWorkApi,
+  updateWork as updateWorkApi,
+  getListWorksQueryKey,
+} from "@workspace/api-client-react";
 import { Toolbar } from "@/components/editor/Toolbar";
 import { Canvas } from "@/components/editor/Canvas";
 import { RightInspector } from "@/components/editor/RightInspector";
 import { StatusStrip } from "@/components/editor/StatusStrip";
+import { LibrarySheet } from "@/components/editor/LibrarySheet";
+import type { SaveStatus } from "@/components/editor/SaveControls";
 import { useUndoable } from "@/hooks/useUndoable";
 import { useToast } from "@/hooks/use-toast";
 import { INITIAL_STATE } from "@/lib/initialState";
@@ -25,14 +35,32 @@ const SLIDER_KEYS = new Set([
   "jitter",
 ]);
 
+/** Stable signature of the bits we persist for a work. Name is normalized
+ *  to its trimmed, fallback-to-"Untitled" form so the UI does not flag the
+ *  work as dirty over invisible whitespace differences after save. */
+function workSignature(name: string, state: CanvasState): string {
+  const normName = name.trim() || "Untitled";
+  return JSON.stringify({ name: normName, shape: state.shape, state });
+}
+
 export default function Studio() {
   const undoable = useUndoable<CanvasState>(INITIAL_STATE);
   const state = undoable.state;
   const [projectName, setProjectName] = useState("Untitled");
   const [meta, setMeta] = useState({ chars: 0, pathLen: 0, ms: 0 });
   const [isDark, setIsDark] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [currentWorkId, setCurrentWorkId] = useState<string | null>(null);
+  const [savedSig, setSavedSig] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const inFlightRef = useRef(false);
   const { toast } = useToast();
+  const { isSignedIn } = useUser();
+  const [, setLocation] = useLocation();
+  const qc = useQueryClient();
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
@@ -99,7 +127,104 @@ export default function Studio() {
     [projectName, toast]
   );
 
-  // Keyboard shortcuts.
+  // ---------------------------------------------------------------------------
+  // Save / library
+  // ---------------------------------------------------------------------------
+
+  const currentSig = useMemo(
+    () => workSignature(projectName, state),
+    [projectName, state]
+  );
+
+  const saveStatus: SaveStatus = useMemo(() => {
+    if (isSaving) return { kind: "saving" };
+    if (savedAt && savedSig === currentSig) return { kind: "saved", at: savedAt };
+    if (savedSig != null) return { kind: "dirty" };
+    return { kind: "idle" };
+  }, [isSaving, savedAt, savedSig, currentSig]);
+
+  const onSave = useCallback(async () => {
+    if (!isSignedIn) {
+      // Soft auth gate: send anonymous users through sign-in; they can hit
+      // save again afterwards. Applies to both button and Cmd/Ctrl+S paths.
+      setLocation("/sign-in");
+      return;
+    }
+    // Synchronous mutex — state is set asynchronously, so two rapid
+    // invocations could both clear the state guard and double-create.
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
+    setIsSaving(true);
+    const name = projectName.trim() || "Untitled";
+    const payload = {
+      name,
+      shape: state.shape,
+      state: state as unknown as Record<string, unknown>,
+    };
+    try {
+      let result;
+      let didCreate = !currentWorkId;
+      if (currentWorkId) {
+        try {
+          result = await updateWorkApi(currentWorkId, payload);
+        } catch (err) {
+          // Fall back to create if the work was deleted from another
+          // surface (e.g. library) and our id is stale.
+          if (isHttpStatus(err, 404)) {
+            setCurrentWorkId(null);
+            result = await createWorkApi(payload);
+            didCreate = true;
+          } else {
+            throw err;
+          }
+        }
+      } else {
+        result = await createWorkApi(payload);
+      }
+      setCurrentWorkId(result.id);
+      setSavedSig(workSignature(name, state));
+      setSavedAt(new Date());
+      qc.invalidateQueries({ queryKey: getListWorksQueryKey() });
+      toast({
+        title: didCreate ? "Created" : "Saved",
+        description: `"${name}"`,
+      });
+    } catch (e) {
+      toast({
+        title: "Could not save",
+        description: String(e),
+        variant: "destructive",
+      });
+    } finally {
+      inFlightRef.current = false;
+      setIsSaving(false);
+    }
+  }, [isSignedIn, projectName, state, currentWorkId, qc, toast, setLocation]);
+
+  const onLoadWork = useCallback(
+    (work: { id: string; name: string; state: CanvasState }) => {
+      setProjectName(work.name);
+      setCurrentWorkId(work.id);
+      undoable.replace(work.state);
+      const sig = workSignature(work.name, work.state);
+      setSavedSig(sig);
+      setSavedAt(new Date());
+    },
+    [undoable]
+  );
+
+  // Reset save tracking when user signs out.
+  useEffect(() => {
+    if (!isSignedIn) {
+      setCurrentWorkId(null);
+      setSavedSig(null);
+      setSavedAt(null);
+    }
+  }, [isSignedIn]);
+
+  // ---------------------------------------------------------------------------
+  // Keyboard shortcuts
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
@@ -119,6 +244,11 @@ export default function Studio() {
         undoable.redo();
         return;
       }
+      if (meta && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        onSave();
+        return;
+      }
       if (isField) return;
       if (e.key === "e" || e.key === "E") {
         e.preventDefault();
@@ -133,7 +263,18 @@ export default function Studio() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [undoable, onExportSvg, setShape, state.shape, updateState]);
+  }, [undoable, onExportSvg, onSave, setShape, state.shape, updateState]);
+
+  // Warn before leaving with unsaved changes.
+  useEffect(() => {
+    if (saveStatus.kind !== "dirty") return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [saveStatus.kind]);
 
   return (
     <div className="h-full w-full flex flex-col bg-background overflow-hidden">
@@ -152,6 +293,9 @@ export default function Studio() {
         isDark={isDark}
         onToggleDark={() => setIsDark((d) => !d)}
         undoDepth={undoable.depth}
+        saveStatus={saveStatus}
+        onSave={onSave}
+        onOpenLibrary={() => setLibraryOpen(true)}
       />
       <div className="flex-1 flex min-h-0">
         <main className="flex-1 min-w-0 flex items-center justify-center relative bg-stage">
@@ -169,10 +313,25 @@ export default function Studio() {
         pathLen={meta.pathLen}
         ms={meta.ms}
       />
+      <LibrarySheet
+        open={libraryOpen}
+        onOpenChange={setLibraryOpen}
+        onLoadWork={onLoadWork}
+      />
     </div>
   );
 }
 
 function sanitizeFileName(s: string): string {
   return s.toLowerCase().replace(/[^\w]+/g, "-").replace(/^-+|-+$/g, "") || "uto";
+}
+
+/** Best-effort HTTP-status check for errors thrown by orval/axios clients. */
+function isHttpStatus(err: unknown, status: number): boolean {
+  if (!err || typeof err !== "object") return false;
+  const e = err as {
+    status?: number;
+    response?: { status?: number };
+  };
+  return e.status === status || e.response?.status === status;
 }
