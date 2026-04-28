@@ -36,7 +36,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
     <aside className="w-[320px] flex-none border-l border-border/60 bg-background/80 backdrop-blur-xl overflow-y-auto nice-scroll relative z-10">
       <div className="px-5 pt-4 pb-3">
         <div className="flex items-baseline justify-between">
-          <span className="text-[10.5px] uppercase tracking-[0.22em] font-bold text-[#d2f5af]">
+          <span className="text-[10.5px] uppercase tracking-[0.22em] font-black text-[#a5dd8f]">
             Tone
           </span>
           <span className="text-[10px] text-muted-foreground/70 num-tab">
