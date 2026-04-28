@@ -28,7 +28,7 @@ const SLIDER_KEYS = new Set([
 export default function Studio() {
   const undoable = useUndoable<CanvasState>(INITIAL_STATE);
   const state = undoable.state;
-  const [projectName, setProjectName] = useState("Untitled — Cathedral");
+  const [projectName, setProjectName] = useState("Untitled");
   const [meta, setMeta] = useState({ chars: 0, pathLen: 0, ms: 0 });
   const [isDark, setIsDark] = useState(false);
   const svgRef = useRef<SVGSVGElement | null>(null);
