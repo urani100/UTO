@@ -2,10 +2,8 @@ import { useState } from "react";
 import {
   Undo2,
   Redo2,
-  Dices,
   Layers,
   Download,
-  Info,
   ChevronDown,
   Sun as SunIcon,
   Moon as MoonIcon,
@@ -37,13 +35,11 @@ interface Props {
   canRedo: boolean;
   onUndo: () => void;
   onRedo: () => void;
-  onRandomize: () => void;
   activeShape: ShapeId;
   onPickShape: (id: ShapeId) => void;
   onExportSvg: () => void;
   onCopySvg: () => void;
   onExportPng: (scale: 1 | 2 | 4) => void;
-  onShowMath: () => void;
   isDark: boolean;
   onToggleDark: () => void;
   undoDepth: number;
@@ -106,10 +102,6 @@ export function Toolbar(props: Props) {
 
         <div className="h-4 w-px bg-border/80 mx-0.5" />
 
-        <IconBtn label="Randomize · R" onClick={props.onRandomize} testId="button-randomize">
-          <Dices size={15} strokeWidth={1.6} />
-        </IconBtn>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -152,10 +144,6 @@ export function Toolbar(props: Props) {
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        <IconBtn label="Show the math" onClick={props.onShowMath} testId="button-math">
-          <Info size={14} strokeWidth={1.6} />
-        </IconBtn>
 
         <IconBtn label="Toggle theme" onClick={props.onToggleDark} testId="button-theme">
           {props.isDark ? (

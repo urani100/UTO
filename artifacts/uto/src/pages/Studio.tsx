@@ -3,12 +3,11 @@ import { Toolbar } from "@/components/editor/Toolbar";
 import { Canvas } from "@/components/editor/Canvas";
 import { RightInspector } from "@/components/editor/RightInspector";
 import { StatusStrip } from "@/components/editor/StatusStrip";
-import { MathPanel } from "@/components/editor/MathPanel";
 import { useUndoable } from "@/hooks/useUndoable";
 import { useToast } from "@/hooks/use-toast";
 import { INITIAL_STATE } from "@/lib/initialState";
 import type { CanvasState, ShapeId } from "@/lib/types";
-import { nextShape, randomizeState } from "@/lib/randomize";
+import { nextShape } from "@/lib/randomize";
 import {
   copySvgToClipboard,
   downloadSvg,
@@ -31,7 +30,6 @@ export default function Studio() {
   const state = undoable.state;
   const [projectName, setProjectName] = useState("Untitled — Cathedral");
   const [meta, setMeta] = useState({ chars: 0, pathLen: 0, ms: 0 });
-  const [showMath, setShowMath] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const { toast } = useToast();
@@ -71,10 +69,6 @@ export default function Studio() {
     },
     [undoable]
   );
-
-  const onRandomize = useCallback(() => {
-    undoable.set((s) => randomizeState(s));
-  }, [undoable]);
 
   const onExportSvg = useCallback(() => {
     if (!svgRef.current) return;
@@ -126,10 +120,7 @@ export default function Studio() {
         return;
       }
       if (isField) return;
-      if (e.key === "r" || e.key === "R") {
-        e.preventDefault();
-        onRandomize();
-      } else if (e.key === "e" || e.key === "E") {
+      if (e.key === "e" || e.key === "E") {
         e.preventDefault();
         onExportSvg();
       } else if (e.key === "[") {
@@ -145,7 +136,7 @@ export default function Studio() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [undoable, onRandomize, onExportSvg, setShape, state.shape, state.showGrid, updateState]);
+  }, [undoable, onExportSvg, setShape, state.shape, state.showGrid, updateState]);
 
   return (
     <div className="h-full w-full flex flex-col bg-background overflow-hidden">
@@ -156,13 +147,11 @@ export default function Studio() {
         canRedo={undoable.canRedo}
         onUndo={undoable.undo}
         onRedo={undoable.redo}
-        onRandomize={onRandomize}
         activeShape={state.shape}
         onPickShape={setShape}
         onExportSvg={onExportSvg}
         onCopySvg={onCopySvg}
         onExportPng={onExportPng}
-        onShowMath={() => setShowMath(true)}
         isDark={isDark}
         onToggleDark={() => setIsDark((d) => !d)}
         undoDepth={undoable.depth}
@@ -183,7 +172,6 @@ export default function Studio() {
         pathLen={meta.pathLen}
         ms={meta.ms}
       />
-      <MathPanel open={showMath} shape={state.shape} onClose={() => setShowMath(false)} />
     </div>
   );
 }
