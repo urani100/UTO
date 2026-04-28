@@ -121,7 +121,7 @@ export const PRESETS: Preset[] = [
     textColor: "#3a1640",
     backgroundColor: "#fbf6ec",
     textCase: "upper",
-    shapeOverrides: { rays: 22, innerRadius: 100, rayLength: 170, spiralTurns: 3 },
+    shapeOverrides: { rays: 22, body: 100, bodyTurns: 3, bodyDirection: -1, wordsPerRay: 3, rayLength: 150, rayLengthJitter: 0.25, angleJitter: 5, rayGap: 14 },
   },
   {
     id: "solstice",

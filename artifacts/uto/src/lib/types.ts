@@ -70,6 +70,8 @@ export interface RenderedRay {
   cy: number;
   angle: number;
   length: number;
+  /** Distance from (cx, cy) at which the ray's text begins. Defaults to 10. */
+  startRadius?: number;
   text: string;
   fontScale: number;
 }

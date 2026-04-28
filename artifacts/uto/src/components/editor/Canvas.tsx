@@ -145,16 +145,16 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
               ))}
 
               {rays.map((r) => {
-                const x2 = r.cx + Math.cos(r.angle) * r.length;
-                const y2 = r.cy + Math.sin(r.angle) * r.length;
+                const start = r.startRadius ?? 10;
+                const x1 = r.cx + Math.cos(r.angle) * start;
+                const y1 = r.cy + Math.sin(r.angle) * start;
+                const x2 = r.cx + Math.cos(r.angle) * (start + r.length);
+                const y2 = r.cy + Math.sin(r.angle) * (start + r.length);
                 const id = r.id;
                 return (
                   <g key={id}>
                     <defs>
-                      <path
-                        id={id}
-                        d={`M ${r.cx + Math.cos(r.angle) * 10} ${r.cy + Math.sin(r.angle) * 10} L ${x2} ${y2}`}
-                      />
+                      <path id={id} d={`M ${x1} ${y1} L ${x2} ${y2}`} />
                     </defs>
                     <text
                       fill={debounced.textColor}
