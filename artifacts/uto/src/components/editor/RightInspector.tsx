@@ -177,7 +177,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
         </div>
       </InspectorSection>
 
-      <InspectorSection title="Shape" hint={meta.name.toLowerCase()}>
+      <InspectorSection title="Shape">
         {meta.params.map((p) => {
           const value = state.shapeParams[state.shape][p.key] ?? p.min;
           if (p.key === "direction") {
@@ -225,7 +225,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
         })}
       </InspectorSection>
 
-      <InspectorSection title="Composition" hint="rotate · scale · jitter" defaultOpen={false}>
+      <InspectorSection title="Composition" defaultOpen={false}>
         <SliderInput
           label="Rotation"
           value={state.rotation}
@@ -271,7 +271,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
         />
       </InspectorSection>
 
-      <InspectorSection title="Color" hint="ink · paper" defaultOpen>
+      <InspectorSection title="Color" defaultOpen>
         <div className="space-y-2">
           <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium block">
             Ink
