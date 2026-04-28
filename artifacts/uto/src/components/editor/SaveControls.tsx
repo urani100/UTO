@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useUser } from "@clerk/react";
-import { Save } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 export type SaveStatus =
   | { kind: "idle" }
@@ -27,28 +20,26 @@ export function SaveControls({ status, onSave }: Props) {
   return (
     <div className="flex items-center gap-2">
       <SaveStatusLine status={status} signedIn={!!isSignedIn} />
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              if (!isSignedIn) {
-                setLocation("/sign-in");
-                return;
-              }
-              onSave();
-            }}
-            disabled={status.kind === "saving"}
-            className="h-8 px-2.5 gap-1.5 text-[12px] font-medium rounded-md border-border/80 hover:bg-foreground/[.04]"
-            data-testid="button-save"
-          >
-            <Save size={13} strokeWidth={1.8} />
-            Save
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Save · ⌘S</TooltipContent>
-      </Tooltip>
+      <button
+        type="button"
+        onClick={() => {
+          if (!isSignedIn) {
+            setLocation("/sign-in");
+            return;
+          }
+          onSave();
+        }}
+        disabled={status.kind === "saving"}
+        className="h-8 px-2.5 rounded-md flex items-center hover:bg-foreground/[.05] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        data-testid="button-save"
+      >
+        <span
+          className="font-serif text-[20px] font-bold text-[#716e6e]"
+          style={{ letterSpacing: "1.1px" }}
+        >
+          Save
+        </span>
+      </button>
     </div>
   );
 }

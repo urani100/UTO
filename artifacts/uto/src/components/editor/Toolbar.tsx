@@ -4,9 +4,6 @@ import {
   Redo2,
   Download,
   ChevronDown,
-  Sun as SunIcon,
-  Moon as MoonIcon,
-  Library,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -112,10 +109,7 @@ export function Toolbar(props: Props) {
               className="h-8 px-2.5 rounded-md flex items-center gap-1.5 hover:bg-foreground/[.05] transition-colors"
               data-testid="button-form"
             >
-              <span
-                className="font-serif text-[20px] font-bold text-[#716e6e]"
-                style={{ letterSpacing: "1.1px" }}
-              >
+              <span className={LABEL_CLASS} style={LABEL_STYLE}>
                 Form
               </span>
               <ChevronDown size={11} className="text-muted-foreground" />
@@ -153,43 +147,30 @@ export function Toolbar(props: Props) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <IconBtn label="Toggle theme" onClick={props.onToggleDark} testId="button-theme">
-          {props.isDark ? (
-            <SunIcon size={14} strokeWidth={1.6} />
-          ) : (
-            <MoonIcon size={14} strokeWidth={1.6} />
-          )}
-        </IconBtn>
-
-        <div className="h-4 w-px bg-border/80 mx-0.5" />
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              onClick={props.onOpenLibrary}
-              className="h-8 px-2.5 rounded-md flex items-center gap-1.5 text-[12px] font-medium text-foreground/85 hover:bg-foreground/[.05] hover:text-foreground transition-colors"
-              data-testid="button-library"
-            >
-              <Library size={13} strokeWidth={1.7} />
-              Library
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>Library</TooltipContent>
-        </Tooltip>
+        <button
+          type="button"
+          onClick={props.onOpenLibrary}
+          className="h-8 px-2.5 rounded-md flex items-center hover:bg-foreground/[.05] transition-colors"
+          data-testid="button-library"
+        >
+          <span className={LABEL_CLASS} style={LABEL_STYLE}>
+            Library
+          </span>
+        </button>
 
         <SaveControls status={props.saveStatus} onSave={props.onSave} />
 
         <Popover>
           <PopoverTrigger asChild>
-            <Button
-              size="sm"
-              className="h-8 px-3 gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-[12px] rounded-md shadow-sm"
+            <button
+              type="button"
+              className="h-8 px-2.5 rounded-md flex items-center hover:bg-foreground/[.05] transition-colors"
               data-testid="button-export"
             >
-              <Download size={13} strokeWidth={2} />
-              Export
-            </Button>
+              <span className={LABEL_CLASS} style={LABEL_STYLE}>
+                Export
+              </span>
+            </button>
           </PopoverTrigger>
           <PopoverContent align="end" className="w-[240px] p-1.5">
             <div className="px-2.5 py-1.5 text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground font-semibold">
@@ -212,6 +193,18 @@ export function Toolbar(props: Props) {
           </PopoverContent>
         </Popover>
 
+        <button
+          type="button"
+          onClick={props.onToggleDark}
+          aria-pressed={props.isDark}
+          className="h-8 px-2.5 rounded-md flex items-center hover:bg-foreground/[.05] transition-colors"
+          data-testid="button-theme"
+        >
+          <span className={LABEL_CLASS} style={LABEL_STYLE}>
+            Toggle Theme
+          </span>
+        </button>
+
         <div className="h-4 w-px bg-border/80 mx-0.5" />
 
         <AccountChip />
@@ -219,6 +212,9 @@ export function Toolbar(props: Props) {
     </header>
   );
 }
+
+const LABEL_CLASS = "font-serif text-[20px] font-bold text-[#716e6e]";
+const LABEL_STYLE = { letterSpacing: "1.1px" };
 
 function IconBtn({
   label,
