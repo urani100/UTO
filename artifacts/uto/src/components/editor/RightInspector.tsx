@@ -29,6 +29,8 @@ const FONT_FAMILIES = [
   { label: "JetBrains Mono", value: '"JetBrains Mono", monospace' },
 ];
 
+const FONT_SIZES = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 42];
+
 export function RightInspector({ state, onChange, onShapeParam }: Props) {
   const meta = SHAPE_META[state.shape];
 
@@ -90,15 +92,29 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
           </Select>
         </div>
 
-        <SliderInput
-          label="Size"
-          value={state.fontSize}
-          min={8}
-          max={42}
-          step={1}
-          unit="px"
-          onChange={(v) => onChange({ fontSize: v })}
-        />
+        <div className="space-y-1.5">
+          <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium">
+            Size
+          </label>
+          <Select
+            value={String(state.fontSize)}
+            onValueChange={(v) => onChange({ fontSize: Number(v) })}
+          >
+            <SelectTrigger
+              className="h-8 text-[12px] bg-transparent border-border/70"
+              data-testid="select-font-size"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {FONT_SIZES.map((s) => (
+                <SelectItem key={s} value={String(s)}>
+                  <span className="text-[13px] num-tab">{s} px</span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <SliderInput
           label="Weight"
           value={state.weight}
