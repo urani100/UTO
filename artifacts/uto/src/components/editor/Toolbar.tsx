@@ -106,7 +106,7 @@ export function Toolbar(props: Props) {
               className="h-8 px-2.5 rounded-md flex items-center gap-1.5 hover:bg-foreground/[.05] transition-colors"
               data-testid="button-form"
             >
-              <span className="text-[14px] font-bold tracking-[-0.01em] text-[#a5dd8f]">Form</span>
+              <span className="text-[20px] font-bold tracking-[-0.01em] text-[#a5dd8f]">Form</span>
               <ChevronDown size={11} className="text-muted-foreground" />
             </button>
           </DropdownMenuTrigger>
