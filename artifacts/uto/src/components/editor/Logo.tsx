@@ -1,33 +1,38 @@
-interface Props {
-  size?: number;
+import logoSrc from "@assets/UTO_-Logo_1777405679749.png";
+
+const CONTENT_W = 638;
+const CONTENT_H = 212;
+const IMG_SIZE = 1080;
+const CONTENT_X = 238;
+const CONTENT_Y = 436;
+
+interface MarkProps {
+  height?: number;
 }
 
-export function UtoMark({ size = 26 }: Props) {
+export function UtoMark({ height = 22 }: MarkProps) {
+  const scale = (height / CONTENT_H) * IMG_SIZE;
+  const width = (CONTENT_W / CONTENT_H) * height;
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 64 64"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="UTO mark"
-    >
-      <g transform="translate(32 32)">
-        <circle r="20" fill="hsl(var(--uto-sage))" />
-        <rect x="-9" y="-13" width="18" height="9" fill="hsl(var(--uto-purple))" opacity="0.5" />
-        <rect x="-3" y="-9" width="6" height="18" fill="hsl(var(--uto-purple-deep))" />
-        <circle r="6" fill="hsl(var(--uto-pink))" className="uto-mark-dot" />
-      </g>
-    </svg>
+    <div
+      role="img"
+      aria-label="UTO"
+      style={{
+        width: `${width}px`,
+        height: `${height}px`,
+        backgroundImage: `url(${logoSrc})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: `${scale}px ${scale}px`,
+        backgroundPosition: `-${(CONTENT_X / IMG_SIZE) * scale}px -${(CONTENT_Y / IMG_SIZE) * scale}px`,
+      }}
+    />
   );
 }
 
 export function UtoWordmark() {
   return (
-    <div className="flex items-center gap-2.5 select-none">
-      <UtoMark size={22} />
-      <span className="font-display text-[15px] font-semibold tracking-[-0.01em] text-foreground leading-none">
-        UTO
-      </span>
+    <div className="flex items-center select-none">
+      <UtoMark height={20} />
     </div>
   );
 }
