@@ -43,14 +43,6 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
             {Object.keys(state.shapeParams[state.shape]).length} params
           </span>
         </div>
-        <div className="mt-1 flex items-baseline justify-between">
-          <h2 className="sr-only">
-            {meta.name}
-          </h2>
-          <span className="text-[11px] italic text-muted-foreground font-serif num-tab">
-            {meta.formula}
-          </span>
-        </div>
         <p className="text-[11.5px] text-muted-foreground/85 leading-snug mt-1.5 pr-2">
           {meta.blurb}
         </p>
