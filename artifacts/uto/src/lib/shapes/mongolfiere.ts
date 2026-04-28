@@ -1,5 +1,5 @@
 import type { CanvasState, ShapeMeta, ShapeRender, RenderedLine } from "../types";
-import { CANVAS_W } from "../types";
+import { CANVAS_H, CANVAS_W } from "../types";
 import { approxCharWidth, tokenize, wrapWords } from "../engine/text";
 import { smoothPathPx } from "../engine/path";
 
@@ -21,7 +21,9 @@ export function renderMongolfiere(state: CanvasState): ShapeRender {
   const cx = CANVAS_W / 2;
   const bulbW = p.bulbWidth!;
   const bulbR = bulbW / 2;
-  const bulbCY = 50 + bulbR;
+  const bulbBottomOffset = bulbR * 1.05;
+  const totalH = bulbR + bulbBottomOffset;
+  const bulbCY = (CANVAS_H - totalH) / 2 + bulbR;
   const fontSize = state.fontSize;
   const cw = approxCharWidth(fontSize);
   const lh = fontSize * 1.15;
