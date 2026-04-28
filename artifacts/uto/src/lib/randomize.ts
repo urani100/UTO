@@ -2,12 +2,12 @@ import type { CanvasState, ShapeId } from "./types";
 import { SHAPE_META } from "./shapes";
 
 const PALETTES: Array<{ fg: string; bg: string }> = [
-  { fg: "#1c1824", bg: "#f6f1e7" },
+  { fg: "#1c1824", bg: "#eeece7" },
   { fg: "#2d1f3d", bg: "#fbf6ec" },
   { fg: "#3a1640", bg: "#f0eadb" },
   { fg: "#1c1824", bg: "#eee7d4" },
   { fg: "#0f1a1a", bg: "#f3eee2" },
-  { fg: "#42234e", bg: "#f6f1e7" },
+  { fg: "#42234e", bg: "#eeece7" },
 ];
 
 const FONTS = [

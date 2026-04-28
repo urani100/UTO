@@ -13,7 +13,7 @@ export const BASE_STATE: CanvasState = {
   lineHeight: 1.2,
   textCase: "as-is",
   textColor: "#1c1824",
-  backgroundColor: "#f6f1e7",
+  backgroundColor: "#eeece7",
   backgroundMode: "solid",
   rotation: 0,
   scale: 1,

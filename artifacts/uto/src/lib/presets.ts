@@ -44,7 +44,7 @@ export const PRESETS: Preset[] = [
     italic: false,
     letterSpacing: 0.3,
     textColor: "#1c1824",
-    backgroundColor: "#f6f1e7",
+    backgroundColor: "#eeece7",
     shapeOverrides: { turns: 7, gap: 26, inner: 8 },
   },
   {
@@ -59,7 +59,7 @@ export const PRESETS: Preset[] = [
     italic: true,
     letterSpacing: 0.3,
     textColor: "#2d1f3d",
-    backgroundColor: "#f6f1e7",
+    backgroundColor: "#eeece7",
     shapeOverrides: { rings: 5, baseRadius: 240, gap: 8, scaleIntensity: 1 },
   },
   {
@@ -89,7 +89,7 @@ export const PRESETS: Preset[] = [
     italic: false,
     letterSpacing: 0.1,
     textColor: "#2a2233",
-    backgroundColor: "#f6f1e7",
+    backgroundColor: "#eeece7",
   },
   {
     id: "manifesto",
@@ -103,7 +103,7 @@ export const PRESETS: Preset[] = [
     italic: false,
     letterSpacing: 1.2,
     textColor: "#1c1824",
-    backgroundColor: "#f6f1e7",
+    backgroundColor: "#eeece7",
     textCase: "upper",
     shapeOverrides: { points: 9, inner: 0.36, outer: 230, rotation: -90 },
   },
@@ -135,7 +135,7 @@ export const PRESETS: Preset[] = [
     italic: true,
     letterSpacing: 0.4,
     textColor: "#1c1824",
-    backgroundColor: "#f6f1e7",
+    backgroundColor: "#eeece7",
     shapeOverrides: { phase: 0.6, radius: 230, lineHeight: 1.18 },
   },
   {
@@ -150,7 +150,7 @@ export const PRESETS: Preset[] = [
     italic: false,
     letterSpacing: 0.3,
     textColor: "#1c1824",
-    backgroundColor: "#f6f1e7",
+    backgroundColor: "#eeece7",
     shapeOverrides: { rings: 9, arc: 250, baseRadius: 240, offset: 14, gap: 4 },
   },
 ];
