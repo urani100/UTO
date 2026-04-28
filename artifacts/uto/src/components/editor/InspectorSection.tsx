@@ -28,7 +28,7 @@ export function InspectorSection({ title, hint, defaultOpen = true, children }: 
               open ? "rotate-90" : "rotate-0"
             )}
           />
-          <span className="text-[20px] font-bold tracking-[-0.01em] text-foreground">
+          <span className="text-[20px] font-bold tracking-[-0.01em] text-[#a5dd8f]">
             {title}
           </span>
           {hint ? (
