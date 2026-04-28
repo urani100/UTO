@@ -36,15 +36,15 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
     <aside className="w-[320px] flex-none border-l border-border/60 bg-background/80 backdrop-blur-xl overflow-y-auto nice-scroll relative z-10">
       <div className="px-5 pt-4 pb-3">
         <div className="flex items-baseline justify-between">
-          <span className="text-[20px] font-bold tracking-[-0.01em] text-[#a5dd8f]">
-            Tone
-          </span>
+          <h2 className="font-display text-[20px] font-semibold tracking-[-0.01em] text-foreground">
+            {meta.name}
+          </h2>
           <span className="text-[10px] text-muted-foreground/70 num-tab">
             {Object.keys(state.shapeParams[state.shape]).length} params
           </span>
         </div>
         <div className="mt-1 flex items-baseline justify-between">
-          <h2 className="font-display text-[20px] font-semibold tracking-[-0.01em] text-foreground">
+          <h2 className="sr-only">
             {meta.name}
           </h2>
           <span className="text-[11px] italic text-muted-foreground font-serif num-tab">
