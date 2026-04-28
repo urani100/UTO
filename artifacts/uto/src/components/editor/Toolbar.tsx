@@ -149,21 +149,13 @@ export function Toolbar(props: Props) {
                       onClick={() => props.onPickShape(meta.id)}
                       data-testid={`shape-${meta.id}`}
                       className={
-                        "h-7 px-2.5 rounded text-left text-[12px] font-medium transition-colors flex items-center justify-between gap-2 " +
+                        "h-7 px-2.5 rounded text-left text-[12px] font-medium transition-colors " +
                         (active
                           ? "bg-foreground text-background"
                           : "text-foreground hover:bg-foreground/[.05]")
                       }
                     >
-                      <span>{meta.name}</span>
-                      <span
-                        className={
-                          "text-[9px] uppercase tracking-[0.16em] num-tab " +
-                          (active ? "text-background/60" : "text-muted-foreground/60")
-                        }
-                      >
-                        {meta.formula}
-                      </span>
+                      {meta.name}
                     </button>
                   );
                 })}
