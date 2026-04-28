@@ -386,6 +386,25 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Standardized form field border for inputs / dropdowns / textareas */
+  .field-bordered {
+    border: 1px solid hsl(var(--border));
+    border-radius: 6px;
+    background-color: transparent;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+  .field-bordered:hover {
+    border-color: hsl(var(--border) / 1);
+  }
+  .field-bordered:focus,
+  .field-bordered:focus-visible,
+  .field-bordered:focus-within,
+  .field-bordered[data-state="open"] {
+    border-color: #7e45ab !important;
+    box-shadow: 0 0 0 2px rgb(126 69 171 / 0.18);
+    outline: none;
+  }
+
   /* Hide scrollbars on the inspector but keep scrolling */
   .nice-scroll::-webkit-scrollbar {
     width: 6px;

@@ -67,7 +67,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
             onChange={(e) => onChange({ text: e.target.value })}
             placeholder="Type or paste your text…"
             rows={5}
-            className="text-[12px] font-serif leading-relaxed resize-y bg-background/80 border-border/70 focus-visible:ring-1 focus-visible:ring-foreground/30 focus-visible:border-foreground/40"
+            className="field-bordered text-[12px] font-serif leading-relaxed resize-y bg-background/80 border-0 focus-visible:ring-0"
             data-testid="input-text"
           />
         </div>
@@ -78,7 +78,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
           </label>
           <Select value={state.fontFamily} onValueChange={(v) => onChange({ fontFamily: v })}>
             <SelectTrigger
-              className="h-8 text-[12px] bg-transparent border-border/70"
+              className="field-bordered h-8 text-[12px] bg-transparent border-0 focus:ring-0 shadow-none"
               style={{ letterSpacing: "1.1px" }}
               data-testid="select-font"
             >
@@ -108,7 +108,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
             onValueChange={(v) => onChange({ fontSize: Number(v) })}
           >
             <SelectTrigger
-              className="h-8 text-[12px] bg-transparent border-border/70"
+              className="field-bordered h-8 text-[12px] bg-transparent border-0 focus:ring-0 shadow-none"
               data-testid="select-font-size"
             >
               <SelectValue />
@@ -289,7 +289,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
               type="text"
               value={state.textColor}
               onChange={(e) => onChange({ textColor: e.target.value })}
-              className="flex-1 text-[11px] num-tab font-mono bg-foreground/[.03] px-2 py-1 rounded border border-transparent hover:border-border focus:border-foreground/40 focus:outline-none"
+              className="field-bordered flex-1 text-[11px] num-tab font-mono bg-foreground/[.03] px-2 py-1"
             />
           </div>
         </div>
@@ -308,7 +308,7 @@ export function RightInspector({ state, onChange, onShapeParam }: Props) {
               type="text"
               value={state.backgroundColor}
               onChange={(e) => onChange({ backgroundColor: e.target.value, backgroundMode: "solid" })}
-              className="flex-1 text-[11px] num-tab font-mono bg-foreground/[.03] px-2 py-1 rounded border border-transparent hover:border-border focus:border-foreground/40 focus:outline-none"
+              className="field-bordered flex-1 text-[11px] num-tab font-mono bg-foreground/[.03] px-2 py-1"
             />
           </div>
           <Row label="Transparent paper">
