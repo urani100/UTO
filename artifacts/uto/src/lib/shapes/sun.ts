@@ -56,11 +56,15 @@ export function renderSun(state: CanvasState): ShapeRender {
   const rayGap = raw.rayGap ?? 12;
 
   // Body: Archimedean spiral. Direction +1 spirals outward, -1 spirals inward toward the center.
-  const b = body / (bodyTurns * Math.PI * 2);
+  // Inner radius is clamped so the innermost loop has enough circumference for legible glyphs;
+  // otherwise the first turn collapses to a tight knot of overlapping letters.
+  const innerMin = Math.max(18, state.fontSize * 1.4);
+  const a = Math.min(innerMin, body * 0.5);
+  const b = Math.max(0.5, (body - a) / (bodyTurns * Math.PI * 2));
   const bodyD = archimedeanSpiral({
     cx,
     cy,
-    a: 4,
+    a,
     b,
     turns: bodyTurns,
     direction: bodyDir as 1 | -1,
