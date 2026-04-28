@@ -339,12 +339,9 @@ function ColorEyedrop({
 }) {
   return (
     <label
-      className="h-5 w-5 rounded-full ring-1 ring-foreground/15 cursor-pointer relative overflow-hidden flex items-center justify-center text-[10px] text-foreground/70 hover:scale-115 transition-transform"
+      className="h-7 w-7 rounded ring-1 ring-foreground/15 cursor-pointer relative overflow-hidden flex items-center justify-center hover:ring-foreground/40 transition-all"
       data-testid={testId}
-      style={{
-        background:
-          "conic-gradient(from 90deg, #f06292, #ba68c8, #7986cb, #4dd0e1, #aed581, #fff176, #ffb74d, #f06292)",
-      }}
+      style={{ background: value }}
     >
       <input
         type="color"
