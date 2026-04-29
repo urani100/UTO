@@ -107,6 +107,18 @@ artifacts/uto/
 - API server CORS: explicit allowlist of `REPLIT_DEV_DOMAIN` + `REPLIT_DOMAINS` (no wildcard reflection while sending credentials).
 - Clerk sign-in/up appearance: minimal — only `colorPrimary` (sage) and `fontFamily` (EB Garamond) at the global level, plus `headerTitle` / `headerSubtitle` styled to Inter / 15px / 12px / `#716e6e` / letter-spacing 1.10px / weight 500.
 
+## Responsive / mobile
+
+- `useIsMobile()` (`<768px`) drives a single branch in `Studio.tsx` and `Toolbar.tsx`. Initial value is read synchronously from `matchMedia` so phones never see a desktop-layout flash on first paint.
+- Mobile shell (`< 768px`):
+  - **Top bar** — compact `MobileToolbar` (logo + name input + Save + `⋯` overflow). The overflow menu holds Undo, Redo, Library, Export submenu (SVG / Copy / PNG @1×/2×/4×), theme toggle, and the AccountChip.
+  - **Canvas** — fills the viewport; padding is `px-3 py-3` instead of the desktop `px-12 py-10`.
+  - **Right inspector** — hidden in the layout flow; rendered inside a bottom Sheet at `h-[78vh]` via `<RightInspector embedded />` (the `embedded` prop drops the desktop `aside` chrome — no fixed width, no left border).
+  - **Bottom bar** — 56px nav with two large tap targets: `Form` (opens a bottom Sheet with the 2-col shape grid) and `Settings` (opens the inspector sheet). The Form button shows the current shape name.
+  - **Status strip** — hidden on mobile (its info is in the inspector header).
+  - **Library sheet** — `w-full sm:w-[400px]` so it covers the full width on phones.
+- Desktop layout (`≥768px`) is unchanged.
+
 ## Client-side hardening
 
 - `useDisableInspection` in `App.tsx` blocks `contextmenu` and the common DevTools shortcuts (F12, Ctrl/Cmd+U, Ctrl/Cmd+Shift+I/J/C, Ctrl/Cmd+S). This is a deterrent against casual inspection only — it does NOT prevent a determined user from opening DevTools via the browser menu, viewing network traffic, or reading the publicly-served bundle. Treat anything shipped to the client as public.

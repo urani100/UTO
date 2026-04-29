@@ -1,15 +1,17 @@
 import {
   Undo2,
   Redo2,
-  Download,
   ChevronDown,
   Moon as MoonIcon,
+  MoreHorizontal,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
@@ -45,9 +47,15 @@ interface Props {
   saveStatus: SaveStatus;
   onSave: () => void;
   onOpenLibrary: () => void;
+  isMobile?: boolean;
 }
 
 export function Toolbar(props: Props) {
+  if (props.isMobile) return <MobileToolbar {...props} />;
+  return <DesktopToolbar {...props} />;
+}
+
+function DesktopToolbar(props: Props) {
   return (
     <header className="h-[48px] flex-none border-b border-border/60 bg-background/85 backdrop-blur-xl z-40 relative">
       <div className="h-full px-4 flex items-center gap-3">
@@ -194,6 +202,131 @@ export function Toolbar(props: Props) {
         <div className="h-4 w-px bg-border/80 mx-0.5" />
 
         <AccountChip />
+      </div>
+    </header>
+  );
+}
+
+function MobileToolbar(props: Props) {
+  return (
+    <header className="h-[52px] flex-none border-b border-border/60 bg-background/90 backdrop-blur-xl z-40 relative">
+      <div className="h-full px-3 flex items-center gap-2">
+        <UtoWordmark />
+
+        <input
+          value={props.projectName}
+          onChange={(e) => props.onProjectNameChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+          }}
+          placeholder="Untitled"
+          className="flex-1 min-w-0 text-[13px] font-medium text-foreground bg-transparent border-b border-transparent hover:border-foreground/20 focus:border-foreground focus:outline-none py-1 placeholder:text-muted-foreground/70 transition-colors truncate"
+          data-testid="input-project-name"
+          aria-label="Form name"
+        />
+
+        <SaveControls status={props.saveStatus} onSave={props.onSave} />
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label="More actions"
+              className="h-9 w-9 rounded-md flex items-center justify-center text-foreground/85 hover:bg-foreground/[.05] transition-colors"
+              data-testid="button-more"
+            >
+              <MoreHorizontal size={18} strokeWidth={1.7} />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[240px] p-1.5">
+            <div className="grid grid-cols-2 gap-1 p-1">
+              <DropdownMenuItem
+                onSelect={props.onUndo}
+                disabled={!props.canUndo}
+                className="justify-center gap-2 text-[12.5px] h-9"
+                data-testid="button-undo"
+              >
+                <Undo2 size={14} strokeWidth={1.6} />
+                Undo
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={props.onRedo}
+                disabled={!props.canRedo}
+                className="justify-center gap-2 text-[12.5px] h-9"
+                data-testid="button-redo"
+              >
+                <Redo2 size={14} strokeWidth={1.6} />
+                Redo
+              </DropdownMenuItem>
+            </div>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              onSelect={props.onOpenLibrary}
+              className="text-[13px] h-10 px-3"
+              data-testid="button-library"
+            >
+              Library
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuLabel className="px-3 py-1 text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground font-semibold">
+              Export
+            </DropdownMenuLabel>
+            <DropdownMenuItem
+              onSelect={props.onExportSvg}
+              className="text-[12.5px] h-9 px-3"
+              data-testid="export-svg"
+            >
+              SVG
+              <span className="ml-auto text-[10px] text-muted-foreground num-tab">
+                900×560
+              </span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={props.onCopySvg}
+              className="text-[12.5px] h-9 px-3"
+              data-testid="copy-svg"
+            >
+              Copy SVG
+              <span className="ml-auto text-[10px] text-muted-foreground">
+                clipboard
+              </span>
+            </DropdownMenuItem>
+            {([1, 2, 4] as const).map((s) => (
+              <DropdownMenuItem
+                key={s}
+                onSelect={() => props.onExportPng(s)}
+                className="text-[12.5px] h-9 px-3"
+                data-testid={`export-png-${s}x`}
+              >
+                {`PNG · ${s}×`}
+                <span className="ml-auto text-[10px] text-muted-foreground num-tab">
+                  {`${900 * s}×${560 * s}`}
+                </span>
+              </DropdownMenuItem>
+            ))}
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              onSelect={props.onToggleDark}
+              className="text-[12.5px] h-9 px-3 gap-2"
+              data-testid="button-theme"
+            >
+              <MoonIcon size={14} strokeWidth={1.6} />
+              {props.isDark ? "Light theme" : "Dark theme"}
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <div className="px-2 py-1">
+              <AccountChip />
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

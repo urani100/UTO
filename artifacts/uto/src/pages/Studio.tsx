@@ -14,11 +14,21 @@ import { StatusStrip } from "@/components/editor/StatusStrip";
 import { LibrarySheet } from "@/components/editor/LibrarySheet";
 import { SaveDialog } from "@/components/editor/SaveDialog";
 import type { SaveStatus } from "@/components/editor/SaveControls";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useUndoable } from "@/hooks/useUndoable";
 import { useToast } from "@/hooks/use-toast";
 import { INITIAL_STATE } from "@/lib/initialState";
 import type { CanvasState, ShapeId } from "@/lib/types";
 import { nextShape } from "@/lib/randomize";
+import { SHAPE_LIST, SHAPE_META } from "@/lib/shapes";
+import { Shapes, SlidersHorizontal } from "lucide-react";
 import {
   copySvgToClipboard,
   downloadSvg,
@@ -51,6 +61,9 @@ export default function Studio() {
   const [meta, setMeta] = useState({ chars: 0, pathLen: 0, ms: 0 });
   const [isDark, setIsDark] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [mobileFormOpen, setMobileFormOpen] = useState(false);
+  const [mobileInspectorOpen, setMobileInspectorOpen] = useState(false);
+  const isMobile = useIsMobile();
   const [currentWorkId, setCurrentWorkId] = useState<string | null>(null);
   const [savedSig, setSavedSig] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
@@ -364,23 +377,106 @@ export default function Studio() {
         saveStatus={saveStatus}
         onSave={onSave}
         onOpenLibrary={() => setLibraryOpen(true)}
+        isMobile={isMobile}
       />
       <div className="flex-1 flex min-h-0">
         <main className="flex-1 min-w-0 flex items-center justify-center relative bg-stage">
           <Canvas state={state} ref={svgRef} onMetaUpdate={setMeta} />
         </main>
-        <RightInspector
-          state={state}
-          onChange={updateState}
-          onShapeParam={updateShapeParam}
-        />
+        {!isMobile && (
+          <RightInspector
+            state={state}
+            onChange={updateState}
+            onShapeParam={updateShapeParam}
+          />
+        )}
       </div>
-      <StatusStrip
-        shape={state.shape}
-        chars={meta.chars}
-        pathLen={meta.pathLen}
-        ms={meta.ms}
-      />
+      {!isMobile && (
+        <StatusStrip
+          shape={state.shape}
+          chars={meta.chars}
+          pathLen={meta.pathLen}
+          ms={meta.ms}
+        />
+      )}
+      {isMobile && (
+        <MobileBottomBar
+          shape={state.shape}
+          onOpenForm={() => setMobileFormOpen(true)}
+          onOpenInspector={() => setMobileInspectorOpen(true)}
+        />
+      )}
+
+      {isMobile && (
+        <Sheet open={mobileFormOpen} onOpenChange={setMobileFormOpen}>
+          <SheetContent
+            side="bottom"
+            className="max-h-[78vh] p-0 flex flex-col bg-background"
+          >
+            <SheetHeader className="px-5 pt-5 pb-2 space-y-1 text-left">
+              <SheetTitle className="text-[15px] font-semibold tracking-tight">
+                Form
+              </SheetTitle>
+              <SheetDescription className="text-[12px] text-muted-foreground">
+                Choose a shape for your composition.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6 pt-1">
+              <div className="grid grid-cols-2 gap-1.5">
+                {SHAPE_LIST.map((m) => {
+                  const active = m.id === state.shape;
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => {
+                        setShape(m.id);
+                        setMobileFormOpen(false);
+                      }}
+                      data-testid={`shape-${m.id}`}
+                      className={
+                        "h-12 px-3 rounded-md text-left text-[13px] font-medium transition-colors " +
+                        (active
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-foreground/[.04] text-foreground hover:bg-foreground/[.08]")
+                      }
+                    >
+                      {m.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
+
+      {isMobile && (
+        <Sheet open={mobileInspectorOpen} onOpenChange={setMobileInspectorOpen}>
+          <SheetContent
+            side="bottom"
+            className="max-h-[78vh] h-[78vh] p-0 flex flex-col bg-background"
+          >
+            <SheetHeader className="px-5 pt-5 pb-2 space-y-1 text-left flex-none">
+              <SheetTitle className="text-[15px] font-semibold tracking-tight">
+                Settings
+              </SheetTitle>
+              <SheetDescription className="text-[12px] text-muted-foreground">
+                Adjust text, shape, composition, and color.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="flex-1 min-h-0">
+              <RightInspector
+                state={state}
+                onChange={updateState}
+                onShapeParam={updateShapeParam}
+                embedded
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
+
       <LibrarySheet
         open={libraryOpen}
         onOpenChange={setLibraryOpen}
@@ -394,6 +490,45 @@ export default function Studio() {
         onConfirm={onConfirmSave}
       />
     </div>
+  );
+}
+
+function MobileBottomBar({
+  shape,
+  onOpenForm,
+  onOpenInspector,
+}: {
+  shape: ShapeId;
+  onOpenForm: () => void;
+  onOpenInspector: () => void;
+}) {
+  const meta = SHAPE_META[shape];
+  return (
+    <nav className="h-14 flex-none border-t border-border/60 bg-background/95 backdrop-blur-xl flex items-stretch">
+      <button
+        type="button"
+        onClick={onOpenForm}
+        data-testid="mobile-open-form"
+        className="flex-1 flex flex-col items-center justify-center gap-0.5 text-[#716e6e] hover:bg-foreground/[.04] transition-colors active:bg-foreground/[.08]"
+      >
+        <Shapes size={18} strokeWidth={1.6} />
+        <span className="text-[10.5px] font-medium uppercase tracking-[0.14em] truncate max-w-[140px]">
+          {meta?.name ?? "Form"}
+        </span>
+      </button>
+      <div className="w-px bg-border/60" />
+      <button
+        type="button"
+        onClick={onOpenInspector}
+        data-testid="mobile-open-inspector"
+        className="flex-1 flex flex-col items-center justify-center gap-0.5 text-[#716e6e] hover:bg-foreground/[.04] transition-colors active:bg-foreground/[.08]"
+      >
+        <SlidersHorizontal size={18} strokeWidth={1.6} />
+        <span className="text-[10.5px] font-medium uppercase tracking-[0.14em]">
+          Settings
+        </span>
+      </button>
+    </nav>
   );
 }
 

@@ -17,6 +17,9 @@ interface Props {
   state: CanvasState;
   onChange: (patch: Partial<CanvasState>) => void;
   onShapeParam: (key: string, v: number) => void;
+  /** When true, render without the desktop `aside` chrome (no fixed width,
+   *  no left border) so the inspector composes inside a Sheet on mobile. */
+  embedded?: boolean;
 }
 
 const FONT_FAMILIES = [
@@ -31,11 +34,15 @@ const FONT_FAMILIES = [
 
 const FONT_SIZES = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 42];
 
-export function RightInspector({ state, onChange, onShapeParam }: Props) {
+export function RightInspector({ state, onChange, onShapeParam, embedded }: Props) {
   const meta = SHAPE_META[state.shape];
 
+  const className = embedded
+    ? "w-full h-full overflow-y-auto nice-scroll"
+    : "w-[320px] flex-none border-l border-border/60 bg-background/80 backdrop-blur-xl overflow-y-auto nice-scroll relative z-10";
+
   return (
-    <aside className="w-[320px] flex-none border-l border-border/60 bg-background/80 backdrop-blur-xl overflow-y-auto nice-scroll relative z-10">
+    <aside className={className}>
       <div className="px-5 pt-4 pb-3">
         <div className="flex items-baseline justify-between">
           <h2 className="font-display text-[14px] font-semibold tracking-[-0.005em] text-[#716e6e]">
