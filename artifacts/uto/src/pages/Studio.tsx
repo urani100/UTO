@@ -90,6 +90,18 @@ export default function Studio() {
     [undoable]
   );
 
+  // Toggling the theme also swaps the canvas ink and paper so the artwork
+  // tracks the surrounding chrome. Wired through the undoable history so
+  // the user can revert with ⌘Z.
+  const onToggleTheme = useCallback(() => {
+    setIsDark((d) => !d);
+    undoable.set((s) => ({
+      ...s,
+      textColor: s.backgroundColor,
+      backgroundColor: s.textColor,
+    }));
+  }, [undoable]);
+
   const updateShapeParam = useCallback(
     (key: string, v: number) => {
       undoable.set(
@@ -360,8 +372,6 @@ export default function Studio() {
   return (
     <div className="h-full w-full flex flex-col bg-background overflow-hidden">
       <Toolbar
-        projectName={projectName}
-        onProjectNameChange={setProjectName}
         canUndo={undoable.canUndo}
         canRedo={undoable.canRedo}
         onUndo={undoable.undo}
@@ -372,7 +382,7 @@ export default function Studio() {
         onCopySvg={onCopySvg}
         onExportPng={onExportPng}
         isDark={isDark}
-        onToggleDark={() => setIsDark((d) => !d)}
+        onToggleDark={onToggleTheme}
         undoDepth={undoable.depth}
         saveStatus={saveStatus}
         onSave={onSave}

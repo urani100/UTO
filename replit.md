@@ -106,6 +106,11 @@ artifacts/uto/
 - Dirty-state signature normalizes the work name (trim + fallback to "Untitled") so trailing whitespace doesn't get the user stuck in a permanent dirty state.
 - API server CORS: explicit allowlist of `REPLIT_DEV_DOMAIN` + `REPLIT_DOMAINS` (no wildcard reflection while sending credentials).
 - Clerk sign-in/up appearance: minimal — only `colorPrimary` (sage) and `fontFamily` (EB Garamond) at the global level, plus `headerTitle` / `headerSubtitle` styled to Inter / 15px / 12px / `#716e6e` / letter-spacing 1.10px / weight 500.
+- The toolbar has no editable project-name field. The piece's name is captured by `SaveDialog` on first save (and any save where the in-memory name is empty or "Untitled"); loaded works carry their stored name silently. The internal `projectName` state still drives export filenames and the SaveDialog's initial value.
+
+## Theme toggle
+
+- The moon icon in the toolbar is a single action that does two things in one undoable step: it toggles the `dark` class on `html` (drives the chrome) **and** swaps `state.textColor` ↔ `state.backgroundColor` on the canvas, so the artwork tracks the chrome. ⌘Z reverts the color swap (the `dark` class stays on, but a second click of the toggle returns to light).
 
 ## Responsive / mobile
 

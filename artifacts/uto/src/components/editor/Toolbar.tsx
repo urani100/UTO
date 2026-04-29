@@ -30,8 +30,6 @@ import { SHAPE_LIST } from "@/lib/shapes";
 import type { ShapeId } from "@/lib/types";
 
 interface Props {
-  projectName: string;
-  onProjectNameChange: (s: string) => void;
   canUndo: boolean;
   canRedo: boolean;
   onUndo: () => void;
@@ -60,20 +58,6 @@ function DesktopToolbar(props: Props) {
     <header className="h-[48px] flex-none border-b border-border/60 bg-background/85 backdrop-blur-xl z-40 relative">
       <div className="h-full px-4 flex items-center gap-3">
         <UtoWordmark />
-
-        <div className="h-4 w-px bg-border/80 mx-1" />
-
-        <input
-          value={props.projectName}
-          onChange={(e) => props.onProjectNameChange(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-          }}
-          placeholder="Untitled"
-          className="text-[12.5px] font-medium text-foreground bg-transparent border-b border-transparent hover:border-foreground/20 focus:border-foreground focus:outline-none py-0.5 w-[200px] placeholder:text-muted-foreground/70 transition-colors"
-          data-testid="input-project-name"
-          aria-label="Form name"
-        />
 
         <div className="flex-1" />
 
@@ -213,17 +197,7 @@ function MobileToolbar(props: Props) {
       <div className="h-full px-3 flex items-center gap-2">
         <UtoWordmark />
 
-        <input
-          value={props.projectName}
-          onChange={(e) => props.onProjectNameChange(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-          }}
-          placeholder="Untitled"
-          className="flex-1 min-w-0 text-[13px] font-medium text-foreground bg-transparent border-b border-transparent hover:border-foreground/20 focus:border-foreground focus:outline-none py-1 placeholder:text-muted-foreground/70 transition-colors truncate"
-          data-testid="input-project-name"
-          aria-label="Form name"
-        />
+        <div className="flex-1" />
 
         <SaveControls status={props.saveStatus} onSave={props.onSave} />
 
