@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Undo2,
   Redo2,
@@ -49,8 +48,6 @@ interface Props {
 }
 
 export function Toolbar(props: Props) {
-  const [editingName, setEditingName] = useState(false);
-
   return (
     <header className="h-[48px] flex-none border-b border-border/60 bg-background/85 backdrop-blur-xl z-40 relative">
       <div className="h-full px-4 flex items-center gap-3">
@@ -58,28 +55,17 @@ export function Toolbar(props: Props) {
 
         <div className="h-4 w-px bg-border/80 mx-1" />
 
-        {editingName ? (
-          <input
-            autoFocus
-            value={props.projectName}
-            onChange={(e) => props.onProjectNameChange(e.target.value)}
-            onBlur={() => setEditingName(false)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-            }}
-            className="text-[12.5px] font-medium bg-transparent border-b border-foreground/40 focus:border-foreground focus:outline-none py-0.5 w-[180px]"
-            data-testid="input-project-name"
-          />
-        ) : (
-          <button
-            type="button"
-            onClick={() => setEditingName(true)}
-            className="text-[12.5px] font-medium text-foreground hover:bg-foreground/[.04] -mx-1.5 px-1.5 py-1 rounded transition-colors"
-            data-testid="button-project-name"
-          >
-            {props.projectName}
-          </button>
-        )}
+        <input
+          value={props.projectName}
+          onChange={(e) => props.onProjectNameChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+          }}
+          placeholder="Untitled"
+          className="text-[12.5px] font-medium text-foreground bg-transparent border-b border-transparent hover:border-foreground/20 focus:border-foreground focus:outline-none py-0.5 w-[200px] placeholder:text-muted-foreground/70 transition-colors"
+          data-testid="input-project-name"
+          aria-label="Form name"
+        />
 
         <div className="flex-1" />
 

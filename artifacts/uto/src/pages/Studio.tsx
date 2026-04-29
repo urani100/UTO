@@ -12,6 +12,7 @@ import { Canvas } from "@/components/editor/Canvas";
 import { RightInspector } from "@/components/editor/RightInspector";
 import { StatusStrip } from "@/components/editor/StatusStrip";
 import { LibrarySheet } from "@/components/editor/LibrarySheet";
+import { SaveDialog } from "@/components/editor/SaveDialog";
 import type { SaveStatus } from "@/components/editor/SaveControls";
 import { useUndoable } from "@/hooks/useUndoable";
 import { useToast } from "@/hooks/use-toast";
@@ -54,6 +55,7 @@ export default function Studio() {
   const [savedSig, setSavedSig] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const inFlightRef = useRef(false);
@@ -93,9 +95,17 @@ export default function Studio() {
 
   const setShape = useCallback(
     (id: ShapeId) => {
+      if (state.shape === id) return;
+      // Changing the Form starts a new piece — clear the saved-work id
+      // so the next Save creates a fresh library entry instead of
+      // overwriting the previous one. Side effects live outside the
+      // undoable updater so the updater itself stays pure.
+      setCurrentWorkId(null);
+      setSavedSig(null);
+      setSavedAt(null);
       undoable.set((s) => ({ ...s, shape: id }));
     },
-    [undoable]
+    [state.shape, undoable]
   );
 
   const onExportSvg = useCallback(() => {
@@ -143,63 +153,90 @@ export default function Studio() {
     return { kind: "idle" };
   }, [isSaving, savedAt, savedSig, currentSig]);
 
-  const onSave = useCallback(async () => {
+  /** Returns true if the current name passes our "real name" gate. */
+  const nameNeedsPrompt = useCallback((n: string) => {
+    const t = n.trim();
+    return t.length === 0 || t.toLowerCase() === "untitled";
+  }, []);
+
+  /** Performs the actual create/update against the API. Pure of UI gating —
+   *  the dialog and the silent paths both call this. */
+  const persist = useCallback(
+    async (name: string): Promise<{ ok: boolean; didCreate: boolean }> => {
+      if (inFlightRef.current) return { ok: false, didCreate: false };
+      inFlightRef.current = true;
+      setIsSaving(true);
+      const payload = {
+        name,
+        shape: state.shape,
+        state: state as unknown as Record<string, unknown>,
+      };
+      try {
+        let result;
+        let didCreate = !currentWorkId;
+        if (currentWorkId) {
+          try {
+            result = await updateWorkApi(currentWorkId, payload);
+          } catch (err) {
+            if (isHttpStatus(err, 404)) {
+              setCurrentWorkId(null);
+              result = await createWorkApi(payload);
+              didCreate = true;
+            } else {
+              throw err;
+            }
+          }
+        } else {
+          result = await createWorkApi(payload);
+        }
+        setCurrentWorkId(result.id);
+        setSavedSig(workSignature(name, state));
+        setSavedAt(new Date());
+        qc.invalidateQueries({ queryKey: getListWorksQueryKey() });
+        return { ok: true, didCreate };
+      } catch (e) {
+        toast({
+          title: "Could not save",
+          description: String(e),
+          variant: "destructive",
+        });
+        return { ok: false, didCreate: false };
+      } finally {
+        inFlightRef.current = false;
+        setIsSaving(false);
+      }
+    },
+    [state, currentWorkId, qc, toast]
+  );
+
+  const onSave = useCallback(() => {
     if (!isSignedIn) {
-      // Soft auth gate: send anonymous users through sign-in; they can hit
-      // save again afterwards. Applies to both button and Cmd/Ctrl+S paths.
       setLocation("/sign-in");
       return;
     }
-    // Synchronous mutex — state is set asynchronously, so two rapid
-    // invocations could both clear the state guard and double-create.
     if (inFlightRef.current) return;
-    inFlightRef.current = true;
-    setIsSaving(true);
-    const name = projectName.trim() || "Untitled";
-    const payload = {
-      name,
-      shape: state.shape,
-      state: state as unknown as Record<string, unknown>,
-    };
-    try {
-      let result;
-      let didCreate = !currentWorkId;
-      if (currentWorkId) {
-        try {
-          result = await updateWorkApi(currentWorkId, payload);
-        } catch (err) {
-          // Fall back to create if the work was deleted from another
-          // surface (e.g. library) and our id is stale.
-          if (isHttpStatus(err, 404)) {
-            setCurrentWorkId(null);
-            result = await createWorkApi(payload);
-            didCreate = true;
-          } else {
-            throw err;
-          }
-        }
-      } else {
-        result = await createWorkApi(payload);
-      }
-      setCurrentWorkId(result.id);
-      setSavedSig(workSignature(name, state));
-      setSavedAt(new Date());
-      qc.invalidateQueries({ queryKey: getListWorksQueryKey() });
-      toast({
-        title: didCreate ? "Created" : "Saved",
-        description: `"${name}"`,
-      });
-    } catch (e) {
-      toast({
-        title: "Could not save",
-        description: String(e),
-        variant: "destructive",
-      });
-    } finally {
-      inFlightRef.current = false;
-      setIsSaving(false);
+    // First save of a piece, or empty/Untitled name → ask for a name first.
+    if (currentWorkId == null || nameNeedsPrompt(projectName)) {
+      setSaveDialogOpen(true);
+      return;
     }
-  }, [isSignedIn, projectName, state, currentWorkId, qc, toast, setLocation]);
+    // Iterating on an already-named work — silent update with a small toast.
+    void (async () => {
+      const r = await persist(projectName.trim());
+      if (r.ok) toast({ title: "Saved" });
+    })();
+  }, [isSignedIn, currentWorkId, projectName, nameNeedsPrompt, persist, toast, setLocation]);
+
+  const onConfirmSave = useCallback(
+    async (name: string) => {
+      setProjectName(name);
+      const r = await persist(name);
+      if (r.ok) {
+        setSaveDialogOpen(false);
+      }
+    },
+    [persist]
+  );
 
   const onLoadWork = useCallback(
     (work: { id: string; name: string; state: CanvasState }) => {
@@ -317,6 +354,13 @@ export default function Studio() {
         open={libraryOpen}
         onOpenChange={setLibraryOpen}
         onLoadWork={onLoadWork}
+      />
+      <SaveDialog
+        open={saveDialogOpen}
+        initialName={projectName}
+        busy={isSaving}
+        onCancel={() => setSaveDialogOpen(false)}
+        onConfirm={onConfirmSave}
       />
     </div>
   );
