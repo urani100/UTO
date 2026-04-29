@@ -1,20 +1,64 @@
-const HEADER_FONT_FAMILY =
+const UI_FONT_FAMILY =
   '"Inter", system-ui, -apple-system, "Segoe UI", sans-serif';
 
-const headerTitleStyle = {
-  fontFamily: HEADER_FONT_FAMILY,
-  fontSize: "15px",
+const UI_COLOR = "#716e6e";
+const UI_LETTER_SPACING = "1.10px";
+
+const baseLabel = {
+  fontFamily: UI_FONT_FAMILY,
   fontWeight: 500,
-  color: "#716e6e",
-  letterSpacing: "1.10px",
+  color: UI_COLOR,
+  letterSpacing: UI_LETTER_SPACING,
+} as const;
+
+const headerTitleStyle = {
+  ...baseLabel,
+  fontSize: "15px",
 } as const;
 
 const headerSubtitleStyle = {
-  fontFamily: HEADER_FONT_FAMILY,
+  ...baseLabel,
+  fontSize: "12px",
+} as const;
+
+const formFieldLabelStyle = {
+  ...baseLabel,
+  fontSize: "12px",
+} as const;
+
+const formFieldInputStyle = {
+  ...baseLabel,
+  fontSize: "12px",
+  fontWeight: 400,
+} as const;
+
+const socialButtonsBlockButtonStyle = {
+  ...baseLabel,
+  fontSize: "12px",
+} as const;
+
+const dividerTextStyle = {
+  ...baseLabel,
+  fontSize: "12px",
+} as const;
+
+const footerActionTextStyle = {
+  ...baseLabel,
+  fontSize: "12px",
+} as const;
+
+const footerActionLinkStyle = {
+  fontFamily: UI_FONT_FAMILY,
   fontSize: "12px",
   fontWeight: 500,
-  color: "#716e6e",
-  letterSpacing: "1.10px",
+  letterSpacing: UI_LETTER_SPACING,
+} as const;
+
+const formButtonPrimaryStyle = {
+  fontFamily: UI_FONT_FAMILY,
+  fontSize: "15px",
+  fontWeight: 500,
+  letterSpacing: UI_LETTER_SPACING,
 } as const;
 
 export const clerkAppearance = {
@@ -30,5 +74,13 @@ export const clerkAppearance = {
   elements: {
     headerTitle: headerTitleStyle,
     headerSubtitle: headerSubtitleStyle,
+    formFieldLabel: formFieldLabelStyle,
+    formFieldInput: formFieldInputStyle,
+    socialButtonsBlockButton: socialButtonsBlockButtonStyle,
+    socialButtonsBlockButtonText: socialButtonsBlockButtonStyle,
+    dividerText: dividerTextStyle,
+    footerActionText: footerActionTextStyle,
+    footerActionLink: footerActionLinkStyle,
+    formButtonPrimary: formButtonPrimaryStyle,
   },
 };
