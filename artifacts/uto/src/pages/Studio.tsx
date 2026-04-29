@@ -372,6 +372,8 @@ export default function Studio() {
   return (
     <div className="h-full w-full flex flex-col bg-background overflow-hidden">
       <Toolbar
+        projectName={projectName}
+        onProjectNameChange={setProjectName}
         canUndo={undoable.canUndo}
         canRedo={undoable.canRedo}
         onUndo={undoable.undo}
