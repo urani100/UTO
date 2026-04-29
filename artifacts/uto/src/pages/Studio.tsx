@@ -60,7 +60,7 @@ export default function Studio() {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const inFlightRef = useRef(false);
   const { toast } = useToast();
-  const { isSignedIn } = useUser();
+  const { isLoaded: clerkLoaded, isSignedIn } = useUser();
   const [, setLocation] = useLocation();
   const qc = useQueryClient();
 
@@ -108,13 +108,44 @@ export default function Studio() {
     [state.shape, undoable]
   );
 
+  /** Auth gate for SAVE and other API-bound actions. Lets clicks through
+   *  while Clerk is still hydrating (the API enforces auth on its end, so
+   *  a stale-undefined signal here can't grant unauthorised access).
+   *  Bouncing during that brief window would falsely log out users who
+   *  actually have a session. */
+  const requireAuthForApi = useCallback((): boolean => {
+    if (clerkLoaded && isSignedIn === false) {
+      setLocation("/sign-in");
+      return false;
+    }
+    return true;
+  }, [clerkLoaded, isSignedIn, setLocation]);
+
+  /** Auth gate for EXPORT actions. Exports run entirely client-side so we
+   *  can't fall back on the API to gate; we must wait for Clerk to resolve
+   *  before allowing the action through. While loading we show a brief
+   *  notice and abort. */
+  const requireAuthForExport = useCallback((): boolean => {
+    if (!clerkLoaded) {
+      toast({ title: "Checking session…", description: "Try again in a moment." });
+      return false;
+    }
+    if (!isSignedIn) {
+      setLocation("/sign-in");
+      return false;
+    }
+    return true;
+  }, [clerkLoaded, isSignedIn, setLocation, toast]);
+
   const onExportSvg = useCallback(() => {
+    if (!requireAuthForExport()) return;
     if (!svgRef.current) return;
     downloadSvg(svgRef.current, sanitizeFileName(projectName) + ".svg");
     toast({ title: "SVG exported", description: "Saved to your downloads." });
-  }, [projectName, toast]);
+  }, [requireAuthForExport, projectName, toast]);
 
   const onCopySvg = useCallback(async () => {
+    if (!requireAuthForExport()) return;
     if (!svgRef.current) return;
     try {
       await copySvgToClipboard(svgRef.current);
@@ -122,10 +153,11 @@ export default function Studio() {
     } catch {
       toast({ title: "Could not copy", description: "Browser blocked clipboard access.", variant: "destructive" });
     }
-  }, [toast]);
+  }, [requireAuthForExport, toast]);
 
   const onExportPng = useCallback(
     async (scale: 1 | 2 | 4) => {
+      if (!requireAuthForExport()) return;
       if (!svgRef.current) return;
       toast({ title: `Rendering PNG ${scale}×…` });
       try {
@@ -134,7 +166,7 @@ export default function Studio() {
         toast({ title: "Export failed", description: String(e), variant: "destructive" });
       }
     },
-    [projectName, toast]
+    [requireAuthForExport, projectName, toast]
   );
 
   // ---------------------------------------------------------------------------
@@ -210,10 +242,7 @@ export default function Studio() {
   );
 
   const onSave = useCallback(() => {
-    if (!isSignedIn) {
-      setLocation("/sign-in");
-      return;
-    }
+    if (!requireAuthForApi()) return;
     if (inFlightRef.current) return;
     // First save of a piece, or empty/Untitled name → ask for a name first.
     if (currentWorkId == null || nameNeedsPrompt(projectName)) {
@@ -225,7 +254,7 @@ export default function Studio() {
       const r = await persist(projectName.trim());
       if (r.ok) toast({ title: "Saved" });
     })();
-  }, [isSignedIn, currentWorkId, projectName, nameNeedsPrompt, persist, toast, setLocation]);
+  }, [requireAuthForApi, currentWorkId, projectName, nameNeedsPrompt, persist, toast]);
 
   const onConfirmSave = useCallback(
     async (name: string) => {
@@ -250,14 +279,16 @@ export default function Studio() {
     [undoable]
   );
 
-  // Reset save tracking when user signs out.
+  // Reset save tracking when user signs out. Guard on `clerkLoaded`
+  // so we don't clobber state during the brief hydration window where
+  // isSignedIn is still undefined.
   useEffect(() => {
-    if (!isSignedIn) {
+    if (clerkLoaded && isSignedIn === false) {
       setCurrentWorkId(null);
       setSavedSig(null);
       setSavedAt(null);
     }
-  }, [isSignedIn]);
+  }, [clerkLoaded, isSignedIn]);
 
   // ---------------------------------------------------------------------------
   // Keyboard shortcuts

@@ -95,7 +95,59 @@ function ClerkProviderWithRoutes() {
   );
 }
 
+/**
+ * Lightweight client-side hardening: blocks the right-click context menu
+ * and the most common "view source / open devtools" keyboard shortcuts.
+ * This is a deterrent only — anyone determined can still open DevTools
+ * via the browser menu — but it prevents casual inspection.
+ */
+function useDisableInspection() {
+  useEffect(() => {
+    const onContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      const ctrlOrMeta = e.ctrlKey || e.metaKey;
+      // F12 — open DevTools
+      if (e.key === "F12") {
+        e.preventDefault();
+        return;
+      }
+      // Ctrl/Cmd+U — view source
+      if (ctrlOrMeta && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "u") {
+        e.preventDefault();
+        return;
+      }
+      // Ctrl/Cmd+Shift+I/J/C — DevTools / console / inspect element
+      if (
+        ctrlOrMeta &&
+        e.shiftKey &&
+        ["i", "j", "c"].includes(e.key.toLowerCase())
+      ) {
+        e.preventDefault();
+        return;
+      }
+      // Ctrl/Cmd+S — would otherwise prompt the browser save-page dialog.
+      // Studio.tsx already handles ⌘S for its own save action; intercepting
+      // here is a safety net for routes that don't (sign-in / sign-up).
+      if (ctrlOrMeta && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        return;
+      }
+    };
+
+    document.addEventListener("contextmenu", onContextMenu);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("contextmenu", onContextMenu);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
+}
+
 function App() {
+  useDisableInspection();
   return (
     <WouterRouter base={basePath}>
       <ClerkProviderWithRoutes />

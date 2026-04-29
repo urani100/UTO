@@ -96,11 +96,20 @@ artifacts/uto/
 
 ## Auth + persistence
 
-- Soft auth gate: anonymous users can edit freely. Saving (button or `⌘S`) redirects them to `/sign-in`. Library is hidden until they sign in.
+- Soft auth gate: anonymous users can edit freely. Saving (button or `⌘S`) AND exporting (SVG / Copy SVG / PNG) both redirect anonymous users to `/sign-in`. Library is hidden until they sign in.
+- Two split gates in `Studio.tsx`:
+  - `requireAuthForApi` — used by save. Lets clicks through during the brief Clerk hydration window because the API enforces auth on its end.
+  - `requireAuthForExport` — used by exports. Exports run entirely client-side, so this gate must wait for `clerkLoaded` before deciding; while loading it shows a "Checking session…" toast and aborts.
 - Cookie-based Clerk session (same-origin via the workspace proxy). Never call `setAuthTokenGetter` — web is cookie-auth only.
 - Save flow uses a `useRef` mutex to prevent duplicate creates from rapid double-fires, and falls back from `PUT /api/works/:id` 404 to `POST /api/works` when the loaded work was deleted from another surface.
+- First save of a piece (or any save when the toolbar name is empty / "Untitled") opens a `SaveDialog` modal that requires a real name; subsequent saves are silent with a small "Saved" toast. Changing the Form clears the saved-work id so the next save creates a new library entry.
 - Dirty-state signature normalizes the work name (trim + fallback to "Untitled") so trailing whitespace doesn't get the user stuck in a permanent dirty state.
 - API server CORS: explicit allowlist of `REPLIT_DEV_DOMAIN` + `REPLIT_DOMAINS` (no wildcard reflection while sending credentials).
+- Clerk sign-in/up appearance: minimal — only `colorPrimary` (sage) and `fontFamily` (EB Garamond) at the global level, plus `headerTitle` / `headerSubtitle` styled to Inter / 15px / 12px / `#716e6e` / letter-spacing 1.10px / weight 500.
+
+## Client-side hardening
+
+- `useDisableInspection` in `App.tsx` blocks `contextmenu` and the common DevTools shortcuts (F12, Ctrl/Cmd+U, Ctrl/Cmd+Shift+I/J/C, Ctrl/Cmd+S). This is a deterrent against casual inspection only — it does NOT prevent a determined user from opening DevTools via the browser menu, viewing network traffic, or reading the publicly-served bundle. Treat anything shipped to the client as public.
 
 ## User preferences
 

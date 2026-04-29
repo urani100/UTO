@@ -75,8 +75,8 @@ export function LibrarySheet({ open, onOpenChange, onLoadWork }: Props) {
           </SheetTitle>
           <SheetDescription className="text-[12.5px] text-muted-foreground">
             {isSignedIn
-              ? `${works.length} ${works.length === 1 ? "work" : "works"}`
-              : "Sign in to see your saved works."}
+              ? `${works.length} ${works.length === 1 ? "form" : "forms"}`
+              : "Sign in to see your saved forms."}
           </SheetDescription>
         </SheetHeader>
 
