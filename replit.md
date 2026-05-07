@@ -84,7 +84,6 @@ artifacts/uto/
 - **Sun** is a hybrid: a central spiral body + an array of radial rays.
 - **Jitter** samples a 2-D simplex noise field via per-glyph `tspan dy`, so neighboring glyphs flow rather than scatter.
 - **Render is debounced 50 ms** so dragging sliders never janks the canvas.
-- **Path length + fill density** — `RenderedPath` carries optional `pathLen` (exact arc length in px, computed by the shape via `arcLengthPx`) and `fillRatio` (multiplier on the character-capacity estimate). `Canvas.tsx` uses `p.pathLen ?? approxLen(p.d)` and `p.fillRatio ?? 1.05`, so shapes that don't opt in keep the legacy slight over-fill. The heart is the first opt-in: it walks the cardioid with a ~10° angular gap at the top cusp (open path, `closed=false`), reports its real `arcLengthPx`, and sets `fillRatio: 0.95` so the text never wraps into itself at the cleavage.
 
 ## Keyboard shortcuts
 

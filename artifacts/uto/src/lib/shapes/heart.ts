@@ -1,6 +1,6 @@
 import type { CanvasState, ShapeMeta, ShapeRender } from "../types";
 import { CANVAS_H, CANVAS_W } from "../types";
-import { arcLengthPx, smoothPathPx } from "../engine/path";
+import { smoothPathPx } from "../engine/path";
 
 export const heartMeta: ShapeMeta = {
   id: "heart",
@@ -25,35 +25,18 @@ export function renderHeart(state: CanvasState): ShapeRender {
   const direction = p.direction! >= 0 ? 1 : -1;
   const startRad = (p.startAngle! * Math.PI) / 180;
 
-  // The cardioid has a cusp at t=0 (and t=2π). Walking the full 0..2π and closing the path
-  // forces the head and tail of the textPath to meet at the cusp, where the tangent is undefined
-  // — glyphs collide head-to-tail. Skip a small angle on each end so the path is open and there
-  // is a clean breathing gap at the top cleavage.
   const samples = 480;
-  const gap = 0.18; // radians (~10°) — angular gap at the cusp
-  const span = Math.PI * 2 - gap * 2;
   const pts: Array<[number, number]> = [];
   for (let i = 0; i <= samples; i++) {
     const tt = i / samples;
-    const t = startRad + direction * (gap + tt * span);
+    const t = startRad + direction * tt * Math.PI * 2;
     const x = 16 * Math.pow(Math.sin(t), 3);
     const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
     pts.push([cx + x * amp, cy - y * amp]);
   }
-  const d = smoothPathPx(pts, false, 0.5);
-  const pathLen = arcLengthPx(pts);
+  const d = smoothPathPx(pts, true, 0.5);
   return {
     guide: d,
-    paths: [
-      {
-        id: "heart-path",
-        d,
-        fontScale: 1,
-        opacity: 1,
-        pathLen,
-        // Closed single-lap silhouette → under-fill so the tail never crowds the head.
-        fillRatio: 0.95,
-      },
-    ],
+    paths: [{ id: "heart-path", d, fontScale: 1, opacity: 1 }],
   };
 }

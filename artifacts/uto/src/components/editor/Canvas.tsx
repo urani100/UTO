@@ -97,9 +97,7 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                     ))}
                   </defs>
                   {paths.map((p) => {
-                    const len = p.pathLen ?? approxLen(p.d);
-                    const ratio = p.fillRatio ?? 1.05;
-                    const estimateChars = Math.max(40, Math.floor((len / (debounced.fontSize * p.fontScale * 0.5)) * ratio));
+                    const estimateChars = Math.max(40, Math.floor((approxLen(p.d) / (debounced.fontSize * p.fontScale * 0.5)) * 1.05));
                     const filled = fillToLength(cooked, estimateChars);
                     return (
                       <text
@@ -240,7 +238,7 @@ function renderJitterTspans(text: string, intensity: number, scale: number, seed
 
 function estimatePathLen(r: ShapeRender): number {
   let len = 0;
-  for (const p of r.paths ?? []) len += p.pathLen ?? approxLen(p.d);
+  for (const p of r.paths ?? []) len += approxLen(p.d);
   for (const ray of r.rays ?? []) len += ray.length;
   return Math.round(len);
 }

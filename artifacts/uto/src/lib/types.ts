@@ -64,10 +64,6 @@ export interface RenderedPath {
   fontScale: number;
   opacity: number;
   side?: "left" | "right";
-  /** Exact path arc length in pixels. When present, Canvas uses it instead of the SVG-command heuristic. */
-  pathLen?: number;
-  /** Multiplier applied to the estimated character capacity. Default 1.05 (slight over-fill so open paths never look starved). Closed single-lap shapes should pass <1 to leave a breathing gap. */
-  fillRatio?: number;
 }
 
 export interface RenderedRay {
