@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "UTO — Text Shape Studio"
+title = "UTO"
 version = "1.0.0"
 id = "artifacts/uto"
 router = "path"
