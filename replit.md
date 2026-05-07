@@ -137,3 +137,9 @@ artifacts/uto/
 - The canvas opens already alive with the Cathedral preset (Dickinson + Spiral) — never an empty placeholder.
 - Project name in the toolbar is editable inline.
 - Math panel ("Behind the curve") explains each shape's formula in plain language.
+
+## Engine + tests
+
+- The typography engine lives in `src/lib/engine/` (`path.ts`, `text.ts`, `noise.ts`, `measure.ts`) and has no React dependency. See `ARCHITECTURE.md` for the layered design and the per-`RenderedPath` `FillPolicy` model (`legacy` / `repeat-measured` / `fit-once`). Default policy is `legacy`, which preserves bit-identical output for every existing shape; new shapes opt in to the measured engine without affecting others.
+- `measure.ts` exposes both the legacy heuristics (`legacyApproxLen`, `legacyAvgCharPx`) and industry-standard browser measurement (`measurePathLengthPx` via `getTotalLength`, `measureAvgCharAdvancePx` via `getComputedTextLength`).
+- Vitest + jsdom unit tests live under `src/lib/engine/__tests__/`. Run with `pnpm --filter @workspace/uto run test` (watch) or `test:run` (CI). Engine modules should keep their coverage high — they are pure.

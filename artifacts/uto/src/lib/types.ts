@@ -64,6 +64,12 @@ export interface RenderedPath {
   fontScale: number;
   opacity: number;
   side?: "left" | "right";
+  /**
+   * Optional per-path text-fill policy. When omitted, the renderer applies
+   * the legacy heuristic (preserves the historical visual). Shapes opt in to
+   * the measured engine by setting this. See `lib/engine/measure.ts`.
+   */
+  policy?: import("./engine/measure").FillPolicy;
 }
 
 export interface RenderedRay {

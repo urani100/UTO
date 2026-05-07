@@ -3,8 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { CanvasState, ShapeRender } from "@/lib/types";
 import { CANVAS_H, CANVAS_W } from "@/lib/types";
 import { renderShape } from "@/lib/shapes";
-import { applyCase, fillToLength } from "@/lib/engine/text";
+import { applyCase } from "@/lib/engine/text";
 import { sampleNoise } from "@/lib/engine/noise";
+import {
+  buildShapeText,
+  legacyApproxLen,
+  legacyAvgCharPx,
+} from "@/lib/engine/measure";
 
 interface Props {
   state: CanvasState;
@@ -34,7 +39,6 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
     return r;
   }, [debounced, onMetaUpdate]);
 
-  const cooked = applyCase(debounced.text || "Begin with a sentence.", debounced.textCase);
   const paths = render.paths ?? [];
   const lines = render.lines ?? [];
   const rays = render.rays ?? [];
@@ -97,8 +101,13 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                     ))}
                   </defs>
                   {paths.map((p) => {
-                    const estimateChars = Math.max(40, Math.floor((approxLen(p.d) / (debounced.fontSize * p.fontScale * 0.5)) * 1.05));
-                    const filled = fillToLength(cooked, estimateChars);
+                    const filled = buildShapeText({
+                      rawText: debounced.text,
+                      textCase: debounced.textCase,
+                      pathLenPx: legacyApproxLen(p.d),
+                      avgCharPx: legacyAvgCharPx(debounced.fontSize * p.fontScale),
+                      policy: p.policy,
+                    }).text;
                     return (
                       <text
                         key={p.id}
@@ -221,11 +230,6 @@ function CornerMarks() {
   );
 }
 
-function approxLen(d: string): number {
-  const cmds = d.split(/[MLCAQHVZ]/i).length;
-  return Math.max(400, cmds * 18);
-}
-
 function renderJitterTspans(text: string, intensity: number, scale: number, seed: string) {
   const seedNum = seed.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const dy: string[] = [];
@@ -238,7 +242,7 @@ function renderJitterTspans(text: string, intensity: number, scale: number, seed
 
 function estimatePathLen(r: ShapeRender): number {
   let len = 0;
-  for (const p of r.paths ?? []) len += approxLen(p.d);
+  for (const p of r.paths ?? []) len += legacyApproxLen(p.d);
   for (const ray of r.rays ?? []) len += ray.length;
   return Math.round(len);
 }
