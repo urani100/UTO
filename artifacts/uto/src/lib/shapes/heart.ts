@@ -49,6 +49,6 @@ export function renderHeart(state: CanvasState): ShapeRender {
   const d = smoothPathPx(pts, true, 0.5);
   return {
     guide: d,
-    paths: [{ id: "heart-path", d, fontScale: 1, opacity: 1, arcLen, policy: { kind: "fit-once", underfill: 0.95 } }],
+    paths: [{ id: "heart-path", d, fontScale: 1, opacity: 1, arcLen, policy: { kind: "repeat-measured" } }],
   };
 }
