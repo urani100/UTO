@@ -34,9 +34,13 @@ export function renderStar(state: CanvasState): ShapeRender {
     const a = rot + (i * Math.PI) / points;
     verts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
   }
+  const arcLen = verts.slice(1).reduce((sum, v, i) => {
+    const prev = verts[i]!;
+    return sum + Math.hypot(v[0] - prev[0], v[1] - prev[1]);
+  }, 0);
   const d = pointsToPathPx(verts, true);
   return {
     guide: d,
-    paths: [{ id: "star-path", d, fontScale: 1, opacity: 1 }],
+    paths: [{ id: "star-path", d, fontScale: 1, opacity: 1, arcLen, policy: { kind: "repeat-measured" } }],
   };
 }
