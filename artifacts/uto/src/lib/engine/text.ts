@@ -21,12 +21,10 @@ export function fillToLength(text: string, estimatedChars: number): string {
   const trimmed = text.trim();
   if (!trimmed) return "";
   if (trimmed.length >= estimatedChars) return trimmed;
-  const sep = trimmed.endsWith(".") || trimmed.endsWith("!") || trimmed.endsWith("?") ? "  " : " · ";
-  let out = trimmed;
-  while (out.length < estimatedChars) {
-    out += sep + trimmed;
-  }
-  return out;
+  const sep = /[.!?]$/.test(trimmed) ? "  " : " · ";
+  const unit = sep + trimmed;
+  const reps = Math.ceil((estimatedChars - trimmed.length) / unit.length);
+  return trimmed + unit.repeat(reps);
 }
 
 /** Split prose into word tokens preserving punctuation. */

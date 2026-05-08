@@ -30,8 +30,14 @@ export function renderHeart(state: CanvasState): ShapeRender {
   for (let i = 0; i <= samples; i++) {
     const tt = i / samples;
     const t = startRad + direction * tt * Math.PI * 2;
-    const x = 16 * Math.pow(Math.sin(t), 3);
-    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+    const s = Math.sin(t);
+    const c = Math.cos(t);
+    const c2 = c * c;
+    const cos2t = 2 * c2 - 1;
+    const cos3t = c * (4 * c2 - 3);
+    const cos4t = 2 * cos2t * cos2t - 1;
+    const x = 16 * s * s * s;
+    const y = 13 * c - 5 * cos2t - 2 * cos3t - cos4t;
     pts.push([cx + x * amp, cy - y * amp]);
   }
   const d = smoothPathPx(pts, true, 0.5);
