@@ -84,6 +84,7 @@ export function SaveDialog({ open, initialName, busy, onCancel, onConfirm }: Pro
             id="save-form-name"
             autoFocus
             value={name}
+            maxLength={120}
             onChange={(e) => setName(e.target.value)}
             onBlur={() => setTouched(true)}
             onKeyDown={(e) => {
