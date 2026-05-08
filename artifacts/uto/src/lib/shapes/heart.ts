@@ -32,7 +32,7 @@ export function renderHeart(state: CanvasState): ShapeRender {
 
   const samples = 480;
   const pts: Array<[number, number]> = [];
-  for (let i = 0; i <= samples; i++) {
+  for (let i = 0; i < samples; i++) {
     const tt = i / samples;
     const t = startRad + direction * tt * Math.PI * 2;
     const s = Math.sin(t);
