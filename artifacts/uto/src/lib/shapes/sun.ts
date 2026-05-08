@@ -25,7 +25,10 @@ export const sunMeta: ShapeMeta = {
     { key: "rays", label: "Rays", min: 6, max: 36, step: 1 },
     { key: "body", label: "Body radius", min: 60, max: 180, step: 2, unit: "px" },
     { key: "bodyTurns", label: "Body turns", min: 1.5, max: 6, step: 0.25 },
-    { key: "bodyDirection", label: "Body direction", min: -1, max: 1, step: 2 },
+    { key: "bodyDirection", label: "Body direction", min: -1, max: 1, step: 2, options: [
+      { value: -1, label: "↺", aria: "Counter-clockwise" },
+      { value: 1, label: "↻", aria: "Clockwise" },
+    ]},
     { key: "wordsPerRay", label: "Words per ray", min: 1, max: 8, step: 1 },
     { key: "rayLength", label: "Ray length", min: 60, max: 240, step: 2, unit: "px" },
     { key: "rayLengthJitter", label: "Length variance", min: 0, max: 1, step: 0.05 },
