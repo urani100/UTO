@@ -12,10 +12,7 @@ export const heartMeta: ShapeMeta = {
   defaults: { amplitude: 1, direction: 1, startAngle: 90 },
   params: [
     { key: "amplitude", label: "Scale", min: 0.6, max: 1.4, step: 0.02 },
-    { key: "direction", label: "Direction", min: -1, max: 1, step: 2, options: [
-      { value: -1, label: "↺", aria: "Counter-clockwise" },
-      { value: 1, label: "↻", aria: "Clockwise" },
-    ]},
+    { key: "direction", label: "Direction", min: -1, max: 1, step: 2 },
     { key: "startAngle", label: "Start", min: 0, max: 360, step: 5, unit: "°" },
   ],
 };
@@ -46,6 +43,6 @@ export function renderHeart(state: CanvasState): ShapeRender {
   const d = smoothPathPx(pts, true, 0.5);
   return {
     guide: d,
-    paths: [{ id: "heart-path", d, fontScale: 1, opacity: 1, policy: { kind: "fit-once", underfill: 0.95 } }],
+    paths: [{ id: "heart-path", d, fontScale: 1, opacity: 1 }],
   };
 }
