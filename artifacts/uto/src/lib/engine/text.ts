@@ -21,7 +21,7 @@ export function fillToLength(text: string, estimatedChars: number): string {
   const trimmed = text.trim();
   if (!trimmed) return "";
   if (trimmed.length >= estimatedChars) return trimmed;
-  const sep = /[.!?]$/.test(trimmed) ? "  " : " · ";
+  const sep = "  ";
   const unit = sep + trimmed;
   const reps = Math.ceil((estimatedChars - trimmed.length) / unit.length);
   return trimmed + unit.repeat(reps);

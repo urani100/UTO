@@ -30,10 +30,10 @@ describe("fillToLength", () => {
     expect(fillToLength("  hello world  ", 5)).toBe("hello world");
   });
 
-  it("repeats with bullet separator when text doesn't end in punctuation", () => {
+  it("repeats with double-space separator when text doesn't end in punctuation", () => {
     const out = fillToLength("hello", 20);
     expect(out.startsWith("hello")).toBe(true);
-    expect(out.includes(" · ")).toBe(true);
+    expect(out.includes("  ")).toBe(true);
     expect(out.length).toBeGreaterThanOrEqual(20);
   });
 
