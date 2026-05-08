@@ -11,44 +11,12 @@ export function n2p(x: number, y: number): [number, number] {
 
 /** Convert an array of normalized [0..1] points into an SVG path d-string. */
 export function pointsToPath(points: Array<[number, number]>, closed = false): string {
-  if (points.length === 0) return "";
-  const [x0, y0] = n2p(points[0]![0], points[0]![1]);
-  let d = `M ${x0.toFixed(2)} ${y0.toFixed(2)}`;
-  for (let i = 1; i < points.length; i++) {
-    const [x, y] = n2p(points[i]![0], points[i]![1]);
-    d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
-  }
-  if (closed) d += " Z";
-  return d;
+  return pointsToPathPx(points.map(([x, y]) => n2p(x, y)), closed);
 }
 
-/** Build a smooth catmull-rom-ish cubic-Bezier path through the points. */
+/** Build a smooth catmull-rom-ish cubic-Bezier path through normalized points. */
 export function smoothPath(points: Array<[number, number]>, closed = false, tension = 0.5): string {
-  if (points.length < 2) return pointsToPath(points, closed);
-  const ps = points.map(([x, y]) => n2p(x, y));
-  const n = ps.length;
-  const get = (i: number): [number, number] => {
-    if (closed) return ps[((i % n) + n) % n]!;
-    return ps[Math.max(0, Math.min(n - 1, i))]!;
-  };
-
-  let d = `M ${ps[0]![0].toFixed(2)} ${ps[0]![1].toFixed(2)}`;
-  const last = closed ? n : n - 1;
-  for (let i = 0; i < last; i++) {
-    const p0 = get(i - 1);
-    const p1 = get(i);
-    const p2 = get(i + 1);
-    const p3 = get(i + 2);
-
-    const c1x = p1[0] + ((p2[0] - p0[0]) / 6) * tension * 2;
-    const c1y = p1[1] + ((p2[1] - p0[1]) / 6) * tension * 2;
-    const c2x = p2[0] - ((p3[0] - p1[0]) / 6) * tension * 2;
-    const c2y = p2[1] - ((p3[1] - p1[1]) / 6) * tension * 2;
-
-    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}`;
-  }
-  if (closed) d += " Z";
-  return d;
+  return smoothPathPx(points.map(([x, y]) => n2p(x, y)), closed, tension);
 }
 
 /**
@@ -79,12 +47,12 @@ export function archimedeanSpiral(opts: {
 /** As pointsToPath but takes pixel coordinates directly (no normalization mapping). */
 export function pointsToPathPx(points: Array<[number, number]>, closed = false): string {
   if (points.length === 0) return "";
-  let d = `M ${points[0]![0].toFixed(2)} ${points[0]![1].toFixed(2)}`;
+  const segs: string[] = [`M ${points[0]![0].toFixed(2)} ${points[0]![1].toFixed(2)}`];
   for (let i = 1; i < points.length; i++) {
-    d += ` L ${points[i]![0].toFixed(2)} ${points[i]![1].toFixed(2)}`;
+    segs.push(`L ${points[i]![0].toFixed(2)} ${points[i]![1].toFixed(2)}`);
   }
-  if (closed) d += " Z";
-  return d;
+  if (closed) segs.push("Z");
+  return segs.join(" ");
 }
 
 /** Smooth path from pixel coordinates. */
@@ -95,7 +63,7 @@ export function smoothPathPx(points: Array<[number, number]>, closed = false, te
     if (closed) return points[((i % n) + n) % n]!;
     return points[Math.max(0, Math.min(n - 1, i))]!;
   };
-  let d = `M ${points[0]![0].toFixed(2)} ${points[0]![1].toFixed(2)}`;
+  const segs: string[] = [`M ${points[0]![0].toFixed(2)} ${points[0]![1].toFixed(2)}`];
   const last = closed ? n : n - 1;
   for (let i = 0; i < last; i++) {
     const p0 = get(i - 1);
@@ -106,10 +74,10 @@ export function smoothPathPx(points: Array<[number, number]>, closed = false, te
     const c1y = p1[1] + ((p2[1] - p0[1]) / 6) * tension * 2;
     const c2x = p2[0] - ((p3[0] - p1[0]) / 6) * tension * 2;
     const c2y = p2[1] - ((p3[1] - p1[1]) / 6) * tension * 2;
-    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}`;
+    segs.push(`C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}`);
   }
-  if (closed) d += " Z";
-  return d;
+  if (closed) segs.push("Z");
+  return segs.join(" ");
 }
 
 /** Approximate path arc length from sampled points. */
