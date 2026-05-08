@@ -125,7 +125,7 @@ function DesktopToolbar(props: Props) {
                     onClick={() => props.onPickShape(meta.id)}
                     data-testid={`shape-${meta.id}`}
                     className={
-                      "h-7 px-2.5 rounded text-left text-[12px] font-medium transition-colors " +
+                      "h-7 px-2.5 rounded text-left text-[12px] font-medium transition-colors focus:outline-none " +
                       (active
                         ? "bg-primary text-primary-foreground"
                         : "text-foreground hover:bg-foreground/[.05]")
