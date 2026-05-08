@@ -104,7 +104,7 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                     const filled = buildShapeText({
                       rawText: debounced.text,
                       textCase: debounced.textCase,
-                      pathLenPx: legacyApproxLen(p.d),
+                      pathLenPx: p.arcLen ?? legacyApproxLen(p.d),
                       avgCharPx: legacyAvgCharPx(debounced.fontSize * p.fontScale),
                       policy: p.policy,
                     }).text;

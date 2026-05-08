@@ -1,6 +1,6 @@
 import type { CanvasState, ShapeMeta, ShapeRender } from "../types";
 import { CANVAS_H, CANVAS_W } from "../types";
-import { smoothPathPx } from "../engine/path";
+import { arcLengthPx, smoothPathPx } from "../engine/path";
 
 export const heartMeta: ShapeMeta = {
   id: "heart",
@@ -45,9 +45,10 @@ export function renderHeart(state: CanvasState): ShapeRender {
     const y = 13 * c - 5 * cos2t - 2 * cos3t - cos4t;
     pts.push([cx + x * amp * aspect, cy - y * amp]);
   }
+  const arcLen = arcLengthPx(pts);
   const d = smoothPathPx(pts, true, 0.5);
   return {
     guide: d,
-    paths: [{ id: "heart-path", d, fontScale: 1, opacity: 1 }],
+    paths: [{ id: "heart-path", d, fontScale: 1, opacity: 1, arcLen, policy: { kind: "fit-once", underfill: 0.95 } }],
   };
 }

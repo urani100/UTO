@@ -70,6 +70,13 @@ export interface RenderedPath {
    * the measured engine by setting this. See `lib/engine/measure.ts`.
    */
   policy?: import("./engine/measure").FillPolicy;
+  /**
+   * Pre-computed arc length in pixels. When provided, Canvas.tsx uses this
+   * instead of legacyApproxLen so fill policies (especially fit-once) receive
+   * an accurate path length. Shapes that sample their own point arrays can
+   * compute this cheaply via arcLengthPx() before building the d string.
+   */
+  arcLen?: number;
 }
 
 export interface RenderedRay {
