@@ -141,7 +141,7 @@ export function RightInspector({ state, onChange, onShapeParam, embedded }: Prop
         <SliderInput
           label="Tracking"
           value={state.letterSpacing}
-          min={-1}
+          min={-2}
           max={6}
           step={0.05}
           unit="px"

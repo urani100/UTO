@@ -72,7 +72,7 @@ export const PRESETS: Preset[] = [
     fontSize: 17,
     weight: 500,
     italic: true,
-    letterSpacing: 0.4,
+    letterSpacing: 2,
     textColor: "#1c1824",
     backgroundColor: "#fbf6ec",
     shapeOverrides: { amplitude: 1.05, startAngle: 90 },
