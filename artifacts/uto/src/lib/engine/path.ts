@@ -90,3 +90,55 @@ export function arcLengthPx(points: Array<[number, number]>): number {
   }
   return len;
 }
+
+/**
+ * Resample a point array to `n` points uniformly spaced by arc length.
+ *
+ * Parametric curves (e.g. the heart cardioid) have non-uniform speed: near
+ * cusps the parameter moves slowly while the curve barely advances, clustering
+ * many samples in a tiny spatial region. That clustering produces dozens of
+ * nearly-coincident SVG path segments, which causes text characters to pile up
+ * and rotate erratically when rendered via <textPath>.
+ *
+ * Arc-length reparameterization fixes this at the source: the output points are
+ * evenly spaced along the curve, so the cusp gets exactly as many samples as its
+ * arc-length share warrants (typically 0–1). Catmull-Rom then smooths cleanly
+ * through the region using its outer neighbours, rounding any sharp corner into a
+ * gentle curve without any shape-specific heuristics.
+ *
+ * O(n) cumulative-length scan + O(n) linear-interpolation pass.
+ */
+export function arcLengthResample(
+  points: Array<[number, number]>,
+  n: number,
+): Array<[number, number]> {
+  if (points.length < 2 || n < 2) return points.slice();
+
+  // Build cumulative arc-length table.
+  const cumLen: number[] = [0];
+  for (let i = 1; i < points.length; i++) {
+    const dx = points[i]![0] - points[i - 1]![0];
+    const dy = points[i]![1] - points[i - 1]![1];
+    cumLen.push(cumLen[i - 1]! + Math.hypot(dx, dy));
+  }
+  const totalLen = cumLen[cumLen.length - 1]!;
+  if (totalLen === 0) return points.slice(0, n);
+
+  const result: Array<[number, number]> = [];
+  let j = 0; // pointer into cumLen
+
+  for (let i = 0; i < n; i++) {
+    const target = (i / (n - 1)) * totalLen;
+
+    // Advance j until cumLen[j] >= target.
+    while (j < cumLen.length - 2 && cumLen[j + 1]! < target) j++;
+
+    const segLen = cumLen[j + 1]! - cumLen[j]!;
+    const t = segLen === 0 ? 0 : (target - cumLen[j]!) / segLen;
+    const p0 = points[j]!;
+    const p1 = points[j + 1] ?? points[j]!;
+    result.push([p0[0] + t * (p1[0] - p0[0]), p0[1] + t * (p1[1] - p0[1])]);
+  }
+
+  return result;
+}

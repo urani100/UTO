@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   archimedeanSpiral,
   arcLengthPx,
+  arcLengthResample,
   pointsToPath,
   pointsToPathPx,
   smoothPath,
@@ -119,5 +120,71 @@ describe("archimedeanSpiral", () => {
       samples: 8,
     });
     expect(out).not.toBe(inward);
+  });
+});
+
+describe("arcLengthResample", () => {
+  it("returns n points", () => {
+    const pts: Array<[number, number]> = [[0, 0], [10, 0], [20, 0], [30, 0]];
+    expect(arcLengthResample(pts, 7)).toHaveLength(7);
+  });
+
+  it("first and last points match the input endpoints", () => {
+    const pts: Array<[number, number]> = [[0, 0], [5, 0], [10, 0]];
+    const out = arcLengthResample(pts, 5);
+    expect(out[0]![0]).toBeCloseTo(0);
+    expect(out[out.length - 1]![0]).toBeCloseTo(10);
+  });
+
+  it("produces uniform spacing on a straight line", () => {
+    // 10 points along x=0..9, resample to 5 → expect x = 0, 2.25, 4.5, 6.75, 9
+    const pts: Array<[number, number]> = Array.from({ length: 10 }, (_, i) => [i, 0]);
+    const out = arcLengthResample(pts, 5);
+    const gaps = out.slice(1).map((p, i) => Math.hypot(p[0] - out[i]![0], p[1] - out[i]![1]));
+    const maxGap = Math.max(...gaps);
+    const minGap = Math.min(...gaps);
+    expect((maxGap - minGap) / maxGap).toBeLessThan(0.01); // gaps uniform within 1%
+  });
+
+  it("preserves total arc length within 1% on a parametric curve with a cusp", () => {
+    // Simulate the heart curve cusp: uniform-t sampling produces clustered points.
+    const raw: Array<[number, number]> = [];
+    for (let i = 0; i <= 480; i++) {
+      const t = (i / 480) * Math.PI * 2;
+      const s = Math.sin(t), c = Math.cos(t);
+      const c2 = c * c;
+      const cos2t = 2 * c2 - 1, cos3t = c * (4 * c2 - 3), cos4t = 2 * cos2t * cos2t - 1;
+      raw.push([16 * s * s * s, 13 * c - 5 * cos2t - 2 * cos3t - cos4t]);
+    }
+    const originalLen = arcLengthPx(raw);
+    const resampled = arcLengthResample(raw, 480);
+    const resampledLen = arcLengthPx(resampled);
+    expect(Math.abs(resampledLen - originalLen) / originalLen).toBeLessThan(0.01);
+  });
+
+  it("dramatically reduces clustering: max/min gap ratio drops from 120x to under 15x after resampling", () => {
+    // Heart curve has ~120x clustering at cusp with uniform-t; arc-length resample fixes it.
+    const raw: Array<[number, number]> = [];
+    for (let i = 0; i <= 480; i++) {
+      const t = (i / 480) * Math.PI * 2;
+      const s = Math.sin(t), c = Math.cos(t);
+      const c2 = c * c;
+      const cos2t = 2 * c2 - 1, cos3t = c * (4 * c2 - 3), cos4t = 2 * cos2t * cos2t - 1;
+      raw.push([16 * s * s * s, 13 * c - 5 * cos2t - 2 * cos3t - cos4t]);
+    }
+    // Verify original clustering is severe (>100x).
+    const rawGaps = raw.slice(1).map((p, i) => Math.hypot(p[0] - raw[i]![0], p[1] - raw[i]![1]));
+    const rawMax = Math.max(...rawGaps);
+    const rawMin = rawGaps.filter(g => g > 0).reduce((a, b) => Math.min(a, b), Infinity);
+    expect(rawMax / rawMin).toBeGreaterThan(100);
+
+    // After resampling the ratio must fall below 15x.
+    const resampled = arcLengthResample(raw, 480);
+    const gaps = resampled.slice(1).map((p, i) =>
+      Math.hypot(p[0] - resampled[i]![0], p[1] - resampled[i]![1])
+    );
+    const maxGap = Math.max(...gaps);
+    const minGap = gaps.filter(g => g > 0).reduce((a, b) => Math.min(a, b), Infinity);
+    expect(maxGap / minGap).toBeLessThan(15);
   });
 });
