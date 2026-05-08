@@ -43,12 +43,21 @@ export function renderHeart(state: CanvasState): ShapeRender {
     const cos4t = 2 * cos2t * cos2t - 1;
     const x = 16 * s * s * s;
     const y = 13 * c - 5 * cos2t - 2 * cos3t - cos4t;
-    pts.push([cx + x * amp * aspect, cy - y * amp]);
+    // Aspect is intentionally omitted here. arcLengthResample and roundSharpCorners
+    // must operate in isotropic (aspect=1) canvas space so their radius, angle, and
+    // boundary-walking calculations are geometrically correct. Aspect is applied
+    // afterward as a pure affine x-stretch, which Catmull-Rom (smoothPathPx) handles
+    // correctly because it is affine-invariant.
+    pts.push([cx + x * amp, cy - y * amp]);
   }
   const resampled = arcLengthResample(pts, samples);
   const rounded   = roundSharpCorners(resampled, 6);
-  const arcLen    = arcLengthPx(rounded);
-  const d         = smoothPathPx(rounded, true, 0.5);
+  // Apply aspect after rounding: stretch x relative to the canvas centre.
+  const stretched: Array<[number, number]> = rounded.map(([x, y]) => [
+    cx + (x - cx) * aspect, y,
+  ]);
+  const arcLen    = arcLengthPx(stretched);
+  const d         = smoothPathPx(stretched, true, 0.5);
   return {
     guide: d,
     paths: [{ id: "heart-path", d, fontScale: 1, opacity: 1, arcLen, policy: { kind: "repeat-measured" } }],
