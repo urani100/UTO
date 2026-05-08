@@ -1,6 +1,6 @@
 import type { CanvasState, ShapeMeta, ShapeRender } from "../types";
 import { CANVAS_H, CANVAS_W } from "../types";
-import { arcLengthPx, arcLengthResample, smoothPathPx } from "../engine/path";
+import { arcLengthPx, arcLengthResample, roundSharpCorners, smoothPathPx } from "../engine/path";
 
 export const heartMeta: ShapeMeta = {
   id: "heart",
@@ -46,8 +46,9 @@ export function renderHeart(state: CanvasState): ShapeRender {
     pts.push([cx + x * amp * aspect, cy - y * amp]);
   }
   const resampled = arcLengthResample(pts, samples);
-  const arcLen = arcLengthPx(resampled);
-  const d = smoothPathPx(resampled, true, 0.5);
+  const rounded   = roundSharpCorners(resampled, 6);
+  const arcLen    = arcLengthPx(rounded);
+  const d         = smoothPathPx(rounded, true, 0.5);
   return {
     guide: d,
     paths: [{ id: "heart-path", d, fontScale: 1, opacity: 1, arcLen, policy: { kind: "repeat-measured" } }],
