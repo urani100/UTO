@@ -34,7 +34,7 @@ export function renderStar(state: CanvasState): ShapeRender {
 
   const verts: Array<[number, number]> = [];
   const total = points * 2;
-  for (let i = 0; i <= total; i++) {
+  for (let i = 0; i < total; i++) {
     const r = i % 2 === 0 ? outer : inner;
     const a = rot + (i * Math.PI) / points;
     verts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
