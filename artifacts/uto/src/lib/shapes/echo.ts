@@ -26,7 +26,10 @@ export const echoMeta: ShapeMeta = {
     { key: "rotation", label: "Rotation", min: 0, max: 360, step: 1, unit: "°" },
     { key: "stagger", label: "Stagger", min: 0, max: 60, step: 1, unit: "°" },
     { key: "falloff", label: "Falloff", min: 0, max: 1, step: 0.01 },
-    { key: "fadeDirection", label: "Fade", min: -1, max: 1, step: 2 },
+    { key: "fadeDirection", label: "Fade", min: -1, max: 1, step: 2, options: [
+      { value: -1, label: "In", aria: "Inner rings louder" },
+      { value: 1, label: "Out", aria: "Outer rings louder" },
+    ]},
   ],
 };
 

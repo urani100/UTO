@@ -10,11 +10,13 @@ export const celloMeta: ShapeMeta = {
   blurb: "Text wraps a vertical cello silhouette. Each row's width follows the body — narrow at the waist, full at the bouts.",
   math: "Body width is a smooth function of vertical position — narrow at the waist (≈ 60%) and wider at the upper and lower bouts.",
   formula: "w(y) = base · profile(y)",
-  defaults: { bodyWidth: 220, neckLength: 120, waist: 0.6 },
+  defaults: { bodyWidth: 220, neckLength: 120, waist: 0.6, neckScale: 0.6, padding: 8 },
   params: [
     { key: "bodyWidth", label: "Body width", min: 140, max: 280, step: 2, unit: "px" },
     { key: "neckLength", label: "Neck", min: 60, max: 180, step: 2, unit: "px" },
     { key: "waist", label: "Waist", min: 0.45, max: 0.85, step: 0.01 },
+    { key: "neckScale", label: "Neck scale", min: 0.3, max: 1, step: 0.05 },
+    { key: "padding", label: "Padding", min: 0, max: 20, step: 1, unit: "px" },
   ],
 };
 
@@ -36,6 +38,8 @@ export function renderCello(state: CanvasState): ShapeRender {
   const baseHalf = p.bodyWidth! / 2;
   const neck = p.neckLength!;
   const waist = p.waist!;
+  const neckScale = p.neckScale ?? 0.6;
+  const padding = p.padding ?? 8;
   const fontSize = state.fontSize;
   const cw = approxCharWidth(fontSize);
   const lh = fontSize * 1.18;
@@ -80,7 +84,7 @@ export function renderCello(state: CanvasState): ShapeRender {
       x: cx,
       y: scrollTop + 18 + i * lh * 0.85,
       width: 30,
-      fontScale: 0.6,
+      fontScale: neckScale,
     });
     wordIdx += 1;
   }
@@ -89,7 +93,7 @@ export function renderCello(state: CanvasState): ShapeRender {
   for (let y = bodyTop + lh; y <= bodyBottom - 2; y += lh) {
     if (wordIdx >= words.length) break;
     const yN = (y - bodyTop) / bodyH;
-    const half = celloHalfWidth(yN, baseHalf, waist) - 8;
+    const half = celloHalfWidth(yN, baseHalf, waist) - padding;
     const width = Math.max(20, half * 2);
     if (width < cw * 1.2) continue;
     const remaining = words.slice(wordIdx);

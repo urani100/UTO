@@ -23,7 +23,10 @@ export const spiralMeta: ShapeMeta = {
     { key: "inner", label: "Inner radius", min: 6, max: 80, step: 1, unit: "px" },
     { key: "startAngle", label: "Start angle", min: 0, max: 360, step: 1, unit: "°" },
     { key: "taper", label: "Taper", min: 0.5, max: 2, step: 0.05 },
-    { key: "direction", label: "Direction", min: -1, max: 1, step: 2 },
+    { key: "direction", label: "Direction", min: -1, max: 1, step: 2, options: [
+      { value: -1, label: "↺", aria: "Counter-clockwise" },
+      { value: 1, label: "↻", aria: "Clockwise" },
+    ]},
   ],
 };
 
