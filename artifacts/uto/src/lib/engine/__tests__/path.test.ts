@@ -3,6 +3,8 @@ import {
   archimedeanSpiral,
   arcLengthPx,
   arcLengthResample,
+  roundSharpestCorner,
+  roundSharpCorners,
   pointsToPath,
   pointsToPathPx,
   smoothPath,
@@ -120,6 +122,110 @@ describe("archimedeanSpiral", () => {
       samples: 8,
     });
     expect(out).not.toBe(inward);
+  });
+});
+
+describe("roundSharpestCorner", () => {
+  it("returns a copy unchanged for fewer than 3 points", () => {
+    const pts: Array<[number, number]> = [[0, 0], [1, 1]];
+    const out = roundSharpestCorner(pts, 5);
+    expect(out).toHaveLength(pts.length);
+  });
+
+  it("reduces the maximum tangent-angle change on a V-shaped path", () => {
+    // Sharp 90° V: goes right, then up — corner at (10, 0)
+    const pts: Array<[number, number]> = [
+      [0, 0], [2, 0], [4, 0], [6, 0], [8, 0], [10, 0],
+      [10, 2], [10, 4], [10, 6], [10, 8], [10, 10],
+    ];
+    const maxBefore = Math.max(...pts.slice(1, -1).map((p, i) => {
+      const a = Math.atan2(p[1]-pts[i]![1], p[0]-pts[i]![0]);
+      const b = Math.atan2(pts[i+2]![1]-p[1], pts[i+2]![0]-p[0]);
+      let d = Math.abs(b - a); if (d > Math.PI) d = 2*Math.PI - d;
+      return d;
+    }));
+    const out = roundSharpestCorner(pts, 3);
+    const maxAfter = Math.max(...out.slice(1, -1).map((p, i) => {
+      const a = Math.atan2(p[1]-out[i]![1], p[0]-out[i]![0]);
+      const b = Math.atan2(out[i+2]![1]-p[1], out[i+2]![0]-p[0]);
+      let d = Math.abs(b - a); if (d > Math.PI) d = 2*Math.PI - d;
+      return d;
+    }));
+    expect(maxAfter).toBeLessThan(maxBefore);
+  });
+
+  it("dramatically reduces both cusps on the heart cardioid to under 30°", () => {
+    // The heart cardioid has two velocity-zero cusps (t=0 and t=π).
+    // Uses render-scale coordinates (amp=13) matching heart.ts actual usage.
+    const samples = 480;
+    const startRad = Math.PI / 2;
+    const amp = 13;
+    const raw: Array<[number, number]> = [];
+    for (let i = 0; i < samples; i++) {
+      const t = startRad + (i / samples) * Math.PI * 2;
+      const s = Math.sin(t), c = Math.cos(t);
+      const c2 = c * c;
+      const cos2t = 2*c2-1, cos3t = c*(4*c2-3), cos4t = 2*cos2t*cos2t-1;
+      raw.push([16*s*s*s * amp, (13*c - 5*cos2t - 2*cos3t - cos4t) * amp]);
+    }
+    const resampled = arcLengthResample(raw, samples);
+    const rounded   = roundSharpCorners(resampled, 6);
+
+    const maxAngle = (arr: Array<[number, number]>) =>
+      arr.slice(1, -1).reduce((mx, p, i) => {
+        const a = Math.atan2(p[1]-arr[i]![1], p[0]-arr[i]![0]);
+        const b = Math.atan2(arr[i+2]![1]-p[1], arr[i+2]![0]-p[0]);
+        let d = Math.abs(b - a); if (d > Math.PI) d = 2*Math.PI - d;
+        return Math.max(mx, d);
+      }, 0);
+
+    const before = maxAngle(resampled) * 180 / Math.PI;
+    const after  = maxAngle(rounded)   * 180 / Math.PI;
+    expect(before).toBeGreaterThan(100); // confirm cusps were bad
+    expect(after).toBeLessThan(30);      // confirm both cusps are fixed
+  });
+
+  it("preserves arc length within 10% after rounding both cusps", () => {
+    const samples = 480;
+    const startRad = Math.PI / 2;
+    const amp = 13;
+    const raw: Array<[number, number]> = [];
+    for (let i = 0; i < samples; i++) {
+      const t = startRad + (i / samples) * Math.PI * 2;
+      const s = Math.sin(t), c = Math.cos(t);
+      const c2 = c * c;
+      const cos2t = 2*c2-1, cos3t = c*(4*c2-3), cos4t = 2*cos2t*cos2t-1;
+      raw.push([16*s*s*s * amp, (13*c - 5*cos2t - 2*cos3t - cos4t) * amp]);
+    }
+    const resampled = arcLengthResample(raw, samples);
+    const rounded   = roundSharpCorners(resampled, 6);
+    const lenBefore = arcLengthPx(resampled);
+    const lenAfter  = arcLengthPx(rounded);
+    expect(Math.abs(lenAfter - lenBefore) / lenBefore).toBeLessThan(0.10);
+  });
+});
+
+describe("roundSharpCorners", () => {
+  it("returns input unchanged when no corner exceeds the threshold", () => {
+    // A straight line has no corners — nothing should be rounded.
+    const pts: Array<[number, number]> = Array.from({ length: 10 }, (_, i) => [i * 10, 0]);
+    const out = roundSharpCorners(pts, 5, 30);
+    expect(out).toHaveLength(pts.length);
+  });
+
+  it("rounds multiple sharp corners until all are below maxAngleDeg", () => {
+    // Z-shape with two 90° corners — both should end up below 30°.
+    const pts: Array<[number, number]> = [
+      [0,0],[5,0],[10,0],[10,5],[10,10],[15,10],[20,10],
+    ];
+    const out = roundSharpCorners(pts, 2, 30);
+    const maxDelta = out.slice(1,-1).reduce((mx, p, i) => {
+      const a = Math.atan2(p[1]-out[i]![1], p[0]-out[i]![0]);
+      const b = Math.atan2(out[i+2]![1]-p[1], out[i+2]![0]-p[0]);
+      let d = Math.abs(b-a); if (d > Math.PI) d = 2*Math.PI-d;
+      return Math.max(mx, d);
+    }, 0);
+    expect(maxDelta * 180 / Math.PI).toBeLessThan(30);
   });
 });
 
