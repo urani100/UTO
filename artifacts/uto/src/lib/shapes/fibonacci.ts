@@ -40,6 +40,8 @@ export function renderFibonacci(state: CanvasState): ShapeRender {
       d,
       fontScale: shrink * 1.05,
       opacity: 0.35 + 0.65 * shrink,
+      arcLen: 2 * Math.PI * r,
+      policy: { kind: "repeat-measured" },
     });
   }
   return { paths };
