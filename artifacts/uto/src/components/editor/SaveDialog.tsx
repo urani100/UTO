@@ -118,7 +118,7 @@ export function SaveDialog({ open, initialName, busy, onCancel, onConfirm }: Pro
             type="button"
             onClick={submit}
             disabled={busy || error !== null}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            className="bg-[#f487e1] text-white hover:bg-[#f487e1]/90"
             data-testid="button-save-confirm"
           >
             {busy ? "Saving…" : "Save"}

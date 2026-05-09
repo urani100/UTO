@@ -214,7 +214,7 @@ function WorkRow({
           <button
             type="button"
             aria-label={`Delete ${name}`}
-            className="opacity-0 group-hover:opacity-100 focus:opacity-100 h-7 w-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+            className="opacity-0 group-hover:opacity-100 focus:opacity-100 h-7 w-7 rounded-md flex items-center justify-center text-[#f487e1] hover:bg-[#f487e1]/10 transition-all"
             data-testid={`delete-${id}`}
           >
             <Trash2 size={13} strokeWidth={1.6} />
