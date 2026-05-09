@@ -101,6 +101,7 @@ artifacts/uto/
   - `requireAuthForApi` — used by save. Lets clicks through during the brief Clerk hydration window because the API enforces auth on its end.
   - `requireAuthForExport` — used by exports. Exports run entirely client-side, so this gate must wait for `clerkLoaded` before deciding; while loading it shows a "Checking session…" toast and aborts.
 - Cookie-based Clerk session (same-origin via the workspace proxy). Never call `setAuthTokenGetter` — web is cookie-auth only.
+- `<SignIn>` and `<SignUp>` use BOTH `forceRedirectUrl` and `fallbackRedirectUrl` set to `basePath || "/"` so the post-auth landing page is always the Studio, regardless of what the Clerk dashboard's "After sign-in URL" / "After sign-up URL" is set to. Without `forceRedirectUrl`, dashboard config wins and users can get bounced back to `/sign-in`.
 - Save flow uses a `useRef` mutex to prevent duplicate creates from rapid double-fires, and falls back from `PUT /api/works/:id` 404 to `POST /api/works` when the loaded work was deleted from another surface.
 - First save of a piece (or any save when the toolbar name is empty / "Untitled") opens a `SaveDialog` modal that requires a real name; subsequent saves are silent with a small "Saved" toast. Changing the Form clears the saved-work id so the next save creates a new library entry.
 - Dirty-state signature normalizes the work name (trim + fallback to "Untitled") so trailing whitespace doesn't get the user stuck in a permanent dirty state.

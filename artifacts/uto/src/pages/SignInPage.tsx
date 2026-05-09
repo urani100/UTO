@@ -22,6 +22,7 @@ export default function SignInPage() {
         routing="path"
         path={`${basePath}/sign-in`}
         signUpUrl={`${basePath}/sign-up`}
+        forceRedirectUrl={basePath || "/"}
         fallbackRedirectUrl={basePath || "/"}
       />
     </div>
