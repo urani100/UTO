@@ -70,7 +70,7 @@ export function LibrarySheet({ open, onOpenChange, onLoadWork }: Props) {
         className="w-full sm:w-[400px] sm:max-w-[400px] flex flex-col p-0 bg-background"
       >
         <SheetHeader className="px-6 pt-6 pb-3 space-y-1">
-          <SheetTitle className="text-[15px] font-semibold tracking-tight">
+          <SheetTitle className="font-display text-[15px] font-semibold tracking-[-0.005em] text-[#716e6e]">
             Library
           </SheetTitle>
           <SheetDescription className="text-[12.5px] text-muted-foreground">
@@ -201,7 +201,7 @@ function WorkRow({
           {meta?.name ?? shape}
         </span>
         <span className="flex-1 min-w-0">
-          <span className="block text-[13px] font-medium text-foreground truncate">
+          <span className="block text-[13px] font-medium text-[#716e6e] truncate">
             {name || "Untitled"}
           </span>
           <span className="block text-[10.5px] text-muted-foreground num-tab">
