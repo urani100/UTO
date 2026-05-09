@@ -1,6 +1,6 @@
 import { useUser, useClerk, Show } from "@clerk/react";
 import { useLocation } from "wouter";
-import { LogOut, UserCircle2 } from "lucide-react";
+import { UserCircle2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -93,10 +93,9 @@ function SignedInChip() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onSelect={() => signOut(() => setLocation("/"))}
-          className="text-[12.5px] gap-2 text-[#716e6e]"
+          className="text-[12.5px] text-[#716e6e]"
           data-testid="button-signout"
         >
-          <LogOut size={13} strokeWidth={1.7} />
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
