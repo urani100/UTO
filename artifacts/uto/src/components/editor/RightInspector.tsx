@@ -48,9 +48,6 @@ export function RightInspector({ state, onChange, onShapeParam, embedded }: Prop
           <h2 className="font-display text-[14px] font-semibold tracking-[-0.005em] text-[#716e6e]">
             {meta.name}
           </h2>
-          <span className="text-[10px] text-muted-foreground/70 num-tab">
-            {Object.keys(state.shapeParams[state.shape]).length} params
-          </span>
         </div>
         <p className="text-[11.5px] text-muted-foreground/85 leading-snug mt-1.5 pr-2">
           {meta.blurb}
