@@ -111,12 +111,7 @@ function DesktopToolbar(props: Props) {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[260px] p-1.5">
-            <div className="px-2.5 py-1.5">
-              <span className="text-[9.5px] uppercase tracking-[0.22em] text-muted-foreground font-semibold">
-                Form
-              </span>
-            </div>
-            <div className="grid grid-cols-2 gap-0.5 px-1 pb-1">
+            <div className="grid grid-cols-2 gap-0.5 px-1 py-1">
               {SHAPE_LIST.map((meta) => {
                 const active = meta.id === props.activeShape;
                 return (
