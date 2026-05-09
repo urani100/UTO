@@ -123,7 +123,7 @@ function DesktopToolbar(props: Props) {
                       "h-7 px-2.5 rounded text-left text-[12px] font-medium transition-colors focus:outline-none " +
                       (active
                         ? "bg-primary text-primary-foreground"
-                        : "text-foreground hover:bg-foreground/[.05]")
+                        : "text-[#716e6e] hover:bg-foreground/[.05]")
                     }
                   >
                     {meta.name}
@@ -324,7 +324,7 @@ function MobileToolbar(props: Props) {
   );
 }
 
-const LABEL_CLASS = "font-serif text-[20px] font-bold text-[#716e6e]";
+const LABEL_CLASS = "font-serif text-[20px] font-bold text-[#c083e5]";
 const LABEL_STYLE = { letterSpacing: "1.1px" };
 
 function IconBtn({

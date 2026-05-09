@@ -74,14 +74,14 @@ function SignedInChip() {
               {initials(name, email)}
             </div>
           )}
-          <span className="text-[12px] font-medium text-foreground max-w-[120px] truncate">
+          <span className="text-[12px] font-medium text-[#716e6e] max-w-[120px] truncate">
             {name}
           </span>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[220px] p-1.5">
         <DropdownMenuLabel className="px-2.5 py-1.5">
-          <div className="text-[12.5px] font-medium text-foreground truncate">
+          <div className="text-[12.5px] font-medium text-[#716e6e] truncate">
             {name}
           </div>
           {email && email !== name ? (
@@ -93,7 +93,7 @@ function SignedInChip() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onSelect={() => signOut(() => setLocation("/"))}
-          className="text-[12.5px] gap-2"
+          className="text-[12.5px] gap-2 text-[#716e6e]"
           data-testid="button-signout"
         >
           <LogOut size={13} strokeWidth={1.7} />
