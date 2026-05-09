@@ -10,12 +10,11 @@ export const fibonacciMeta: ShapeMeta = {
   blurb: "Concentric rings whose radii follow the golden ratio. Font size and opacity recede toward the center.",
   math: "Each ring's radius shrinks by the golden ratio φ. Font size and opacity recede with distance from origin to suggest natural growth.",
   formula: "rₙ = R · φ⁻ⁿ",
-  defaults: { rings: 5, baseRadius: 230, gap: 6, scaleIntensity: 1 },
+  defaults: { rings: 5, baseRadius: 230, gap: 6 },
   params: [
     { key: "rings", label: "Rings", min: 3, max: 9, step: 1 },
     { key: "baseRadius", label: "Base radius", min: 120, max: 270, step: 4, unit: "px" },
     { key: "gap", label: "Ring gap", min: 0, max: 18, step: 1, unit: "px" },
-    { key: "scaleIntensity", label: "φ scaling", min: 0.4, max: 1.4, step: 0.05 },
   ],
 };
 
@@ -26,13 +25,23 @@ export function renderFibonacci(state: CanvasState): ShapeRender {
   const rings = Math.max(2, Math.round(p.rings!));
   const base = p.baseRadius!;
   const gap = p.gap!;
-  const intensity = p.scaleIntensity!;
+  // Compute the largest φ-exponent that keeps every ring above minRadius.
+  // Solves: base × φ^(−(n−1) × intensity) − (n−1) × gap ≥ minRadius
+  // ⟹  intensity ≤ ln(base / (minRadius + (n−1)×gap)) / ((n−1) × ln φ)
+  // Capped at 1 so the true golden ratio is used whenever it fits.
+  const minRadius = 18;
+  const safeIntensity =
+    rings > 1
+      ? Math.log(base / (minRadius + 2 + (rings - 1) * gap)) /
+        ((rings - 1) * Math.log(PHI))
+      : 1;
+  const intensity = Math.min(1, Math.max(0.1, safeIntensity));
 
   const paths: RenderedPath[] = [];
   for (let i = 0; i < rings; i++) {
     const shrink = Math.pow(PHI, -i * intensity);
     const r = base * shrink - i * gap;
-    if (r < 14) continue;
+    if (r < minRadius) continue; // safety net; intensity formula prevents this
     // Full circle as a textPath: M (cx-r) cy A r r 0 1 0 (cx+r) cy A r r 0 1 0 (cx-r) cy
     const d = `M ${cx - r} ${cy} A ${r} ${r} 0 1 ${i % 2 === 0 ? 1 : 0} ${cx + r} ${cy} A ${r} ${r} 0 1 ${i % 2 === 0 ? 1 : 0} ${cx - r} ${cy}`;
     paths.push({
