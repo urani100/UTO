@@ -135,28 +135,33 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                 </>
               ) : null}
 
-              {lines.map((line, idx) => (
-                <text
-                  key={`line-${idx}`}
-                  x={line.x}
-                  y={line.y}
-                  textAnchor={line.anchor ?? "middle"}
-                  dominantBaseline="middle"
-                  fill={debounced.textColor}
-                  fontFamily={debounced.fontFamily}
-                  fontSize={debounced.fontSize * line.fontScale}
-                  fontWeight={debounced.weight}
-                  fontStyle={debounced.italic ? "italic" : "normal"}
-                  letterSpacing={debounced.letterSpacing}
-                  transform={
-                    line.rotation
-                      ? `rotate(${line.rotation} ${line.x} ${line.y})`
-                      : undefined
-                  }
-                >
-                  {applyCase(line.text, debounced.textCase)}
-                </text>
-              ))}
+              {lines.map((line, idx) => {
+                const lineText = applyCase(line.text, debounced.textCase);
+                return (
+                  <text
+                    key={`line-${idx}`}
+                    x={line.x}
+                    y={line.y}
+                    textAnchor={line.anchor ?? "middle"}
+                    dominantBaseline="middle"
+                    fill={debounced.textColor}
+                    fontFamily={debounced.fontFamily}
+                    fontSize={debounced.fontSize * line.fontScale}
+                    fontWeight={debounced.weight}
+                    fontStyle={debounced.italic ? "italic" : "normal"}
+                    letterSpacing={debounced.letterSpacing}
+                    transform={
+                      line.rotation
+                        ? `rotate(${line.rotation} ${line.x} ${line.y})`
+                        : undefined
+                    }
+                  >
+                    {debounced.jitter > 0
+                      ? renderJitterTspans(lineText, debounced.jitter, debounced.jitterScale, `line-${idx}`)
+                      : lineText}
+                  </text>
+                );
+              })}
 
               {rays.map((r) => {
                 const start = r.startRadius ?? 10;
