@@ -125,6 +125,7 @@ function DesktopToolbar(props: Props) {
                         ? "bg-primary text-primary-foreground"
                         : "text-[#716e6e] hover:bg-foreground/[.05]")
                     }
+                    style={{ letterSpacing: "1.10px" }}
                   >
                     {meta.name}
                   </button>
