@@ -195,7 +195,7 @@ function WorkRow({
         className="flex-1 min-w-0 flex items-center gap-3 text-left"
       >
         <span
-          className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium uppercase tracking-[0.08em] bg-muted text-muted-foreground border border-border/60 num-tab"
+          className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium uppercase tracking-[0.14em] bg-muted text-[#716e6e] border border-border/60 num-tab"
           aria-label={`shape ${meta?.name ?? shape}`}
         >
           {meta?.name ?? shape}
