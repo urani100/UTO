@@ -38,4 +38,6 @@ externalPort = 3000
 [userenv]
 
 [userenv.shared]
-VITE_CLERK_PUBLISHABLE_KEY = "pk_test_c2ltcGxlLW11c3RhbmctNDguY2xlcmsuYWNjb3VudHMuZGV2JA"
+VITE_CLERK_PUBLISHABLE_KEY = "pk_test_ZXhjaXRpbmctZm94aG91bmQtNzAuY2xlcmsuYWNjb3VudHMuZGV2JA"
+CLERK_SECRET_KEY = "sk_test_4rxgRlviKoHXkncK6ZdAKIlFsh42aWu70HWwDZYoEd"
+CLERK_PUBLISHABLE_KEY = "pk_test_ZXhjaXRpbmctZm94aG91bmQtNzAuY2xlcmsuYWNjb3VudHMuZGV2JA"
