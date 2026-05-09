@@ -101,7 +101,7 @@ function DesktopToolbar(props: Props) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="h-8 px-2.5 rounded-md flex items-center gap-1.5 hover:bg-foreground/[.05] transition-colors"
+              className="h-8 px-2.5 rounded-md flex items-center gap-1.5 hover:bg-foreground/[.05] focus:outline-none transition-colors"
               data-testid="button-form"
             >
               <span className={LABEL_CLASS} style={LABEL_STYLE}>
@@ -142,7 +142,7 @@ function DesktopToolbar(props: Props) {
         <button
           type="button"
           onClick={props.onOpenLibrary}
-          className="h-8 px-2.5 rounded-md flex items-center hover:bg-foreground/[.05] transition-colors"
+          className="h-8 px-2.5 rounded-md flex items-center hover:bg-foreground/[.05] focus:outline-none transition-colors"
           data-testid="button-library"
         >
           <span className={LABEL_CLASS} style={LABEL_STYLE}>
@@ -156,7 +156,7 @@ function DesktopToolbar(props: Props) {
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="h-8 px-2.5 rounded-md flex items-center hover:bg-foreground/[.05] transition-colors"
+              className="h-8 px-2.5 rounded-md flex items-center hover:bg-foreground/[.05] focus:outline-none transition-colors"
               data-testid="button-export"
             >
               <span className={LABEL_CLASS} style={LABEL_STYLE}>
@@ -190,7 +190,7 @@ function DesktopToolbar(props: Props) {
           onClick={props.onToggleDark}
           aria-pressed={props.isDark}
           aria-label="Toggle theme"
-          className="h-8 w-8 rounded-md flex items-center justify-center text-[#716e6e] hover:bg-foreground/[.05] transition-colors"
+          className="h-8 w-8 rounded-md flex items-center justify-center text-[#716e6e] hover:bg-foreground/[.05] focus:outline-none transition-colors"
           data-testid="button-theme"
         >
           <MoonIcon size={16} strokeWidth={1.6} />
@@ -353,7 +353,7 @@ function IconBtn({
           onClick={onClick}
           disabled={disabled}
           data-testid={testId}
-          className="h-8 w-8 rounded-md flex items-center justify-center text-foreground/85 hover:bg-foreground/[.05] hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+          className="h-8 w-8 rounded-md flex items-center justify-center text-foreground/85 hover:bg-foreground/[.05] hover:text-foreground focus:outline-none transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
         >
           {children}
         </button>
