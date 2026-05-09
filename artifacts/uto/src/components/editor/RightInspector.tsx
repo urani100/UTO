@@ -56,7 +56,7 @@ export function RightInspector({ state, onChange, onShapeParam, embedded }: Prop
 
       <div className="border-t border-border/55" />
 
-      <InspectorSection title="Text">
+      <InspectorSection title="Text" defaultOpen={false}>
         <div className="space-y-1.5">
           <div className="flex items-baseline justify-between gap-2">
             <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium">
@@ -189,7 +189,7 @@ export function RightInspector({ state, onChange, onShapeParam, embedded }: Prop
         </div>
       </InspectorSection>
 
-      <InspectorSection title="Shape">
+      <InspectorSection title="Shape" defaultOpen={false}>
         {meta.params.map((p) => {
           const value = state.shapeParams[state.shape][p.key] ?? p.min;
           if (p.options && p.options.length > 0) {
@@ -316,7 +316,7 @@ export function RightInspector({ state, onChange, onShapeParam, embedded }: Prop
         />
       </InspectorSection>
 
-      <InspectorSection title="Colors" defaultOpen>
+      <InspectorSection title="Colors" defaultOpen={false}>
         <div className="space-y-2">
           <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium block">
             Ink
