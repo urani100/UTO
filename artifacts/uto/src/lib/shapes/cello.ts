@@ -67,13 +67,18 @@ export function renderCello(state: CanvasState): ShapeRender {
   const guide = smoothPathPx(guidePts, true, 0.55);
 
   // Place text inside the body.
-  const words = tokenize(state.text);
+  // Pre-repeat words so short prose fills every row regardless of length.
+  const rawWords = tokenize(state.text || "Begin with a sentence.");
+  const words = Array.from(
+    { length: Math.ceil(300 / Math.max(1, rawWords.length)) },
+    () => rawWords,
+  ).flat();
   const lines: RenderedLine[] = [];
 
   // First, a few words running up the neck like fingerings.
   const neckLines = Math.max(1, Math.floor(neck / lh));
   let wordIdx = 0;
-  for (let i = 0; i < neckLines && wordIdx < words.length; i++) {
+  for (let i = 0; i < neckLines; i++) {
     const w = words[wordIdx]!;
     lines.push({
       text: w,
@@ -87,7 +92,6 @@ export function renderCello(state: CanvasState): ShapeRender {
 
   // Body lines.
   for (let y = bodyTop + lh; y <= bodyBottom - 2; y += lh) {
-    if (wordIdx >= words.length) break;
     const yN = (y - bodyTop) / bodyH;
     const half = celloHalfWidth(yN, baseHalf, waist) - 8;
     const width = Math.max(20, half * 2);

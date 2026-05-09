@@ -45,12 +45,16 @@ export function renderMongolfiere(state: CanvasState): ShapeRender {
   }
 
   // Fill bulb with text by row.
-  const words = tokenize(state.text);
+  // Pre-repeat words so short prose fills every row regardless of length.
+  const rawWords = tokenize(state.text || "Begin with a sentence.");
+  const words = Array.from(
+    { length: Math.ceil(300 / Math.max(1, rawWords.length)) },
+    () => rawWords,
+  ).flat();
   const lines: RenderedLine[] = [];
   let wordIdx = 0;
 
   for (let y = bulbCY - bulbR + lh; y <= bulbBottomY - lh * 0.5; y += lh) {
-    if (wordIdx >= words.length) break;
     let half: number;
     if (y <= bulbCY) {
       // Upper hemisphere
