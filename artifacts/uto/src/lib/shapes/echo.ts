@@ -68,11 +68,14 @@ export function renderEcho(state: CanvasState): ShapeRender {
     const t = fadeOut ? i / Math.max(1, rings - 1) : 1 - i / Math.max(1, rings - 1);
     const fontScale = 1 - falloff * 0.5 * t; // shrink up to half size at the quiet end
     const opacity = 1 - falloff * 0.7 * t;   // fade up to 70% at the quiet end
+    const arcLen = 2 * Math.PI * r * (Math.min(arcDeg, 360) / 360);
     paths.push({
       id: `echo-${i}`,
       d,
       fontScale,
       opacity,
+      arcLen,
+      policy: { kind: "repeat-measured" },
     });
   }
   return { paths };
