@@ -324,7 +324,7 @@ function MobileToolbar(props: Props) {
   );
 }
 
-const LABEL_CLASS = "font-serif text-[20px] font-bold text-[#c083e5]";
+const LABEL_CLASS = "font-serif text-[20px] font-bold text-[#716e6e]";
 const LABEL_STYLE = { letterSpacing: "1.1px" };
 
 function IconBtn({
