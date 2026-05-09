@@ -316,7 +316,7 @@ export function RightInspector({ state, onChange, onShapeParam, embedded }: Prop
         />
       </InspectorSection>
 
-      <InspectorSection title="Color" defaultOpen>
+      <InspectorSection title="Colors" defaultOpen>
         <div className="space-y-2">
           <label className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground/85 font-medium block">
             Ink
