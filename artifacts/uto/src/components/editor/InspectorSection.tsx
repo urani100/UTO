@@ -17,7 +17,7 @@ export function InspectorSection({ title, hint, defaultOpen = true, children }: 
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between px-5 py-3 hover:bg-foreground/[.025] transition-colors group"
+        className="w-full flex items-center justify-between px-5 py-3 hover:bg-foreground/[.025] transition-colors group focus:outline-none"
         data-testid={`inspector-section-${title.toLowerCase()}`}
       >
         <div className="flex items-baseline gap-2.5">
