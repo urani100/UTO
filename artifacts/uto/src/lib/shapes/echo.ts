@@ -49,13 +49,20 @@ export function renderEcho(state: CanvasState): ShapeRender {
     const r = outer - i * spacing;
     if (r < 18) continue;
     // Arc is centered around `rotation` and fans out by ±arc/2.
-    const center = rotation + i * stagger;
-    const startDeg = center - arcDeg / 2;
-    const endDeg = center + arcDeg / 2;
-    const start = polar(cx, cy, r, startDeg);
-    const end = polar(cx, cy, r, endDeg);
-    const largeArc = arcDeg > 180 ? 1 : 0;
-    const d = `M ${start[0].toFixed(2)} ${start[1].toFixed(2)} A ${r} ${r} 0 ${largeArc} 1 ${end[0].toFixed(2)} ${end[1].toFixed(2)}`;
+    // At arcDeg=360 start===end, which makes an SVG arc degenerate (renders nothing).
+    // Split into two semi-arcs — the standard SVG workaround for full circles.
+    let d: string;
+    if (arcDeg >= 360) {
+      d = `M ${(cx - r).toFixed(2)} ${cy.toFixed(2)} A ${r} ${r} 0 1 1 ${(cx + r).toFixed(2)} ${cy.toFixed(2)} A ${r} ${r} 0 1 1 ${(cx - r).toFixed(2)} ${cy.toFixed(2)}`;
+    } else {
+      const center = rotation + i * stagger;
+      const startDeg = center - arcDeg / 2;
+      const endDeg = center + arcDeg / 2;
+      const start = polar(cx, cy, r, startDeg);
+      const end = polar(cx, cy, r, endDeg);
+      const largeArc = arcDeg > 180 ? 1 : 0;
+      d = `M ${start[0].toFixed(2)} ${start[1].toFixed(2)} A ${r} ${r} 0 ${largeArc} 1 ${end[0].toFixed(2)} ${end[1].toFixed(2)}`;
+    }
 
     // t = 0 at the loud end, 1 at the quiet end.
     const t = fadeOut ? i / Math.max(1, rings - 1) : 1 - i / Math.max(1, rings - 1);
