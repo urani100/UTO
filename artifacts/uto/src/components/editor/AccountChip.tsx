@@ -92,7 +92,7 @@ function SignedInChip() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onSelect={() => signOut(() => setLocation("/"))}
+          onSelect={() => signOut(() => setLocation("/sign-in"))}
           className="text-[12.5px] text-[#716e6e]"
           style={{ letterSpacing: "1.10px" }}
           data-testid="button-signout"
