@@ -49,7 +49,7 @@ export function renderBird(state: CanvasState): ShapeRender {
   // Body axis pivot — bird points to the right.
   for (let i = 0; i < strokes; i++) {
     const t = i / Math.max(1, strokes - 1); // 0 = top wing, 1 = bottom
-    const length = 360 * spread * (1 - 0.3 * t * taper);
+    const length = 560 * spread * (1 - 0.3 * t * taper);
     const startX = cx - length * 0.55;
     const startY = cy - 90 + t * 30;
     const endX = cx + length * 0.4;
