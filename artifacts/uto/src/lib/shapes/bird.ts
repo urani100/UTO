@@ -3,7 +3,7 @@ import { CANVAS_H, CANVAS_W } from "../types";
 
 export const birdMeta: ShapeMeta = {
   id: "bird",
-  name: "Bird",
+  name: "Birds",
   category: "Organic",
   blurb: "Long sweeping bezier curves sketch a bird in flight. Each wing-stroke carries text along its arc.",
   math: "Each wing-stroke is a cubic Bézier curve. Smooth interpolation by De Casteljau's algorithm keeps glyph spacing even on tight bends.",
