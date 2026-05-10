@@ -8,7 +8,8 @@ export const birdMeta: ShapeMeta = {
   blurb: "Long sweeping bezier curves sketch a bird in flight. Each wing-stroke carries text along its arc.",
   math: "Each wing-stroke is a cubic Bézier curve. Smooth interpolation by De Casteljau's algorithm keeps glyph spacing even on tight bends.",
   formula: "B(t) = (1−t)³P₀ + 3(1−t)²t P₁ + 3(1−t)t² P₂ + t³ P₃",
-  defaults: { wingSpread: 1, strokes: 9, taper: 0.6 },
+  defaults: { wingSpread: 1.40, strokes: 9, taper: 0.6 },
+  canvasDefaults: { jitter: 2.6 },
   params: [
     { key: "wingSpread", label: "Wing spread", min: 0.6, max: 1.4, step: 0.02 },
     { key: "strokes", label: "Strokes", min: 4, max: 16, step: 1 },

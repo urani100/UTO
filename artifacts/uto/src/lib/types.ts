@@ -21,6 +21,8 @@ export interface ShapeMeta {
   formula: string;
   defaults: Record<string, number>;
   params: ShapeParam[];
+  /** Optional canvas-level state overrides applied when this shape is selected. */
+  canvasDefaults?: Partial<Pick<CanvasState, "jitter" | "jitterScale" | "fontSize" | "letterSpacing">>;
 }
 
 export interface ShapeParam {
