@@ -11,7 +11,7 @@ export const birdMeta: ShapeMeta = {
   defaults: { wingSpread: 1.40, strokes: 9, taper: 0.6 },
   canvasDefaults: { jitter: 2.6 },
   params: [
-    { key: "wingSpread", label: "Wing spread", min: 0.6, max: 1.4, step: 0.02 },
+    { key: "wingSpread", label: "Wing spread", min: 0.6, max: 2.5, step: 0.02 },
     { key: "strokes", label: "Strokes", min: 4, max: 16, step: 1 },
     { key: "taper", label: "Taper", min: 0.2, max: 1, step: 0.02 },
   ],
