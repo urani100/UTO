@@ -60,10 +60,13 @@ export function renderBird(state: CanvasState): ShapeRender {
     const c2y = endY - 40 + t * 30;
     const d = `M ${startX.toFixed(1)} ${startY.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${endX.toFixed(1)} ${endY.toFixed(1)}`;
     const arcLen = bezierArcLen(startX, startY, c1x, c1y, c2x, c2y, endX, endY);
+    // Stagger the starting word per stroke so adjacent feathers don't repeat identically.
+    const textOffset = Math.round(i * 17);
     paths.push({
       id: `bird-${i}`,
       d,
       arcLen,
+      textOffset,
       policy: { kind: "repeat-measured" },
       fontScale: 0.7 + (1 - Math.abs(t - 0.5) * 1.4) * 0.45,
       opacity: 0.55 + (1 - Math.abs(t - 0.5) * 1.4) * 0.45,

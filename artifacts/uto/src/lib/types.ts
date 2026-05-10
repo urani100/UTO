@@ -77,6 +77,12 @@ export interface RenderedPath {
    * compute this cheaply via arcLengthPx() before building the d string.
    */
   arcLen?: number;
+  /**
+   * Character offset into the source text where this path's fill should begin.
+   * Allows adjacent paths (e.g. Bird feathers) to start at different positions
+   * so they don't all repeat the same words.
+   */
+  textOffset?: number;
 }
 
 export interface RenderedRay {
