@@ -128,7 +128,8 @@ export default function Studio() {
       setCurrentWorkId(null);
       setSavedSig(null);
       setSavedAt(null);
-      undoable.set((s) => ({ ...s, shape: id }));
+      const meta = SHAPE_META[id];
+      undoable.set((s) => ({ ...s, shape: id, ...(meta?.canvasDefaults ?? {}) }));
     },
     [state.shape, undoable]
   );
