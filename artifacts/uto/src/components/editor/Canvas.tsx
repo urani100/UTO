@@ -101,8 +101,13 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
                     ))}
                   </defs>
                   {paths.map((p) => {
+                    const rawText = p.textOffset
+                      ? debounced.text.slice(p.textOffset % debounced.text.length) +
+                        " " +
+                        debounced.text.slice(0, p.textOffset % debounced.text.length)
+                      : debounced.text;
                     const filled = buildShapeText({
-                      rawText: debounced.text,
+                      rawText,
                       textCase: debounced.textCase,
                       pathLenPx: p.arcLen ?? legacyApproxLen(p.d),
                       avgCharPx: legacyAvgCharPx(debounced.fontSize * p.fontScale),
