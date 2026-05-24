@@ -1,0 +1,46 @@
+sudo pod install
+/Users/marshaleconte/.rvm/rubies/ruby-3.2.2/lib/ruby/gems/3.2.0/gems/claide-1.1.0/lib/claide/command.rb:439:in `help!': [!] You cannot run CocoaPods as root. (CLAide::Help)
+
+Usage:
+
+    $ pod COMMAND
+
+      CocoaPods, the Cocoa library package manager.
+
+Commands:
+
+    + cache        Manipulate the CocoaPods cache
+    + env          Display pod environment
+    + init         Generate a Podfile for the current directory
+    + install      Install project dependencies according to versions from a
+                   Podfile.lock
+    + ipc          Inter-process communication
+    + lib          Develop pods
+    + list         List pods
+    + outdated     Show outdated project dependencies
+    + repo         Manage spec-repositories
+    + setup        Set up the CocoaPods environment
+    + spec         Manage pod specs
+    + update       Update outdated project dependencies and create new
+                   Podfile.lock
+
+Options:
+
+    --allow-root   Allows CocoaPods to run as root
+    --silent       Show nothing
+    --version      Show the version of the tool
+    --verbose      Show more debugging information
+    --no-ansi      Show output without ANSI codes
+    --help         Show help banner of specified command
+	from /Users/marshaleconte/.rvm/rubies/ruby-3.2.2/lib/ruby/gems/3.2.0/gems/cocoapods-1.16.2/lib/cocoapods/command.rb:102:in `ensure_not_root_or_allowed!'
+	from /Users/marshaleconte/.rvm/rubies/ruby-3.2.2/lib/ruby/gems/3.2.0/gems/cocoapods-1.16.2/lib/cocoapods/command.rb:48:in `run'
+	from /Users/marshaleconte/.rvm/rubies/ruby-3.2.2/lib/ruby/gems/3.2.0/gems/cocoapods-1.16.2/bin/pod:55:in `<top (required)>'
+	from /Users/marshaleconte/.rvm/rubies/ruby-3.2.2/lib/ruby/site_ruby/3.2.0/rubygems.rb:319:in `load'
+	from /Users/marshaleconte/.rvm/rubies/ruby-3.2.2/lib/ruby/site_ruby/3.2.0/rubygems.rb:319:in `activate_and_load_bin_path'
+	from /Users/marshaleconte/.rvm/rubies/ruby-3.2.2/bin/pod:25:in `<main>'
+	from /Users/marshaleconte/.rvm/rubies/ruby-3.2.2/bin/ruby_executable_hooks:22:in `eval'
+	from /Users/marshaleconte/.rvm/rubies/ruby-3.2.2/bin/ruby_executable_hooks:22:in `<main>'
+marshaleconte@new-host App % 
+marshaleconte@new-host App % 
+marshaleconte@new-host App % 
+marshaleconte@new-host App % open App.xcworkspace
