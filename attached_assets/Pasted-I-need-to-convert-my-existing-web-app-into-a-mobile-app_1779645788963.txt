@@ -1,0 +1,367 @@
+I need to convert my existing web app into a mobile app. This is a 
+conversion task only — not a redesign. Do not change any existing 
+functionality, logic, or visual design.
+
+
+
+All FEATURE must be preserved exactly as-is and Do not alter VISUAL DESIGN
+Core Editor (Studio)
+900×560 SVG Artboard — the entire canvas is a live-rendering SVG that reflects all state changes in real time, debounced at 50ms to maintain 60fps during slider drags.
+10 Parametric Shape Forms — each shape is a distinct text-path layout with its own tunable parameters:
+Shape
+Type
+Description
+Spiral
+Path-following
+Archimedean spiral; tune turns, pitch, inner radius, start angle, taper
+Fibonacci
+Concentric rings
+Rings scaled by φ⁻ⁿ; tune ring count, base radius, gap, scale intensity
+Echo
+Nested arcs
+Staggered arcs with fade; tune rings, arc span, spacing, falloff, stagger
+Heart
+Path-following
+Cardioid curve; tune amplitude, start angle
+Star
+Polyline
+N-point star; tune point count, inner/outer radii, rotation
+Sun
+Radial rays + spiral body
+Central body spiral with radiating text rays; tune ray count, body turns, ray length, jitter, angle
+Moon
+Crescent fill
+Shape-aware text wrap filling a crescent; tune radius, phase, curvature, tilt, alignment
+Bird
+Bezier wing strokes
+Wing silhouette paths with per-path text offset
+Cello
+Silhouette fill
+Body fill block with quiet neck geometry
+Mongolfière
+Balloon + ropes + basket
+Hot-air balloon bulb with decorative ropes and basket geometry
+
+Text Controls
+Prose Input — multi-line textarea for typing or pasting any text
+Font Family Picker — 7 choices: EB Garamond, Cormorant Garamond, Playfair Display, Georgia, Inter, Space Grotesk, JetBrains Mono
+Font Size — dropdown: 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 42 px
+Weight Slider — 100–800 in 100-step increments
+Tracking Slider — −2 to +6 px, 0.05 step
+Text Case — segmented toggle: As-Is / AA / aa / Tt
+Italic Toggle — per-composition on/off
+Composition Controls
+Rotation — −180° to +180°
+Scale — 0.4× to 1.4×
+Offset X / Y — ±200 / ±160 px nudge
+Jitter — 0–10 using simplex noise (adjacent glyphs flow, not scatter)
+Color Controls
+Ink — native <input type="color"> eyedropper + direct hex input
+Paper — same; color swatch updates live
+Transparent Paper — toggle to remove background entirely (useful for PNG with alpha)
+Shape-Specific Parameters (Right Inspector)
+Each shape exposes its own sliders and toggle groups in the "Shape" section, surfaced dynamically from the shape metadata.
+Undo / Redo
+~60-step history stack with coalescing — slider drags and text edits coalesce into single history steps so ⌘Z is never granular noise
+Keyboard shortcuts: ⌘Z / ⌘⇧Z / ⌘Y
+Dark / Light Theme
+One-click toggle swaps the app chrome AND the canvas's ink/paper colors simultaneously (wired through the undoable stack, so it's reversible with ⌘Z)
+Save & Library
+Save (⌘S) — API-backed persistence; prompts for a name on first save; silent update on subsequent saves
+Name Dialog — validates against empty/Untitled; prevents accidental overwrites
+Dirty State Indicator — SaveControls shows idle / saving / dirty / saved-at states
+Library Sheet — right-side panel listing all saved works with shape tag, name, and relative timestamp ("3h ago")
+Open / Delete Works — click to load any saved composition; trash icon with confirmation dialog for delete
+Unsaved Changes Gate — beforeunload warning prevents accidental tab close
+Export
+SVG — 900×560 vector download
+Copy SVG — to clipboard
+PNG 1× — 900×560 raster
+PNG 2× — 1800×1120 raster
+PNG 4× — 3600×2240 raster
+Keyboard shortcut: E for SVG export
+Authentication (Clerk)
+Sign-in and Sign-up pages at /sign-in and /sign-up
+Branded Clerk UI with UTO logo above the form
+Google, Apple, GitHub OAuth (when enabled in Clerk dashboard)
+Auth gate on export — exports require a resolved Clerk session; unauthenticated users are redirected to sign-in
+Account Chip — avatar + name in toolbar; dropdown for sign-out
+Presets (Built-in)
+8 named starting points shipped with the app: Cathedral · Atrium · Lullaby · Field Notes · Manifesto · Aubade · Solstice · Murmuration
+Shape Cycle (Keyboard)
+[ / ] keys step backward/forward through all 10 shapes
+Mobile Support
+Responsive layout: toolbar collapses into a ⋯ overflow menu
+Shape picker and Settings inspector open as bottom sheets (max-height 78vh)
+Mobile bottom bar with Form / Settings tap targets (14px tall)
+Math Panel ("Behind the Curve")
+Slide-over panel exposing the mathematical formula, plain-language description, and rendering notes for the active shape
+Status Strip (Desktop)
+Footer bar showing: active shape name · character count
+DevTools Deterrent
+Right-click disabled, F12 / ⌘U / ⌘⇧I/J/C blocked (soft deterrent, explicitly documented as such in code)
+
+VISUAL DESIGN
+Colors
+The palette is derived directly from the letters of the UTO logotype — sage (U/O), aubergine (T), hot pink (the dot inside the O), parchment (paper), slate ink.
+Light mode:
+Role
+HSL
+Approximate Hex
+Description
+Background / Paper
+hsl(38 28% 96%)
+#f5f3ee
+Warm parchment — dominant 60% tone
+Foreground / Ink
+hsl(260 18% 14%)
+#1c1824
+Deep slate-aubergine
+Border
+hsl(260 14% 88%)
+#dddae3
+Soft lavender-grey
+Card
+hsl(38 30% 99%)
+#faf9f6
+Near-white warm card surface
+Primary (Sage green)
+hsl(106 53% 71%)
+#a5dd8f
+Active state, toggles, Clerk primary
+Secondary (Aubergine)
+hsl(280 38% 32%)
+#4a2666
+Deep purple, avatar fallback
+Muted
+hsl(38 22% 92%)
+#ece9e2
+Subtle fill backgrounds
+Muted Foreground
+hsl(260 10% 42%)
+#63606b
+Secondary labels
+Accent (Sage)
+hsl(110 32% 70%)
+#9dd48a
+Hover/accent tones
+Destructive
+hsl(0 72% 52%)
+#e02e2e
+Delete / error states
+Hot Pink (UTO dot)
+hsl(326 82% 60%)
+#f487e1
+10% accent — delete icon hover, Save confirm button, chart-1
+Focus Ring
+#7e45ab
+—
+Aubergine purple focus ring on inputs
+UI Label Grey
+—
+#716e6e
+Toolbar labels, nav text, inspector headings
+Default Canvas Ink
+—
+#1c1824
+Initial text color
+Default Canvas Paper
+—
+#eeece7
+Initial background color
+
+Dark mode:
+Role
+HSL
+Approximate Hex
+Background
+hsl(260 18% 8%)
+#0e0c13
+Foreground
+hsl(38 28% 92%)
+#ede9e1
+Card
+hsl(260 18% 11%)
+#151219
+Primary (Sage)
+hsl(106 50% 66%)
+#9dd98a
+Muted
+hsl(260 14% 14%)
+#1e1b24
+Hot Pink
+hsl(326 82% 64%)
+#f593e4
+
+
+Typography
+Role
+Font
+Size
+Weight
+Notes
+App body / chrome
+Inter
+10.5–13px
+400–600
+Feature settings: ss01, cv11, cv05
+Toolbar labels ("Form", "Library", "Save", "Export")
+EB Garamond (serif)
+20px
+700 bold
+Letter spacing 1.1px
+Inspector headings (shape name)
+Space Grotesk (display)
+14px
+600
+font-display class
+Inspector section labels
+Inter
+10.5px
+500
+Uppercase, tracking 0.14em
+Section values / dropdowns
+Inter
+12px
+400–500
+tabular-nums
+Textarea / canvas prose (default)
+EB Garamond
+12px in inspector
+—
+Serif, leading-relaxed
+Math Panel title
+Space Grotesk
+28px
+600
+font-display
+Math Panel body
+EB Garamond
+14px
+400
+Serif, leading-relaxed
+Math formula display
+EB Garamond italic
+20px
+—
+Displayed in muted pill
+Status strip
+Inter
+10.5px
+400–500
+num-tab (tabular numerals)
+Library sheet title
+EB Garamond (serif-style via display)
+15px
+600
+letter-spacing 1.1px
+Save Dialog title
+Inter
+—
+600
+shadcn DialogTitle
+Sign-in / Sign-up
+EB Garamond (Clerk override)
+12–15px
+400–500
+Clerk form branded to serif
+Monospace / hex inputs
+JetBrains Mono
+11px
+400
+Color picker hex inputs
+Mobile bottom-bar labels
+Inter
+10.5px
+500
+Uppercase, tracking 0.14em
+
+Font loading (from index.html): Inter · EB Garamond · Cormorant Garamond · Playfair Display · Space Grotesk · JetBrains Mono — all via Google Fonts.
+
+Component Style
+Element
+Style
+Layout
+Three-zone: left rail (shape picker) · center canvas · 320px right inspector · 48px top toolbar · 28px status strip footer
+Toolbar
+48px tall, frosted glass (bg-background/85 backdrop-blur-xl), hairline bottom border, flex row with dividers (h-4 w-px bg-border/80)
+Buttons (icon/ghost)
+32×32px, rounded-md (10px), ghost hover bg-foreground/[.05], no visible border at rest
+Buttons (labeled nav)
+32px tall, px-2.5, same ghost style; toolbar labels use 20px bold serif
+Primary Button
+Sage green fill (bg-primary), dark foreground text, rounded-md
+Save Confirm Button
+Hot pink (#f487e1) fill, white text, no border, no focus ring ring
+Destructive Button
+bg-destructive red fill
+Inputs / Textareas
+field-bordered class: 1px border, border-radius: 6px, transparent background, aubergine (#7e45ab) focus border, 120ms transition
+Select Dropdowns
+Same field-bordered style, 32px height, 12px text
+Toggle Groups
+Pill-group container bg-foreground/[.04] with rounded-md p-0.5; active item bg-primary text-primary-foreground shadow-sm; 28px items
+Sliders
+Custom SliderInput: label + live numeric readout; Radix slider thumb
+Cards / Canvas
+rounded-[3px], ring-1 ring-foreground/[.08], large drop shadow (0 30px 70px -30px rgba(28,24,36,0.25))
+Sheets (Library / Mobile)
+Radix Sheet, right or bottom side, full-height or max 78vh, bg-background fill, no blur
+Dialogs (Save / Delete)
+Radix Dialog/AlertDialog, centered modal with header/footer layout, sm:max-w-[420px]
+Math Panel
+Framer Motion slide-in from right (x: 360), w-[360px], bg-card, shadow-2xl
+Popover (Export)
+w-[240px], aligned end, 6px section labels in uppercase
+Dropdown Menus
+w-[260px] shape picker uses 2-col grid; account dropdown w-[220px]; all p-1.5 rounded-md items
+Glass utility
+background: linear-gradient(180deg, card/82%, card/64%) + backdrop-filter: blur(20px) saturate(140%)
+Elevation hover
+Pseudo-element ::after overlay: elevate-1 = rgba(28,24,36,.035) on hover, elevate-2 = .075
+Border radius system
+sm: 6px · md: 8px · lg: 10px (--radius: .625rem) · xl: 14px
+Scrollbars
+Custom 6px styled scrollbar (nice-scroll class): border-radius 4px thumb, transparent track
+Animations
+Shape morph: opacity+scale+blur fade via Framer Motion (0.45s); Math panel: slide-in 0.32s cubic; Logo dot: 2.6s pulse scale 1→1.06
+Background stage
+Radial gradient highlight at top center (#f5f5f2 ellipse) over flat parchment; dark mode equivalent
+Corner marks
+Subtle Figma-style crop marks at artboard corners (decorative, pointer-events:none overlay)
+
+
+Summary: UTO is a single-page, pro-aesthetic typographic art tool. The design system is austere and editorial — warm parchment ground, slate ink, with sage green as the primary action color and hot pink reserved only for the most critical moments (active states, delete hover, save confirmation). Typography is deliberately dual-natured: utilitarian Inter for UI chrome and expressive serifs (Garamond, Cormorant) for the canvas. The overall aesthetic is described in the codebase itself as "Apple pro app meets Bauhaus design manual."
+The explore agent confirmed everything in the report I already delivered above — the findings are consistent across both analyses. The full product assessment is complete.
+
+
+---
+
+**MOBILE CONVERSION METHOD:**
+Wrap this app using Capacitor. Do not rewrite 
+the frontend. Use the existing web code as the foundation.
+
+---
+
+**AUTHORIZED CHANGES ONLY:**
+- Responsive layout adjustments for 390px screen width
+- Touch-friendly tap targets (minimum 44px)
+- Mobile-specific input or scroll handling only where strictly necessary
+- Only add new dependencies if they are absolutely required for wrapping
+
+---
+
+**NOT AUTHORIZED — Do not do any of the following:**
+- Redesign or restyle any existing components
+- Change the layout hierarchy or navigation structure
+- Remove, merge, or simplify any existing features
+- Add new UI patterns, animations, or components not already present
+- Change any backend logic, API calls, or data handling
+
+---
+
+**BEFORE WRITING ANY CODE:**
+List every file you plan to modify, every change you plan to make, and 
+why each change is strictly necessary for mobile conversion. Do not 
+proceed until I have reviewed and approved your plan.
+
