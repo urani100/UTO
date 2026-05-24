@@ -1,0 +1,42 @@
+marshaleconte@new-host UTO-Mobile % pnpm install
+/usr/local/lib/node_modules/corepack/dist/lib/corepack.cjs:21535
+  if (key == null || signature == null) throw new Error(`Cannot find matching keyid: ${JSON.stringify({ signatures, keys })}`);
+                                              ^
+
+Error: Cannot find matching keyid: {"signatures":[{"sig":"MEUCIBJYi9Q5qk2tyniq6Yd1/1QmHVqDDhAb3r8t96k9tlZZAiEAxiek6e74duLNEtoQ75MMzz33IG8sMrQtRvs7kBXVzm8=","keyid":"SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"}],"keys":[{"expires":null,"keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","keytype":"ecdsa-sha2-nistp256","scheme":"ecdsa-sha2-nistp256","key":"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1Olb3zMAFFxXKHiIkQO5cJ3Yhl5i6UPp+IhuteBJbuHcA5UogKo0EWtlWwW6KSaKoTNEYL7JlCQiVnkhBktUgg=="}]}
+    at verifySignature (/usr/local/lib/node_modules/corepack/dist/lib/corepack.cjs:21535:47)
+    at fetchLatestStableVersion (/usr/local/lib/node_modules/corepack/dist/lib/corepack.cjs:21553:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async fetchLatestStableVersion2 (/usr/local/lib/node_modules/corepack/dist/lib/corepack.cjs:21672:14)
+    at async Engine.getDefaultVersion (/usr/local/lib/node_modules/corepack/dist/lib/corepack.cjs:22292:23)
+    at async Engine.executePackageManagerRequest (/usr/local/lib/node_modules/corepack/dist/lib/corepack.cjs:22390:47)
+    at async Object.runMain (/usr/local/lib/node_modules/corepack/dist/lib/corepack.cjs:23096:5)
+
+Node.js v22.11.0
+marshaleconte@new-host UTO-Mobile % 
+marshaleconte@new-host UTO-Mobile % 
+marshaleconte@new-host UTO-Mobile % 
+marshaleconte@new-host UTO-Mobile % pwd         
+/Users/marshaleconte/desktop/UTO-Mobile
+marshaleconte@new-host UTO-Mobile % 
+marshaleconte@new-host UTO-Mobile % ls
+artifacts		package.json		replit.md		tsconfig.json
+attached_assets		pnpm-lock.yaml		scripts
+lib			pnpm-workspace.yaml	tsconfig.base.json
+marshaleconte@new-host UTO-Mobile % 
+marshaleconte@new-host UTO-Mobile % 
+marshaleconte@new-host UTO-Mobile % 
+marshaleconte@new-host UTO-Mobile %  cd artifacts/uto/ios/App
+marshaleconte@new-host App % 
+marshaleconte@new-host App % 
+marshaleconte@new-host App % 
+marshaleconte@new-host App % 
+marshaleconte@new-host App % pod install
+
+[!] Invalid `Podfile` file: cannot load such file -- /Users/marshaleconte/Desktop/UTO-Mobile/node_modules/@capacitor/ios/scripts/pods_helpers.
+
+ #  from /Users/marshaleconte/Desktop/UTO-Mobile/artifacts/uto/ios/App/Podfile:1
+ #  -------------------------------------------
+ >  require_relative '../../../../node_modules/@capacitor/ios/scripts/pods_helpers'
+ #  
+ #  -------------------------------------------
