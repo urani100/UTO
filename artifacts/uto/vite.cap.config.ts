@@ -12,7 +12,7 @@ function copyClerkJsPlugin(): Plugin {
     name: "copy-clerk-js",
     closeBundle() {
       const clerkJsDistDir = path.dirname(
-        _require.resolve("@clerk/clerk-js/dist/clerk.browser.js")
+        _require.resolve("@clerk/clerk-js")
       );
       const destDir = path.resolve(import.meta.dirname, "dist/cap");
       cpSync(clerkJsDistDir, destDir, { recursive: true });
