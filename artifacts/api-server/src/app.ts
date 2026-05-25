@@ -1,12 +1,10 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
 import { clerkMiddleware } from "@clerk/express";
-import { publishableKeyFromHost } from "@clerk/shared/keys";
 import {
   CLERK_PROXY_PATH,
   clerkProxyMiddleware,
-  getClerkProxyHost,
 } from "./middlewares/clerkProxyMiddleware";
 import router from "./routes";
 import { logger } from "./lib/logger";
@@ -46,34 +44,50 @@ for (const d of (process.env.ALLOWED_ORIGINS ?? "").split(",")) {
   const t = d.trim();
   if (t) allowedOrigins.add(t);
 }
-// Capacitor WebView origins for iOS and Android native apps
 allowedOrigins.add("capacitor://localhost");
 allowedOrigins.add("https://localhost");
 app.use(
   cors({
     credentials: true,
     origin(origin, cb) {
-      // Same-origin requests (no Origin header), curl/server-to-server,
-      // and explicitly allowlisted Replit hosts only.
       if (!origin) return cb(null, true);
       if (allowedOrigins.has(origin)) return cb(null, true);
-      // Don't 500 — just omit CORS headers so the browser blocks the response.
       cb(null, false);
     },
   }),
 );
+
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+// Use env vars directly — the Replit-specific publishableKeyFromHost lookup
+// is not needed outside of Replit and adds an unnecessary failure point.
 app.use(
-  clerkMiddleware((req) => ({
-    publishableKey: publishableKeyFromHost(
-      getClerkProxyHost(req) ?? "",
-      process.env.CLERK_PUBLISHABLE_KEY,
-    ),
-  })),
+  clerkMiddleware({
+    publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+    secretKey: process.env.CLERK_SECRET_KEY,
+  }),
 );
 
 app.use("/api", router);
+
+// Global JSON error handler — must be registered after all routes and must
+// declare all four parameters so Express recognises it as an error handler.
+// Without this, Express returns an HTML 500 page for any unhandled error,
+// which breaks API clients that expect JSON.
+app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
+  const status =
+    typeof err === "object" && err !== null && "status" in err
+      ? Number((err as { status: unknown }).status)
+      : 500;
+  const message =
+    err instanceof Error ? err.message : "Internal server error";
+
+  req.log?.error({ err }, "Unhandled error");
+
+  if (!res.headersSent) {
+    res.status(status).json({ error: message });
+  }
+});
 
 export default app;

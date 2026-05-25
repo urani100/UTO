@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
 import { z } from "zod";
 import { db, worksTable } from "@workspace/db";
 import { and, desc, eq } from "drizzle-orm";
@@ -15,9 +15,18 @@ const writeBody = z.object({
   state: z.record(z.string(), z.unknown()),
 });
 
+// Wraps async route handlers so any thrown error is forwarded to the global
+// error handler instead of crashing the process or hanging the request.
+function asyncHandler(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<void>,
+) {
+  return (req: Request, res: Response, next: NextFunction) =>
+    fn(req, res, next).catch(next);
+}
+
 router.use("/works", requireAuth);
 
-router.get("/works", async (req, res) => {
+router.get("/works", asyncHandler(async (req, res) => {
   const userId = req.userId!;
   await ensureUserRow(userId);
   const rows = await db
@@ -32,9 +41,9 @@ router.get("/works", async (req, res) => {
     .where(eq(worksTable.userId, userId))
     .orderBy(desc(worksTable.updatedAt));
   res.json(rows);
-});
+}));
 
-router.post("/works", async (req, res) => {
+router.post("/works", asyncHandler(async (req, res) => {
   const userId = req.userId!;
   const parsed = writeBody.safeParse(req.body);
   if (!parsed.success) {
@@ -52,9 +61,9 @@ router.post("/works", async (req, res) => {
     })
     .returning();
   res.json(toWork(inserted[0]!));
-});
+}));
 
-router.get("/works/:id", async (req, res) => {
+router.get("/works/:id", asyncHandler(async (req, res) => {
   const userId = req.userId!;
   const params = uuidParam.safeParse(req.params);
   if (!params.success) {
@@ -71,9 +80,9 @@ router.get("/works/:id", async (req, res) => {
     return;
   }
   res.json(toWork(rows[0]));
-});
+}));
 
-router.put("/works/:id", async (req, res) => {
+router.put("/works/:id", asyncHandler(async (req, res) => {
   const userId = req.userId!;
   const params = uuidParam.safeParse(req.params);
   if (!params.success) {
@@ -100,9 +109,9 @@ router.put("/works/:id", async (req, res) => {
     return;
   }
   res.json(toWork(updated[0]));
-});
+}));
 
-router.delete("/works/:id", async (req, res) => {
+router.delete("/works/:id", asyncHandler(async (req, res) => {
   const userId = req.userId!;
   const params = uuidParam.safeParse(req.params);
   if (!params.success) {
@@ -118,7 +127,7 @@ router.delete("/works/:id", async (req, res) => {
     return;
   }
   res.json({ ok: true });
-});
+}));
 
 function toWork(row: typeof worksTable.$inferSelect) {
   return {
