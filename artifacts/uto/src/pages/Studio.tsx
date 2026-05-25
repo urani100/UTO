@@ -404,6 +404,9 @@ export default function Studio() {
               <div>
                 <p className="text-[15px] font-semibold tracking-tight leading-snug">Form</p>
                 <p className="text-[12px] text-muted-foreground">Choose a shape for your composition.</p>
+                {SHAPE_META[state.shape]?.blurb && (
+                  <p className="text-[12px] text-muted-foreground mt-1">{SHAPE_META[state.shape].blurb}</p>
+                )}
               </div>
               <button
                 type="button"
