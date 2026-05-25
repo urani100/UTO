@@ -364,6 +364,10 @@ export default function Studio() {
     return () => window.removeEventListener("beforeunload", handler);
   }, [saveStatus.kind]);
 
+  if (import.meta.env.VITE_IS_CAPACITOR === "true") {
+    console.log("[UTO] Studio rendering, clerkLoaded:", clerkLoaded, "isSignedIn:", isSignedIn);
+  }
+
   return (
     <div className="h-full w-full flex flex-col bg-background overflow-hidden">
       <Toolbar

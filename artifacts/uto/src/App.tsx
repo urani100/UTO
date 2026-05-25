@@ -21,7 +21,12 @@ const clerkPubKey =
     import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
   );
 
-const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+// In Capacitor the Vite base is "./" for relative asset paths, which makes
+// BASE_URL = "./" and basePath = "." — a relative token that breaks Clerk's
+// path-routing and signInUrl/signUpUrl props. Use "" (root) instead.
+const basePath = import.meta.env.VITE_IS_CAPACITOR === "true"
+  ? ""
+  : import.meta.env.BASE_URL.replace(/\/$/, "");
 // In Capacitor the app runs at capacitor://localhost. The proxy at
 // /api/__clerk is registered before the CORS middleware in app.ts, so it
 // never adds Access-Control-Allow-Origin headers — every Clerk API call

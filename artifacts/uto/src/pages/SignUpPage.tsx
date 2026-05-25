@@ -1,6 +1,8 @@
 import { SignUp } from "@clerk/react";
 
-const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+const basePath = import.meta.env.VITE_IS_CAPACITOR === "true"
+  ? ""
+  : import.meta.env.BASE_URL.replace(/\/$/, "");
 const utoLogo = `${import.meta.env.BASE_URL}uto-logo.png`;
 
 export default function SignUpPage() {
