@@ -35,16 +35,16 @@ app.use(
 
 app.use(CLERK_PROXY_PATH, clerkProxyMiddleware());
 
-// CORS: only reflect origins that are part of this Replit project (dev domain
-// + published domains). Reflecting arbitrary origins while sending credentials
-// would let any third-party site call the API with the user's session cookie.
+// CORS: only reflect explicitly allowlisted origins. Reflecting arbitrary
+// origins while sending credentials would let any third-party site call the
+// API with the user's session cookie.
+// Set ALLOWED_ORIGINS to a comma-separated list of web origins to permit
+// (e.g. "https://your-app.com,https://staging.your-app.com").
+// Capacitor WebView origins for iOS and Android are always allowed.
 const allowedOrigins = new Set<string>();
-if (process.env.REPLIT_DEV_DOMAIN) {
-  allowedOrigins.add(`https://${process.env.REPLIT_DEV_DOMAIN}`);
-}
-for (const d of (process.env.REPLIT_DOMAINS ?? "").split(",")) {
+for (const d of (process.env.ALLOWED_ORIGINS ?? "").split(",")) {
   const t = d.trim();
-  if (t) allowedOrigins.add(`https://${t}`);
+  if (t) allowedOrigins.add(t);
 }
 // Capacitor WebView origins for iOS and Android native apps
 allowedOrigins.add("capacitor://localhost");
