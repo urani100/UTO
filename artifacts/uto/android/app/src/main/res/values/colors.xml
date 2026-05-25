@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- UTO palette — sage green primary, aubergine dark, hot pink accent -->
+    <color name="colorPrimary">#a5dd8f</color>
+    <color name="colorPrimaryDark">#7bb865</color>
+    <color name="colorAccent">#f487e1</color>
+</resources>
