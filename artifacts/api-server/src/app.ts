@@ -46,6 +46,9 @@ for (const d of (process.env.REPLIT_DOMAINS ?? "").split(",")) {
   const t = d.trim();
   if (t) allowedOrigins.add(`https://${t}`);
 }
+// Capacitor WebView origins for iOS and Android native apps
+allowedOrigins.add("capacitor://localhost");
+allowedOrigins.add("https://localhost");
 app.use(
   cors({
     credentials: true,
