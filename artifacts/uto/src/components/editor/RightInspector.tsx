@@ -38,7 +38,7 @@ export function RightInspector({ state, onChange, onShapeParam, embedded }: Prop
   const meta = SHAPE_META[state.shape];
 
   const className = embedded
-    ? "w-full h-full overflow-y-auto nice-scroll"
+    ? "w-full overflow-y-visible"
     : "w-[320px] flex-none border-l border-border/60 bg-background/80 backdrop-blur-xl overflow-y-auto nice-scroll relative z-10";
 
   return (
