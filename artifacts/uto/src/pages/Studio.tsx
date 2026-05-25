@@ -14,13 +14,6 @@ import { StatusStrip } from "@/components/editor/StatusStrip";
 import { LibrarySheet } from "@/components/editor/LibrarySheet";
 import { SaveDialog } from "@/components/editor/SaveDialog";
 import type { SaveStatus } from "@/components/editor/SaveControls";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useUndoable } from "@/hooks/useUndoable";
 import { useToast } from "@/hooks/use-toast";
@@ -61,8 +54,7 @@ export default function Studio() {
   const [meta, setMeta] = useState({ chars: 0, pathLen: 0, ms: 0 });
   const [isDark, setIsDark] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
-  const [mobileFormOpen, setMobileFormOpen] = useState(false);
-  const [mobileInspectorOpen, setMobileInspectorOpen] = useState(false);
+  const [activeMobilePanel, setActiveMobilePanel] = useState<"form" | "settings" | null>(null);
   const isMobile = useIsMobile();
   const [currentWorkId, setCurrentWorkId] = useState<string | null>(null);
   const [savedSig, setSavedSig] = useState<string | null>(null);
@@ -392,10 +384,74 @@ export default function Studio() {
         onOpenLibrary={() => setLibraryOpen(true)}
         isMobile={isMobile}
       />
-      <div className="flex-1 flex min-h-0">
-        <main className="flex-1 min-w-0 flex items-center justify-center relative bg-stage">
+      <div className={`flex-1 min-h-0 flex ${isMobile && activeMobilePanel ? "flex-col" : ""}`}>
+        <main
+          className={`min-w-0 flex items-center justify-center relative bg-stage ${
+            isMobile && activeMobilePanel ? "h-[248px] flex-none" : "flex-1"
+          }`}
+        >
           <Canvas state={state} ref={svgRef} onMetaUpdate={setMeta} />
         </main>
+        {isMobile && activeMobilePanel && (
+          <div className="flex-1 min-h-0 flex flex-col border-t border-border/60 bg-background">
+            <div className="flex items-center justify-between px-5 pt-4 pb-2 flex-none">
+              <div>
+                <p className="text-[15px] font-semibold tracking-tight leading-snug">
+                  {activeMobilePanel === "form" ? "Form" : "Settings"}
+                </p>
+                <p className="text-[12px] text-muted-foreground">
+                  {activeMobilePanel === "form"
+                    ? "Choose a shape for your composition."
+                    : "Adjust text, shape, composition, and color."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveMobilePanel(null)}
+                className="w-8 h-8 flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity flex-none"
+              >
+                <X size={14} strokeWidth={2} />
+              </button>
+            </div>
+            {activeMobilePanel === "form" ? (
+              <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6 pt-1">
+                <div className="grid grid-cols-2 gap-1.5">
+                  {SHAPE_LIST.map((m) => {
+                    const active = m.id === state.shape;
+                    return (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => {
+                          setShape(m.id);
+                          setActiveMobilePanel(null);
+                        }}
+                        data-testid={`shape-${m.id}`}
+                        className={
+                          "h-12 px-3 rounded-md text-left text-[13px] font-medium transition-colors " +
+                          (active
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-foreground/[.04] text-foreground hover:bg-foreground/[.08]")
+                        }
+                      >
+                        {m.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div className="flex-1 min-h-0">
+                <RightInspector
+                  state={state}
+                  onChange={updateState}
+                  onShapeParam={updateShapeParam}
+                  embedded
+                />
+              </div>
+            )}
+          </div>
+        )}
         {!isMobile && (
           <RightInspector
             state={state}
@@ -415,79 +471,10 @@ export default function Studio() {
       {isMobile && (
         <MobileBottomBar
           shape={state.shape}
-          onOpenForm={() => setMobileFormOpen(true)}
-          onOpenInspector={() => setMobileInspectorOpen(true)}
+          activePanel={activeMobilePanel}
+          onOpenForm={() => setActiveMobilePanel(activeMobilePanel === "form" ? null : "form")}
+          onOpenInspector={() => setActiveMobilePanel(activeMobilePanel === "settings" ? null : "settings")}
         />
-      )}
-
-      {isMobile && (
-        <Sheet open={mobileFormOpen} onOpenChange={setMobileFormOpen}>
-          <SheetContent
-            side="bottom"
-            className="max-h-[78vh] p-0 flex flex-col bg-background"
-          >
-            <SheetHeader className="px-5 pt-5 pb-2 space-y-1 text-left">
-              <SheetTitle className="text-[15px] font-semibold tracking-tight">
-                Form
-              </SheetTitle>
-              <SheetDescription className="text-[12px] text-muted-foreground">
-                Choose a shape for your composition.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6 pt-1">
-              <div className="grid grid-cols-2 gap-1.5">
-                {SHAPE_LIST.map((m) => {
-                  const active = m.id === state.shape;
-                  return (
-                    <button
-                      key={m.id}
-                      type="button"
-                      onClick={() => {
-                        setShape(m.id);
-                        setMobileFormOpen(false);
-                      }}
-                      data-testid={`shape-${m.id}`}
-                      className={
-                        "h-12 px-3 rounded-md text-left text-[13px] font-medium transition-colors " +
-                        (active
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-foreground/[.04] text-foreground hover:bg-foreground/[.08]")
-                      }
-                    >
-                      {m.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
-      )}
-
-      {isMobile && (
-        <Sheet open={mobileInspectorOpen} onOpenChange={setMobileInspectorOpen}>
-          <SheetContent
-            side="bottom"
-            className="max-h-[78vh] h-[78vh] p-0 flex flex-col bg-background"
-          >
-            <SheetHeader className="px-5 pt-5 pb-2 space-y-1 text-left flex-none">
-              <SheetTitle className="text-[15px] font-semibold tracking-tight">
-                Settings
-              </SheetTitle>
-              <SheetDescription className="text-[12px] text-muted-foreground">
-                Adjust text, shape, composition, and color.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="flex-1 min-h-0">
-              <RightInspector
-                state={state}
-                onChange={updateState}
-                onShapeParam={updateShapeParam}
-                embedded
-              />
-            </div>
-          </SheetContent>
-        </Sheet>
       )}
 
       <LibrarySheet
@@ -508,10 +495,12 @@ export default function Studio() {
 
 function MobileBottomBar({
   shape,
+  activePanel,
   onOpenForm,
   onOpenInspector,
 }: {
   shape: ShapeId;
+  activePanel: "form" | "settings" | null;
   onOpenForm: () => void;
   onOpenInspector: () => void;
 }) {
@@ -522,9 +511,13 @@ function MobileBottomBar({
         type="button"
         onClick={onOpenForm}
         data-testid="mobile-open-form"
-        className="flex-1 flex flex-col items-center justify-center gap-0.5 text-[#716e6e] hover:bg-foreground/[.04] transition-colors active:bg-foreground/[.08]"
+        className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors active:bg-foreground/[.08] ${
+          activePanel === "form"
+            ? "text-foreground bg-foreground/[.05]"
+            : "text-[#716e6e] hover:bg-foreground/[.04]"
+        }`}
       >
-        <Shapes size={18} strokeWidth={1.6} />
+        <Shapes size={18} strokeWidth={activePanel === "form" ? 2 : 1.6} />
         <span className="text-[10.5px] font-medium uppercase tracking-[0.14em] truncate max-w-[140px]">
           {meta?.name ?? "Form"}
         </span>
@@ -534,9 +527,13 @@ function MobileBottomBar({
         type="button"
         onClick={onOpenInspector}
         data-testid="mobile-open-inspector"
-        className="flex-1 flex flex-col items-center justify-center gap-0.5 text-[#716e6e] hover:bg-foreground/[.04] transition-colors active:bg-foreground/[.08]"
+        className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors active:bg-foreground/[.08] ${
+          activePanel === "settings"
+            ? "text-foreground bg-foreground/[.05]"
+            : "text-[#716e6e] hover:bg-foreground/[.04]"
+        }`}
       >
-        <SlidersHorizontal size={18} strokeWidth={1.6} />
+        <SlidersHorizontal size={18} strokeWidth={activePanel === "settings" ? 2 : 1.6} />
         <span className="text-[10.5px] font-medium uppercase tracking-[0.14em]">
           Settings
         </span>
