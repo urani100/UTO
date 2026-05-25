@@ -11,7 +11,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "cap:build": "vite build --config vite.cap.config.ts",
+    "cap:build": "vite build --config vite.cap.config.ts --mode cap",
     "cap:sync": "pnpm run cap:build && cap sync",
     "cap:open:android": "cap open android",
     "cap:open:ios": "cap open ios"
