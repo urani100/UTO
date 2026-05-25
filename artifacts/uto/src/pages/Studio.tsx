@@ -389,7 +389,7 @@ export default function Studio() {
       <div className={`flex-1 min-h-0 flex ${isMobile && mobilePanelOpen ? "flex-col" : ""}`}>
         <main
           className={`min-w-0 flex items-center justify-center relative bg-stage ${
-            isMobile && mobilePanelOpen ? "h-[248px] flex-none" : "flex-1"
+            isMobile && mobilePanelOpen ? "h-[280px] flex-none" : "flex-1"
           }`}
         >
           <Canvas state={state} ref={svgRef} onMetaUpdate={setMeta} />

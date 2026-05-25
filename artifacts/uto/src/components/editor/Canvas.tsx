@@ -44,7 +44,7 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
   const rays = render.rays ?? [];
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center px-3 py-3 md:px-12 md:py-10">
+    <div className="relative w-full h-full flex items-center justify-center p-0 md:px-12 md:py-10">
       <AnimatePresence mode="popLayout">
         <motion.div
           key={debounced.shape}
