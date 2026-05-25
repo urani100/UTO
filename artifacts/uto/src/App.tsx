@@ -21,12 +21,15 @@ const clerkPubKey =
     import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
   );
 
-const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
-// In @clerk/shared@4.x the internal prop name changed from clerkJSUrl to __internal_clerkJSUrl
-const clerkCapacitorProps = import.meta.env.VITE_IS_CAPACITOR === "true"
-  ? { __internal_clerkJSUrl: "./clerk.browser.js" } as Record<string, string>
-  : {};
+// In Capacitor the app runs at capacitor://localhost. The proxy at
+// /api/__clerk is registered before the CORS middleware in app.ts, so it
+// never adds Access-Control-Allow-Origin headers — every Clerk API call
+// from the WebView is blocked. Skip the proxy entirely in Capacitor and
+// let Clerk call its own servers directly; they handle CORS themselves.
+const clerkProxyUrl = import.meta.env.VITE_IS_CAPACITOR === "true"
+  ? undefined
+  : import.meta.env.VITE_CLERK_PROXY_URL;
 
 function stripBase(path: string): string {
   return basePath && path.startsWith(basePath)
@@ -67,7 +70,6 @@ function ClerkProviderWithRoutes() {
     <ClerkProvider
       publishableKey={clerkPubKey}
       proxyUrl={clerkProxyUrl}
-      {...clerkCapacitorProps}
       appearance={clerkAppearance}
       signInUrl={`${basePath}/sign-in`}
       signUpUrl={`${basePath}/sign-up`}
