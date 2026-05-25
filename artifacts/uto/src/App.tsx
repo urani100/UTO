@@ -23,6 +23,9 @@ const clerkPubKey =
 
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+const clerkJSUrl = import.meta.env.VITE_IS_CAPACITOR === "true"
+  ? "./clerk.browser.js"
+  : undefined;
 
 function stripBase(path: string): string {
   return basePath && path.startsWith(basePath)
@@ -63,6 +66,7 @@ function ClerkProviderWithRoutes() {
     <ClerkProvider
       publishableKey={clerkPubKey}
       proxyUrl={clerkProxyUrl}
+      clerkJSUrl={clerkJSUrl}
       appearance={clerkAppearance}
       signInUrl={`${basePath}/sign-in`}
       signUpUrl={`${basePath}/sign-up`}
