@@ -91,6 +91,7 @@
   },
   "dependencies": {
     "@capacitor/core": "^7.0.0",
+    "@clerk/clerk-js": "5.125.10",
     "@clerk/react": "^6.4.5",
     "@clerk/themes": "^2.4.57",
     "simplex-noise": "^4.0.3"
