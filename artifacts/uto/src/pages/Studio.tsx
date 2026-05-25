@@ -501,20 +501,6 @@ function MobileBottomBar({
       <button
         type="button"
         onClick={onTogglePanel}
-        data-testid="mobile-open-form"
-        className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors active:bg-foreground/[.08] ${
-          panelOpen ? "text-foreground bg-foreground/[.05]" : "text-[#716e6e] hover:bg-foreground/[.04]"
-        }`}
-      >
-        <Shapes size={18} strokeWidth={panelOpen ? 2 : 1.6} />
-        <span className="text-[10.5px] font-medium uppercase tracking-[0.14em] truncate max-w-[140px]">
-          {meta?.name ?? "Form"}
-        </span>
-      </button>
-      <div className="w-px bg-border/60" />
-      <button
-        type="button"
-        onClick={onTogglePanel}
         data-testid="mobile-open-inspector"
         className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors active:bg-foreground/[.08] ${
           panelOpen ? "text-foreground bg-foreground/[.05]" : "text-[#716e6e] hover:bg-foreground/[.04]"
