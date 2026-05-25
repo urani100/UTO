@@ -54,7 +54,9 @@ export default function Studio() {
   const [meta, setMeta] = useState({ chars: 0, pathLen: 0, ms: 0 });
   const [isDark, setIsDark] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
-  const [activeMobilePanel, setActiveMobilePanel] = useState<"form" | "settings" | null>(null);
+  const [activeMobilePanel, setActiveMobilePanel] = useState<"form" | "settings" | null>(() =>
+    window.matchMedia("(max-width: 767px)").matches ? "form" : null
+  );
   const isMobile = useIsMobile();
   const [currentWorkId, setCurrentWorkId] = useState<string | null>(null);
   const [savedSig, setSavedSig] = useState<string | null>(null);
