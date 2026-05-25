@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { CanvasState, ShapeRender } from "@/lib/types";
 import { CANVAS_H, CANVAS_W } from "@/lib/types";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { renderShape } from "@/lib/shapes";
 import { applyCase } from "@/lib/engine/text";
 import { sampleNoise } from "@/lib/engine/noise";
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, onMetaUpdate }, ref) {
+  const isMobile = useIsMobile();
   const [debounced, setDebounced] = useState(state);
 
   // 50ms debounce — keeps the canvas at 60fps while sliders drag.
@@ -52,8 +54,12 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
           exit={{ opacity: 0, scale: 1.01, filter: "blur(8px)" }}
           transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
-          className="relative rounded-[3px] overflow-hidden ring-1 ring-foreground/[.08] shadow-[0_30px_70px_-30px_rgba(28,24,36,0.25),0_8px_24px_-12px_rgba(28,24,36,0.12)]"
-          style={{
+          className={isMobile
+            ? "relative overflow-hidden w-full h-full"
+            : "relative rounded-[3px] overflow-hidden ring-1 ring-foreground/[.08] shadow-[0_30px_70px_-30px_rgba(28,24,36,0.25),0_8px_24px_-12px_rgba(28,24,36,0.12)]"}
+          style={isMobile ? {
+            background: debounced.backgroundMode === "transparent" ? "transparent" : debounced.backgroundColor,
+          } : {
             width: "min(100%, 940px)",
             aspectRatio: `${CANVAS_W} / ${CANVAS_H}`,
             background: debounced.backgroundMode === "transparent" ? "transparent" : debounced.backgroundColor,
@@ -66,7 +72,7 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
 
           <svg
             ref={ref}
-            viewBox={`0 0 ${CANVAS_W} ${CANVAS_H}`}
+            viewBox={isMobile ? "116 72 667 415" : `0 0 ${CANVAS_W} ${CANVAS_H}`}
             xmlns="http://www.w3.org/2000/svg"
             className="absolute inset-0 w-full h-full"
             preserveAspectRatio="xMidYMid meet"
