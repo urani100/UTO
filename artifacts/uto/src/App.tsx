@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
-import { ClerkProvider, useClerk } from "@clerk/react";
+import { ClerkProvider, useClerk, useAuth } from "@clerk/react";
 import { publishableKeyFromHost } from "@clerk/react/internal";
 import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { clerkAppearance } from "@/lib/clerkAppearance";
+import { setAuthTokenGetter } from "@workspace/api-client-react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
@@ -68,6 +69,19 @@ function ClerkQueryClientCacheInvalidator() {
   return null;
 }
 
+// In Capacitor there are no shared cookies between the WebView and the server.
+// Wire Clerk's getToken to the API client so every request carries a
+// Bearer token instead of relying on cookies.
+function ClerkCapacitorAuthSync() {
+  const { getToken } = useAuth();
+  useEffect(() => {
+    if (import.meta.env.VITE_IS_CAPACITOR !== "true") return;
+    setAuthTokenGetter(() => getToken());
+    return () => setAuthTokenGetter(null);
+  }, [getToken]);
+  return null;
+}
+
 function ClerkProviderWithRoutes() {
   const [, setLocation] = useLocation();
 
@@ -97,6 +111,7 @@ function ClerkProviderWithRoutes() {
     >
       <QueryClientProvider client={queryClient}>
         <ClerkQueryClientCacheInvalidator />
+        <ClerkCapacitorAuthSync />
         <TooltipProvider delayDuration={250}>
           <Switch>
             <Route path="/sign-in/*?" component={SignInPage} />
