@@ -28,7 +28,7 @@ import { INITIAL_STATE } from "@/lib/initialState";
 import type { CanvasState, ShapeId } from "@/lib/types";
 import { nextShape } from "@/lib/randomize";
 import { SHAPE_LIST, SHAPE_META } from "@/lib/shapes";
-import { Shapes, SlidersHorizontal } from "lucide-react";
+import { Shapes, SlidersHorizontal, X } from "lucide-react";
 import {
   copySvgToClipboard,
   downloadSvg,
