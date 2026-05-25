@@ -21,8 +21,8 @@ export default function SignUpPage() {
         />
       </a>
       <SignUp
-        routing="path"
-        path={`${basePath}/sign-up`}
+        routing={import.meta.env.VITE_IS_CAPACITOR === "true" ? "virtual" : "path"}
+        path={import.meta.env.VITE_IS_CAPACITOR === "true" ? undefined : `${basePath}/sign-up`}
         signInUrl={`${basePath}/sign-in`}
         forceRedirectUrl={basePath || "/"}
         fallbackRedirectUrl={basePath || "/"}
