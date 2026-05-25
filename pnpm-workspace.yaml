@@ -6,6 +6,16 @@ packages:
 
 autoInstallPeers: false
 
+supportedArchitectures:
+  os:
+    - linux
+    - darwin
+    - current
+  cpu:
+    - x64
+    - arm64
+    - current
+
 catalog:
   '@replit/vite-plugin-cartographer': ^0.5.1
   '@replit/vite-plugin-dev-banner': ^0.1.1
