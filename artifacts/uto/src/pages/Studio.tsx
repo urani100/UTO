@@ -436,6 +436,11 @@ export default function Studio() {
                 })}
               </div>
             </div>
+            {/* Shape name + blurb */}
+            <div className="border-t border-border/60 px-5 pt-4 pb-3">
+              <p className="text-[13px] font-semibold tracking-[-0.005em] text-[#716e6e]">{SHAPE_META[state.shape]?.name}</p>
+              <p className="text-[12px] text-muted-foreground mt-1 leading-snug">{SHAPE_META[state.shape]?.blurb}</p>
+            </div>
             {/* Settings section */}
             <div className="border-t border-border/60 px-5 pt-4 pb-2">
               <p className="text-[15px] font-semibold tracking-tight leading-snug">Settings</p>
@@ -446,6 +451,7 @@ export default function Studio() {
               onChange={updateState}
               onShapeParam={updateShapeParam}
               embedded
+              hideShapeHeader
             />
           </div>
         )}

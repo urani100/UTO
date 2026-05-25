@@ -20,6 +20,9 @@ interface Props {
   /** When true, render without the desktop `aside` chrome (no fixed width,
    *  no left border) so the inspector composes inside a Sheet on mobile. */
   embedded?: boolean;
+  /** When true, suppress the shape name + blurb header (used on mobile
+   *  where the header is rendered separately above the Settings label). */
+  hideShapeHeader?: boolean;
 }
 
 const FONT_FAMILIES = [
@@ -34,7 +37,7 @@ const FONT_FAMILIES = [
 
 const FONT_SIZES = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 42];
 
-export function RightInspector({ state, onChange, onShapeParam, embedded }: Props) {
+export function RightInspector({ state, onChange, onShapeParam, embedded, hideShapeHeader }: Props) {
   const meta = SHAPE_META[state.shape];
 
   const className = embedded
@@ -43,18 +46,22 @@ export function RightInspector({ state, onChange, onShapeParam, embedded }: Prop
 
   return (
     <aside className={className}>
-      <div className="px-5 pt-4 pb-3">
-        <div className="flex items-baseline justify-between">
-          <h2 className="font-display text-[14px] font-semibold tracking-[-0.005em] text-[#716e6e]">
-            {meta.name}
-          </h2>
-        </div>
-        <p className="text-[11.5px] text-muted-foreground/85 leading-snug mt-1.5 pr-2">
-          {meta.blurb}
-        </p>
-      </div>
+      {!hideShapeHeader && (
+        <>
+          <div className="px-5 pt-4 pb-3">
+            <div className="flex items-baseline justify-between">
+              <h2 className="font-display text-[14px] font-semibold tracking-[-0.005em] text-[#716e6e]">
+                {meta.name}
+              </h2>
+            </div>
+            <p className="text-[11.5px] text-muted-foreground/85 leading-snug mt-1.5 pr-2">
+              {meta.blurb}
+            </p>
+          </div>
 
-      <div className="border-t border-border/55" />
+          <div className="border-t border-border/55" />
+        </>
+      )}
 
       <InspectorSection title="Text" defaultOpen={false}>
         <div className="space-y-1.5">
