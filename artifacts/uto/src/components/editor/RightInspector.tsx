@@ -277,7 +277,7 @@ export function RightInspector({ state, onChange, onShapeParam, embedded, hideSh
         })}
       </InspectorSection>
 
-      <InspectorSection title="Composition" defaultOpen={false}>
+      <InspectorSection title="Composition" defaultOpen={!embedded}>
         <SliderInput
           label="Rotation"
           value={state.rotation}
