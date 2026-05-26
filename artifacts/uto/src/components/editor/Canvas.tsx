@@ -15,9 +15,12 @@ import {
 interface Props {
   state: CanvasState;
   onMetaUpdate: (m: { chars: number; pathLen: number; ms: number }) => void;
+  /** Mobile only: when true the canvas fills the entire screen (panel closed);
+   *  when false it constrains to a fixed aspect-ratio rectangle (panel open). */
+  fullScreen?: boolean;
 }
 
-export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, onMetaUpdate }, ref) {
+export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, onMetaUpdate, fullScreen }, ref) {
   const isMobile = useIsMobile();
   const [debounced, setDebounced] = useState(state);
 
@@ -55,10 +58,10 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
           exit={{ opacity: 0, scale: 1.01, filter: "blur(8px)" }}
           transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
           className={isMobile
-            ? "relative overflow-hidden w-full"
+            ? `relative overflow-hidden w-full${fullScreen ? " h-full" : ""}`
             : "relative rounded-[3px] overflow-hidden ring-1 ring-foreground/[.08] shadow-[0_30px_70px_-30px_rgba(28,24,36,0.25),0_8px_24px_-12px_rgba(28,24,36,0.12)]"}
           style={isMobile ? {
-            aspectRatio: "836 / 520",
+            ...(fullScreen ? {} : { aspectRatio: "836 / 520" }),
             background: debounced.backgroundMode === "transparent" ? "transparent" : debounced.backgroundColor,
           } : {
             width: "min(100%, 940px)",

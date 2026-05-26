@@ -395,7 +395,7 @@ export default function Studio() {
           }`}
           style={isMobile && mobilePanelOpen ? { aspectRatio: `${900}/${560}` } : undefined}
         >
-          <Canvas state={state} ref={svgRef} onMetaUpdate={setMeta} />
+          <Canvas state={state} ref={svgRef} onMetaUpdate={setMeta} fullScreen={isMobile && !mobilePanelOpen} />
         </main>
         {isMobile && mobilePanelOpen && (
           <div className="flex-1 min-h-0 overflow-y-auto border-t border-border/60 bg-background">
