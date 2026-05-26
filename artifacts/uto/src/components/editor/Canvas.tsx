@@ -55,9 +55,10 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
           exit={{ opacity: 0, scale: 1.01, filter: "blur(8px)" }}
           transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
           className={isMobile
-            ? "relative overflow-hidden w-full h-full"
+            ? "relative overflow-hidden w-full"
             : "relative rounded-[3px] overflow-hidden ring-1 ring-foreground/[.08] shadow-[0_30px_70px_-30px_rgba(28,24,36,0.25),0_8px_24px_-12px_rgba(28,24,36,0.12)]"}
           style={isMobile ? {
+            aspectRatio: "836 / 520",
             background: debounced.backgroundMode === "transparent" ? "transparent" : debounced.backgroundColor,
           } : {
             width: "min(100%, 940px)",
@@ -72,7 +73,7 @@ export const Canvas = forwardRef<SVGSVGElement, Props>(function Canvas({ state, 
 
           <svg
             ref={ref}
-            viewBox={isMobile ? "116 72 667 415" : `0 0 ${CANVAS_W} ${CANVAS_H}`}
+            viewBox={isMobile ? "32 20 836 520" : `0 0 ${CANVAS_W} ${CANVAS_H}`}
             xmlns="http://www.w3.org/2000/svg"
             className="absolute inset-0 w-full h-full"
             preserveAspectRatio="xMidYMid meet"
