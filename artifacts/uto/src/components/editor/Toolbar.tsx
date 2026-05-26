@@ -218,6 +218,27 @@ function MobileToolbar(props: Props) {
           aria-label="Form name"
         />
 
+        <button
+          type="button"
+          onClick={props.onUndo}
+          disabled={!props.canUndo}
+          aria-label="Undo"
+          data-testid="button-undo"
+          className="h-9 w-9 rounded-md flex items-center justify-center text-foreground/85 hover:bg-foreground/[.05] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <Undo2 size={17} strokeWidth={1.6} />
+        </button>
+        <button
+          type="button"
+          onClick={props.onRedo}
+          disabled={!props.canRedo}
+          aria-label="Redo"
+          data-testid="button-redo"
+          className="h-9 w-9 rounded-md flex items-center justify-center text-foreground/85 hover:bg-foreground/[.05] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <Redo2 size={17} strokeWidth={1.6} />
+        </button>
+
         <SaveControls status={props.saveStatus} onSave={props.onSave} />
 
         <DropdownMenu>
@@ -232,29 +253,6 @@ function MobileToolbar(props: Props) {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[240px] p-1.5">
-            <div className="grid grid-cols-2 gap-1 p-1">
-              <DropdownMenuItem
-                onSelect={props.onUndo}
-                disabled={!props.canUndo}
-                className="justify-center gap-2 text-[12.5px] h-9"
-                data-testid="button-undo"
-              >
-                <Undo2 size={14} strokeWidth={1.6} />
-                Undo
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={props.onRedo}
-                disabled={!props.canRedo}
-                className="justify-center gap-2 text-[12.5px] h-9"
-                data-testid="button-redo"
-              >
-                <Redo2 size={14} strokeWidth={1.6} />
-                Redo
-              </DropdownMenuItem>
-            </div>
-
-            <DropdownMenuSeparator />
-
             <DropdownMenuItem
               onSelect={props.onOpenLibrary}
               className="text-[13px] h-10 px-3"
