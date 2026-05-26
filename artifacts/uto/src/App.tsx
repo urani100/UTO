@@ -8,6 +8,7 @@ import { clerkAppearance } from "@/lib/clerkAppearance";
 import { setAuthTokenGetter } from "@workspace/api-client-react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { UtoMark } from "@/components/editor/Logo";
 import NotFound from "@/pages/not-found";
 import Studio from "@/pages/Studio";
 import SignInPage from "@/pages/SignInPage";
@@ -82,6 +83,27 @@ function ClerkCapacitorAuthSync() {
   return null;
 }
 
+function SplashScreen() {
+  return (
+    <div className="h-full w-full flex items-center justify-center bg-[#eeece7]">
+      <UtoMark height={28} />
+    </div>
+  );
+}
+
+function ProtectedRoute() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) setLocation("/sign-in");
+  }, [isLoaded, isSignedIn, setLocation]);
+
+  if (!isLoaded) return <SplashScreen />;
+  if (!isSignedIn) return null;
+  return <Studio />;
+}
+
 function ClerkProviderWithRoutes() {
   const [, setLocation] = useLocation();
 
@@ -116,7 +138,7 @@ function ClerkProviderWithRoutes() {
           <Switch>
             <Route path="/sign-in/*?" component={SignInPage} />
             <Route path="/sign-up/*?" component={SignUpPage} />
-            <Route path="/" component={Studio} />
+            <Route path="/" component={ProtectedRoute} />
             <Route component={NotFound} />
           </Switch>
           <Toaster />
