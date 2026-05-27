@@ -25,7 +25,7 @@ import {
   getListWorksQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Trash2, FileText } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { SHAPE_META } from "@/lib/shapes";
 import type { ShapeId, CanvasState } from "@/lib/types";
@@ -68,12 +68,12 @@ export function LibrarySheet({ open, onOpenChange, onLoadWork }: Props) {
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
-        <SheetHeader className="px-6 pt-6 pb-3 space-y-1">
+        <SheetHeader className="px-6 pt-10 pb-3 space-y-1">
           <SheetTitle className="text-[15px] font-semibold tracking-tight leading-snug">
             Library
           </SheetTitle>
           <SheetDescription className="text-[12.5px] text-muted-foreground">
-            {`${works.length} ${works.length === 1 ? "form" : "forms"}`}
+            {`${works.length} ${works.length === 1 ? "Composition" : "Compositions"}`}
           </SheetDescription>
         </SheetHeader>
 
@@ -82,18 +82,7 @@ export function LibrarySheet({ open, onOpenChange, onLoadWork }: Props) {
             <div className="px-3 pt-8 text-[12.5px] text-muted-foreground italic">
               Loading…
             </div>
-          ) : works.length === 0 ? (
-            <div className="px-3 pt-8 flex flex-col items-center text-center gap-3">
-              <FileText
-                size={28}
-                strokeWidth={1.4}
-                className="text-muted-foreground/60"
-              />
-              <p className="text-[12.5px] text-muted-foreground max-w-[260px]">
-                Nothing saved yet. Press <kbd className="font-mono text-[11px] px-1 py-0.5 bg-muted rounded border border-border/60">⌘S</kbd> to save the current canvas.
-              </p>
-            </div>
-          ) : (
+          ) : works.length === 0 ? null : (
             <ul className="space-y-0.5 pt-1">
               {works.map((w) => (
                 <WorkRow
