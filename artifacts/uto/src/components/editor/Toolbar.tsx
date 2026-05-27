@@ -69,7 +69,7 @@ function DesktopToolbar(props: Props) {
           onKeyDown={(e) => {
             if (e.key === "Enter") (e.target as HTMLInputElement).blur();
           }}
-          placeholder="Untitled"
+          placeholder="Symphony no 5"
           className="text-[12.5px] font-medium text-foreground bg-transparent border-b border-transparent hover:border-foreground/20 focus:border-foreground focus:outline-none py-0.5 w-[200px] placeholder:text-muted-foreground/70 transition-colors"
           data-testid="input-project-name"
           aria-label="Form name"
@@ -212,7 +212,7 @@ function MobileToolbar(props: Props) {
           onKeyDown={(e) => {
             if (e.key === "Enter") (e.target as HTMLInputElement).blur();
           }}
-          placeholder="Untitled"
+          placeholder="Symphony no 5"
           className="flex-1 min-w-0 text-[13px] font-medium text-foreground bg-transparent border-b border-transparent hover:border-foreground/20 focus:border-foreground focus:outline-none py-1 placeholder:text-muted-foreground/70 transition-colors truncate"
           data-testid="input-project-name"
           aria-label="Form name"

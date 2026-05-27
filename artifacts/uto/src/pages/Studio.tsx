@@ -50,7 +50,7 @@ function workSignature(name: string, state: CanvasState): string {
 export default function Studio() {
   const undoable = useUndoable<CanvasState>(INITIAL_STATE);
   const state = undoable.state;
-  const [projectName, setProjectName] = useState("Untitled");
+  const [projectName, setProjectName] = useState("");
   const [meta, setMeta] = useState({ chars: 0, pathLen: 0, ms: 0 });
   const [isDark, setIsDark] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
