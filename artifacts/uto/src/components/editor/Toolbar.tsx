@@ -72,7 +72,7 @@ function DesktopToolbar(props: Props) {
           placeholder="Symphony no 5"
           className="text-[12.5px] font-medium text-foreground bg-transparent border-b border-transparent hover:border-foreground/20 focus:border-foreground focus:outline-none py-0.5 w-[200px] placeholder:text-muted-foreground/70 transition-colors"
           data-testid="input-project-name"
-          aria-label="Form name"
+          aria-label="Composition name"
         />
 
         <div className="flex-1" />
@@ -105,7 +105,7 @@ function DesktopToolbar(props: Props) {
               data-testid="button-form"
             >
               <span className={LABEL_CLASS} style={LABEL_STYLE}>
-                Form
+                Compositions
               </span>
               <ChevronDown size={11} className="text-muted-foreground" />
             </button>
@@ -215,7 +215,7 @@ function MobileToolbar(props: Props) {
           placeholder="Symphony no 5"
           className="flex-1 min-w-0 text-[13px] font-medium text-foreground bg-transparent border-b border-transparent hover:border-foreground/20 focus:border-foreground focus:outline-none py-1 placeholder:text-muted-foreground/70 transition-colors truncate"
           data-testid="input-project-name"
-          aria-label="Form name"
+          aria-label="Composition name"
         />
 
         <button

@@ -402,7 +402,7 @@ export default function Studio() {
             {/* Form section */}
             <div className="flex items-center justify-between px-5 pt-4 pb-2">
               <div>
-                <p className="text-[15px] font-semibold tracking-tight leading-snug">Form</p>
+                <p className="text-[15px] font-semibold tracking-tight leading-snug">Compositions</p>
               </div>
               <button
                 type="button"
