@@ -17,9 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/react";
-import { useLocation } from "wouter";
 import {
   useListWorks,
   useDeleteWork,
@@ -27,7 +25,7 @@ import {
   getListWorksQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Trash2, FolderOpen, FileText } from "lucide-react";
+import { Trash2, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { SHAPE_META } from "@/lib/shapes";
 import type { ShapeId, CanvasState } from "@/lib/types";
@@ -45,7 +43,6 @@ interface Props {
 
 export function LibrarySheet({ open, onOpenChange, onLoadWork }: Props) {
   const { isSignedIn } = useUser();
-  const [, setLocation] = useLocation();
   const qc = useQueryClient();
   const { toast } = useToast();
 
@@ -74,36 +71,12 @@ export function LibrarySheet({ open, onOpenChange, onLoadWork }: Props) {
             Library
           </SheetTitle>
           <SheetDescription className="text-[12.5px] text-muted-foreground">
-            {isSignedIn
-              ? `${works.length} ${works.length === 1 ? "form" : "forms"}`
-              : "Sign in to see your saved forms."}
+            {`${works.length} ${works.length === 1 ? "form" : "forms"}`}
           </SheetDescription>
         </SheetHeader>
 
         <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6">
-          {!isSignedIn ? (
-            <div className="px-3 pt-8 flex flex-col items-center text-center gap-3">
-              <FolderOpen
-                size={28}
-                strokeWidth={1.4}
-                className="text-muted-foreground/60"
-              />
-              <p className="text-[12.5px] text-muted-foreground max-w-[260px]">
-                Your library is private to your account.
-              </p>
-              <Button
-                size="sm"
-                onClick={() => {
-                  onOpenChange(false);
-                  setLocation("/sign-in");
-                }}
-                className="mt-1"
-                data-testid="library-signin"
-              >
-                Sign in
-              </Button>
-            </div>
-          ) : isLoading ? (
+          {isLoading ? (
             <div className="px-3 pt-8 text-[12.5px] text-muted-foreground italic">
               Loading…
             </div>

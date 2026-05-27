@@ -443,7 +443,6 @@ export default function Studio() {
             {/* Settings section */}
             <div className="border-t border-border/60 px-5 pt-4 pb-2">
               <p className="text-[15px] font-semibold tracking-tight leading-snug">Settings</p>
-              <p className="text-[12px] text-muted-foreground">Adjust text, shape, composition, and color.</p>
             </div>
             <RightInspector
               state={state}
