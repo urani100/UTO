@@ -255,7 +255,7 @@ function MobileToolbar(props: Props) {
           <DropdownMenuContent align="end" className="w-[240px] p-1.5">
             <DropdownMenuItem
               onSelect={props.onOpenLibrary}
-              className="text-[13px] h-10 px-3"
+              className="text-[15px] font-semibold tracking-tight h-10 px-3"
               data-testid="button-library"
             >
               Library
