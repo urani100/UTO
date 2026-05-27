@@ -403,7 +403,6 @@ export default function Studio() {
             <div className="flex items-center justify-between px-5 pt-4 pb-2">
               <div>
                 <p className="text-[15px] font-semibold tracking-tight leading-snug">Form</p>
-                <p className="text-[12px] text-muted-foreground">Choose a shape for your composition.</p>
               </div>
               <button
                 type="button"

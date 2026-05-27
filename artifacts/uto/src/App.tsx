@@ -118,7 +118,7 @@ function ClerkProviderWithRoutes() {
         signIn: {
           start: {
             title: "Sign in to UTO",
-            subtitle: "Save and revisit your shape compositions.",
+            subtitle: "",
           },
         },
         signUp: {
