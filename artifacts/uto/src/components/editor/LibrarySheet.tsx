@@ -68,7 +68,7 @@ export function LibrarySheet({ open, onOpenChange, onLoadWork }: Props) {
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
-        <SheetHeader className="px-6 pt-10 pb-3 space-y-1">
+        <SheetHeader className="px-6 pb-3 space-y-1" style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 1.5rem)" }}>
           <SheetTitle className="text-[15px] font-semibold tracking-tight leading-snug">
             Library
           </SheetTitle>
