@@ -253,11 +253,18 @@
 
   html, body, #root {
     @apply h-full;
+    overflow: hidden;
   }
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
     font-feature-settings: "ss01", "cv11", "cv05";
+    /* Fix for Capacitor/iOS: keep body permanently fixed so Radix's
+       scroll-lock (remove-scroll) always reads scrollY=0 and never
+       applies body { position:fixed; top:-Xpx }, which would shift
+       the whole app past the status bar when a Sheet/Dialog opens. */
+    position: fixed;
+    width: 100%;
     padding-top: env(safe-area-inset-top, 0px);
     padding-right: env(safe-area-inset-right, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
