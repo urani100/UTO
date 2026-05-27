@@ -67,7 +67,7 @@ export function LibrarySheet({ open, onOpenChange, onLoadWork }: Props) {
         className="w-full sm:w-[400px] sm:max-w-[400px] flex flex-col p-0 bg-background"
       >
         <SheetHeader className="px-6 pt-6 pb-3 space-y-1">
-          <SheetTitle className="font-display text-[15px] font-semibold text-[#716e6e]" style={{ letterSpacing: "1.10px" }}>
+          <SheetTitle className="text-[15px] font-semibold tracking-tight leading-snug">
             Library
           </SheetTitle>
           <SheetDescription className="text-[12.5px] text-muted-foreground">
