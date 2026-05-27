@@ -65,6 +65,8 @@ export function LibrarySheet({ open, onOpenChange, onLoadWork }: Props) {
       <SheetContent
         side="right"
         className="w-full sm:w-[400px] sm:max-w-[400px] flex flex-col p-0 bg-background"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
       >
         <SheetHeader className="px-6 pt-6 pb-3 space-y-1">
           <SheetTitle className="text-[15px] font-semibold tracking-tight leading-snug">
